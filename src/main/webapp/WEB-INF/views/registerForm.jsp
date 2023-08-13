@@ -53,9 +53,9 @@
         }
         #msg {
             height: 30px;
-            text-align:center;
-            font-size:16px;
-            color:red;
+            text-align: center;
+            font-size: 16px;
+            color: red;
             margin-bottom: 20px;
         }
     </style>
@@ -81,6 +81,12 @@
     <input type="text" name="email" placeholder="이메일을 입력해주세요.">
     <input type="text" name="birth" placeholder="생일을 입력해주세요. ex)2020-01-01">
     <input type="text" name="name" placeholder="이름을 입력해주세요.">
+    <label style="display: inline-block; white-space: nowrap;">
+        <input type="radio" name="role" value="professor"> 교수
+    </label>
+    <label style="display: inline-block; white-space: nowrap;">
+        <input type="radio" name="role" value="student"> 학생
+    </label>
     <button id="registerBtn">Register</button>
     <div>
         <p>이미 계정이 있으신가요?? <a href="<c:url value="/login/login"/>">로그인</a>.</p>
@@ -128,9 +134,3 @@
 </form>
 </body>
 </html>
-
-
-
-
-
-
