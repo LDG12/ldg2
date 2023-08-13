@@ -33,4 +33,5 @@
 	</bean>
 	<tx:annotation-driven/>
 	<context:component-scan base-package="com.person456.ldg"/>
+	<mvc:view-controller path="/" view-name="index"/>
 </beans>
