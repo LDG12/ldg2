@@ -1,6 +1,5 @@
 <%@ page contentType="text/html;charset=utf-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ page import="java.net.URLDecoder" %>
 <c:set var="loginOutLink" value="${sessionScope.id==null ? '/login/login' : '/login/logout'}"/>
 <c:set var="loginOut" value="${sessionScope.id==null ? 'Login' : 'Logout'}"/>
 <%@ page session="false" %>
@@ -10,7 +9,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Register</title>
     <link rel="stylesheet" href="<c:url value='/css/menu.css'/>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css" />
     <style>
@@ -18,10 +17,11 @@
         a { text-decoration: none; }
         form {
             width:400px;
-            height:500px;
+            height:600px; /* 조금 높여서 등록 버튼이 아래로 내려가도록 */
             display : flex;
             flex-direction: column;
             align-items:center;
+            justify-content: center; /* 세로 중앙 정렬 */
             position : absolute;
             top:50%;
             left:50%;
@@ -71,46 +71,35 @@
         <li><a href=""><i class="fas fa-search small"></i></a></li>
     </ul>
 </div>
-<form action="/ldg/login/login" method="post" onsubmit="return formCheck(this);">
-    <h3 id="title">Login</h3>
+<form action="/ldg/register/add" method="post" onsubmit="return formCheck(this);">
+    <h3 id="title">Register</h3>
     <div id="msg">
         <c:if test="${not empty param.msg}">
             ${param.msg}
         </c:if>
     </div>
-    <input type="text" name="id" value="${cookie.id.value}" placeholder="이메일 입력" autofocus>
-    <input type="password" name="pwd" placeholder="비밀번호">
-    <input type="hidden" name="toURL" value="${param.toURL}">
-    <button>로그인</button>
+    <input type="text" name="email" placeholder="Enter Email" autofocus>
+    <input type="password" name="psw" placeholder="Enter Password">
+    <input type="password" name="psw-repeat" placeholder="Repeat Password">
+    <button>Register</button>
     <div>
-        <label><input type="checkbox" name="rememberId" value="on" ${empty cookie.id.value ? "":"checked"}> 아이디 기억</label> |
-        <a href="">비밀번호 찾기</a> |
-        <a href="<c:url value='/register/add'/>">회원가입</a>
+        <p>By creating an account you agree to our <a href="#">Terms & Privacy</a>.</p>
+        <p>Already have an account? <a href="#">Sign in</a>.</p>
     </div>
     <script>
         function formCheck(frm) {
             let msg ='';
 
-            if(frm.id.value.length==0) {
-                setMessage('id를 입력해주세요.', frm.id);
-                return false;
-            }
 
-            if(frm.pwd.value.length==0) {
-                setMessage('password를 입력해주세요.', frm.pwd);
-                return false;
-            }
             return true;
-        }
-
-        function setMessage(msg, element){
-            document.getElementById("msg").innerHTML = ` ${'${msg}'}`;
-
-            if(element) {
-                element.select();
-            }
         }
     </script>
 </form>
 </body>
 </html>
+
+
+
+
+
+
