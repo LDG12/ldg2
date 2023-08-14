@@ -20,5 +20,8 @@ public class UserDaoImpl implements UserDao {
     public UserDto selectUser(String id)throws Exception{
         return session.selectOne(namespace+"selectUser", id);
     }
+    public int insertUser(UserDto user){
+        return session.insert(namespace+"insertUser", user);
+    }
 
 }

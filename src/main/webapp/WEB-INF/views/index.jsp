@@ -12,6 +12,13 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css"/>
 </head>
 <body>
+<script>
+  var urlParams = new URLSearchParams(window.location.search);
+  var message = urlParams.get('regMsg');
+  if (message) {
+    alert(decodeURIComponent(message));
+  }
+</script>
 <div id="menu">
   <ul>
     <li id="logo">person456</li>
@@ -28,4 +35,7 @@
   <h1>This is HOME</h1>
 </div>
 </body>
+<script>
+
+</script>
 </html>

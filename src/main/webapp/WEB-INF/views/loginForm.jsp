@@ -71,7 +71,7 @@
         <li><a href=""><i class="fas fa-search small"></i></a></li>
     </ul>
 </div>
-<form action="/ldg/login/login" method="post" onsubmit="return formCheck(this);">
+<form action="<c:url value='/login/login'/>" method="post" onsubmit="return formCheck(this);">
     <h3 id="title">Login</h3>
     <div id="msg">
         <c:if test="${not empty param.msg}">

@@ -16,7 +16,7 @@
         * { box-sizing:border-box; }
         a { text-decoration: none; }
         form {
-            width:400px;
+            width:500px;
             height:600px; /* 조금 높여서 등록 버튼이 아래로 내려가도록 */
             display : flex;
             flex-direction: column;
@@ -72,7 +72,8 @@
         <li><a href=""><i class="fas fa-search small"></i></a></li>
     </ul>
 </div>
-<form id="form" method="post">
+<%--action="/ldg/login/login" method="post" onsubmit="return formCheck(this);--%>
+<form id="form" action="<c:url value='/register/add'/>" method="post" onsubmit="return formCheck(this)">
     <h3 id="title">Register</h3>
     <input type="text" name="id" placeholder="사용하실 ID를 입력해주세요."><button id="idCheck" type="submit">중복 확인</button>
     <input type="password" id="pwd" placeholder="사용하실 PassWord를 입력해주세요.">
@@ -92,6 +93,54 @@
         <p>이미 계정이 있으신가요?? <a href="<c:url value="/login/login"/>">로그인</a>.</p>
     </div>
     <script>
+        function formCheck(frm){
+            var validate = true;
+            if ($('input[name="id"]').val() === "" || $('input[name="pwd"]').val() === "" || $('input[name="pwdRepeat"]').val() === "" ||
+                $('input[name="email"]').val() === "" || $('input[name="birth"]').val() === "" || $('input[name="name"]').val() === "" || $('input[name="role"]:checked').val()) {
+                alert("모든 필수 필드를 입력하세요.");
+                validate = false;
+            }
+            if($('input[name="id"]').val().length < 5){
+                validate=false;
+                alert("아이디는 최소 5글자여야합니다.");
+            }
+            if($('input[name="pwd"]').val().length <5){
+                validate=false;
+                alert("비밀번호는 최소 5글자여야합니다.");
+            }
+            if($('input[name="pwd"]').val() != $('input[name="pwdRepeat"]').val()){
+                validate=false;
+                alert("비밀번호가 일치하지 않습니다.")
+            }
+            $(function(){ // id 중복을 확인했을 때, db에 해당 id로 유저가 있으면 중복된다고 알려주고, 아니면 사용 가능하다고 알려주기
+                $('#idCheck').click(function(event){
+                    event.preventDefault(); // 폼 제출 막기
+                    var id = $('input[name="id"]').val();
+                    $.ajax({
+                        url : "<c:url value='/register/check'/>",
+                        method : "POST",
+                        data : {id:id},
+                        success:function(response){
+                            if(response=="possible"){
+                                alert("사용 가능한 ID입니다.");
+                            }else{
+                                validate=false;
+                                alert("이미 사용중인 ID입니다.");
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            alert("에러가 발생했습니다: " + error);
+                        }
+                    });
+                });
+            });
+            if(!validate){
+                return false;
+            }
+
+            return true;
+
+        }
         $(function(){ // 비밀번호와 비밀번호 재확인을 확인해서 바로바로 알려줄 수 있게 하는 것임.
             $('#pwd').keyup(function(){
                 $('#check').html('');
@@ -114,7 +163,7 @@
                 event.preventDefault(); // 폼 제출 막기
                 var id = $('input[name="id"]').val();
                 $.ajax({
-                    url : "/ldg/register/check", // 수정된 경로
+                    url : "/ldg/register/check",
                     method : "POST",
                     data : {id:id},
                     success:function(response){

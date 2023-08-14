@@ -8,16 +8,16 @@ public class UserDto {
     private String pwd;
     private String email;
     private Date birth;
-    private String sns;
+    private String username;
     private Date reg_date;
 
     public UserDto(){}
-    public UserDto(String id, String pwd, String email, Date birth, String sns, Date reg_date) {
+    public UserDto(String id, String pwd, String email, Date birth, String username, Date reg_date) {
         this.id = id;
         this.pwd = pwd;
         this.email = email;
         this.birth = birth;
-        this.sns = sns;
+        this.username = username;
         this.reg_date = reg_date;
     }
 
@@ -26,12 +26,12 @@ public class UserDto {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UserDto userDto = (UserDto) o;
-        return Objects.equals(id, userDto.id) && Objects.equals(pwd, userDto.pwd) && Objects.equals(email, userDto.email) && Objects.equals(birth, userDto.birth) && Objects.equals(sns, userDto.sns) && Objects.equals(reg_date, userDto.reg_date);
+        return Objects.equals(id, userDto.id) && Objects.equals(pwd, userDto.pwd) && Objects.equals(email, userDto.email) && Objects.equals(birth, userDto.birth) && Objects.equals(username, userDto.username) && Objects.equals(reg_date, userDto.reg_date);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, pwd, email, birth, sns, reg_date);
+        return Objects.hash(id, pwd, email, birth, username, reg_date);
     }
 
     public String getId() {
@@ -66,12 +66,12 @@ public class UserDto {
         this.birth = birth;
     }
 
-    public String getSns() {
-        return sns;
+    public String getusername() {
+        return username;
     }
 
-    public void setSns(String sns) {
-        this.sns = sns;
+    public void setusername(String username) {
+        this.username = username;
     }
 
     public Date getReg_date() {

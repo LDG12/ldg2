@@ -9,4 +9,8 @@
         SELECT * FROM user_info
         WHERE id = #{id}
     </select>
+    <insert id="insertUser" parameterType="UserDto">
+        INSERT into user_info
+        values(#{id}, #{pwd}, #{email}, #{birth}, #{username}, now())
+    </insert>
 </mapper>

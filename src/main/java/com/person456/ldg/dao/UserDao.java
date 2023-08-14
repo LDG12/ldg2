@@ -5,4 +5,5 @@ import com.person456.ldg.domain.UserDto;
 public interface UserDao {
     public int count()throws Exception;
     public UserDto selectUser(String id)throws Exception;
+    public int insertUser(UserDto user)throws Exception;
 }
