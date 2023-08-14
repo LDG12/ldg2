@@ -29,14 +29,14 @@ public class RegisterController {
     }
 
     @PostMapping("/add")
-    public String registerAdd(String id, String pwd, String email, String userName, String date,
+    public String registerAdd(String id, String pwd, String email, String birth, String name,
                               HttpServletRequest request, Model m)throws Exception{
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd");
-        Date birth = dateFormat.parse(date);
-        UserDto user = new UserDto(id, pwd, email, birth, userName, null);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date realbirth = dateFormat.parse(birth);
+        UserDto user = new UserDto(id, pwd, email, realbirth, name, realbirth);
         if(checkRegister(user)){
             String regMsg = URLEncoder.encode("회원가입이 완료되었습니다.", "utf-8");
-            return "index?regMsg="+regMsg;
+            return "redirect:/?regMsg="+regMsg;
         }
         else{
             String regMsg = URLEncoder.encode("다시 확인해주세요.", "utf-8");

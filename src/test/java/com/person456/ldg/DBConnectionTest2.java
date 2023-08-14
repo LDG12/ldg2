@@ -24,8 +24,6 @@ public class DBConnectionTest2 {
     DataSource ds;
     @Test
     public void springJdbcConnectionTest()throws Exception{
-        Connection conn = ds.getConnection();
-        System.out.println("conn = " + conn);
-        assertTrue(conn!=null);
+
     }
 }

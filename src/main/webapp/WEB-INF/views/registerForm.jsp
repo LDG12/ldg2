@@ -76,11 +76,11 @@
 <form id="form" action="<c:url value='/register/add'/>" method="post" onsubmit="return formCheck(this)">
     <h3 id="title">Register</h3>
     <input type="text" name="id" placeholder="사용하실 ID를 입력해주세요."><button id="idCheck" type="submit">중복 확인</button>
-    <input type="password" id="pwd" placeholder="사용하실 PassWord를 입력해주세요.">
-    <input type="password" id="pwdRepeat" placeholder="비밀번호를 다시 한 번 입력해주세요.">
+    <input type="password" id="pwd" name="pwd" placeholder="사용하실 PassWord를 입력해주세요.">
+    <input type="password" id="pwdRepeat" name="pwdRepeat" placeholder="비밀번호를 다시 한 번 입력해주세요.">
     <p id="check" size="2"></p>
     <input type="text" name="email" placeholder="이메일을 입력해주세요.">
-    <input type="text" name="birth" placeholder="생일을 입력해주세요. ex)2020-01-01">
+    <input type="text" name="birth" placeholder="생년월일 8자리를 입력해주세요.">
     <input type="text" name="name" placeholder="이름을 입력해주세요.">
     <label style="display: inline-block; white-space: nowrap;">
         <input type="radio" name="role" value="professor"> 교수
@@ -96,7 +96,7 @@
         function formCheck(frm){
             var validate = true;
             if ($('input[name="id"]').val() === "" || $('input[name="pwd"]').val() === "" || $('input[name="pwdRepeat"]').val() === "" ||
-                $('input[name="email"]').val() === "" || $('input[name="birth"]').val() === "" || $('input[name="name"]').val() === "" || $('input[name="role"]:checked').val()) {
+                $('input[name="email"]').val() === "" || $('input[name="birth"]').val() === "" || $('input[name="name"]').val() === "") {
                 alert("모든 필수 필드를 입력하세요.");
                 validate = false;
             }
@@ -163,13 +163,14 @@
                 event.preventDefault(); // 폼 제출 막기
                 var id = $('input[name="id"]').val();
                 $.ajax({
-                    url : "/ldg/register/check",
+                    url : "<c:url value='/register/check'/>",
                     method : "POST",
                     data : {id:id},
                     success:function(response){
                         if(response=="possible"){
                             alert("사용 가능한 ID입니다.");
                         }else{
+                            validate=false;
                             alert("이미 사용중인 ID입니다.");
                         }
                     },
