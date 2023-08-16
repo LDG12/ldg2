@@ -23,5 +23,10 @@ public class UserDaoImpl implements UserDao {
     public int insertUser(UserDto user){
         return session.insert(namespace+"insertUser", user);
     }
+    public UserDto selectFindUser(Map map)throws Exception{
+        return session.selectOne(namespace+"selectFindUser", map);
+    }
+    public int updateUser(Map map)throws Exception{
 
+    }
 }

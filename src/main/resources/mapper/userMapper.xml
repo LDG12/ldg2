@@ -9,8 +9,16 @@
         SELECT * FROM user_info
         WHERE id = #{id}
     </select>
+    <select id="selectFindUser" parameterType="map" resultType="UserDto">
+        SELECT * FROM user_info
+        WHERE id = #{id} AND email = #{email}
+    </select>
     <insert id="insertUser" parameterType="UserDto">
         INSERT into user_info (id, pwd, email, birth, username, status, reg_date)
         values(#{id}, #{pwd}, #{email}, #{birth}, #{username}, #{status}, now())
     </insert>
+    <update id="updateUser" parameterType="map">
+        UPDATE user_info SET pwd = #{pwd}
+        WHERE id=#{id} AND email=#{email}
+    </update>
 </mapper>
