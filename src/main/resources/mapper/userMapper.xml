@@ -10,7 +10,7 @@
         WHERE id = #{id}
     </select>
     <insert id="insertUser" parameterType="UserDto">
-        INSERT into user_info (id, pwd, email, birth, username, reg_date)
-        values(#{id}, #{pwd}, #{email}, #{birth}, #{username}, now())
+        INSERT into user_info (id, pwd, email, birth, username, status, reg_date)
+        values(#{id}, #{pwd}, #{email}, #{birth}, #{username}, #{status}, now())
     </insert>
 </mapper>

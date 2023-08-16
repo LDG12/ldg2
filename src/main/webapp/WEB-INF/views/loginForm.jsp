@@ -3,7 +3,7 @@
 <%@ page import="java.net.URLDecoder" %>
 <c:set var="loginOutLink" value="${sessionScope.id==null ? '/login/login' : '/login/logout'}"/>
 <c:set var="loginOut" value="${sessionScope.id==null ? 'Login' : 'Logout'}"/>
-<%@ page session="false" %>
+<%@ page session="true" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>

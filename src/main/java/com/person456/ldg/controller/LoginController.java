@@ -21,6 +21,16 @@ public class LoginController {
     @Autowired
     UserDao userDao;
 
+    @GetMapping("/findPwd")
+    public String findPwd(){
+        return "redirect:/";
+    }
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request){
+        HttpSession session = request.getSession();
+        session.invalidate();
+        return "redirect:/";
+    }
     @GetMapping("/login")
     public String loginForm() {
         return "loginForm";
@@ -28,7 +38,7 @@ public class LoginController {
 
     @PostMapping("/login")
     public String login(String id, String pwd, boolean rememberId, HttpServletResponse response,
-                        HttpServletRequest request, HttpSession session) throws Exception {
+                        HttpServletRequest request) throws Exception {
         // 1. id와 pwd를 확인
         if(!loginCheck(id, pwd)) {
             // 2-1   일치하지 않으면, loginForm으로 이동
@@ -49,6 +59,9 @@ public class LoginController {
 //		       2. 응답에 저장
             response.addCookie(cookie);
         }
+        HttpSession session = request.getSession();
+        session.setAttribute("id", id);
+        System.out.println("session.getAttribute(\"id\") = " + session.getAttribute("id"));
 //		3. 홈으로 이동
         return "redirect:/";
     }

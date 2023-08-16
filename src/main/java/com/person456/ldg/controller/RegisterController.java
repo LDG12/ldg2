@@ -2,6 +2,7 @@ package com.person456.ldg.controller;
 
 import com.person456.ldg.dao.UserDao;
 import com.person456.ldg.domain.UserDto;
+import com.person456.ldg.service.MailSendService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -9,8 +10,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -22,6 +25,8 @@ import java.util.Date;
 public class RegisterController {
     @Autowired
     UserDao userDao;
+    @Autowired
+    MailSendService mailSendService;
 
     @GetMapping("/add")
     public String registerForm(){
@@ -29,11 +34,12 @@ public class RegisterController {
     }
 
     @PostMapping("/add")
-    public String registerAdd(String id, String pwd, String email, String birth, String name,
+    public String registerAdd(String id, String pwd, String email, String birth, String name, String status,
                               HttpServletRequest request, Model m)throws Exception{
+
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date realbirth = dateFormat.parse(birth);
-        UserDto user = new UserDto(id, pwd, email, realbirth, name, realbirth);
+        UserDto user = new UserDto(id, pwd, email, realbirth, name, status, realbirth);
         if(checkRegister(user)){
             String regMsg = URLEncoder.encode("회원가입이 완료되었습니다.", "utf-8");
             return "redirect:/?regMsg="+regMsg;
@@ -53,6 +59,37 @@ public class RegisterController {
             return ResponseEntity.ok("impossible");
         }
     }
+    @GetMapping("/emailCheck")
+    @ResponseBody
+    public String mailCheck(String email, Model m, HttpSession session) {
+        String number = mailSendService.joinEmail(email);
+        session.setAttribute("number", number);
+        System.out.println("number = " + number);
+        return number; // 생성된 인증번호를 반환
+    }
+
+    @GetMapping("/checkCultiNum")
+    public ResponseEntity<String> checkCultiNum(String inputCultiNum, HttpSession session, Model model) {
+        String coll = (String)session.getAttribute("number");
+        System.out.println("inputCultiNum = " + inputCultiNum);
+        System.out.println("coll = " + coll);
+        boolean check;
+        if(coll.equals(inputCultiNum)){
+            check = true;
+            System.out.println("check = " + check);
+        }
+        else{
+            check=false;
+            System.out.println("check = " + check);
+        }
+        if (check==true) {
+            return ResponseEntity.ok("possible");
+        } else {
+            return ResponseEntity.ok("impossible");
+        }
+    }
+
+
     private boolean checkRegister(UserDto user)throws Exception{
         int rowCnt = userDao.insertUser(user);
         if(rowCnt == 1) return true;
