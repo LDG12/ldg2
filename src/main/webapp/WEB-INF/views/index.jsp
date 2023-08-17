@@ -14,9 +14,13 @@
 <body>
 <script>
   var urlParams = new URLSearchParams(window.location.search);
-  var message = urlParams.get('regMsg');
-  if (message) {
-    alert(decodeURIComponent(message));
+  var regmessage = urlParams.get('regMsg');
+  var pwdmessage = urlParams.get('pwdMsg');
+  if (regmessage) {
+    alert(decodeURIComponent(regmessage));
+  }
+  if(pwdmessage){
+    alert(decodeURIComponent(pwdmessage));
   }
 </script>
 <div id="menu">

@@ -56,7 +56,14 @@ public class LoginController {
     }
     @PostMapping("/updatePwd")
     public String updatePwd(String id, String email, String pwd, Model m)throws Exception{
-
+        if(setPwd(id, pwd) == true){
+            String pwdMsg = URLEncoder.encode("비밀번호 변경이 성공적으로 완료되었습니다.", "utf-8");
+            return "redirect:/?pwdMsg="+pwdMsg;
+        }
+        else{
+            String pwdMsg = URLEncoder.encode("알수없는 에러가 일어났습니다.", "utf-8");
+            return "redirect:/?pwdMsg="+pwdMsg;
+        }
     }
 
     @GetMapping("/logout")
@@ -125,11 +132,16 @@ public class LoginController {
         return userId;
     }
 
-    private String updateNewPwd(String id, String email, String pwd)throws Exception{
-        Map<String, Object> map = new HashMap<>();
-        map.put("id", id);
-        map.put("email", email);
-        map.put("pwd", pwd);
-        int rowCnt = userDao.(map);
+    private boolean setPwd(String id, String pwd)throws Exception{
+        UserDto user = userDao.selectUser(id);
+        user.setPwd(pwd);
+        int rowCnt = userDao.updatePwd(user);
+        if(rowCnt == 1){
+            return true;
+        }
+        else{
+            return false;
+        }
     }
+
 }

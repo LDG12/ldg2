@@ -9,4 +9,5 @@ public interface UserDao {
     public UserDto selectUser(String id)throws Exception;
     public int insertUser(UserDto user)throws Exception;
     public UserDto selectFindUser(Map map)throws Exception;
+    public int updatePwd(UserDto user)throws Exception;
 }

@@ -75,16 +75,53 @@
     </ul>
 </div>
 <%--action="/ldg/login/login" method="post" onsubmit="return formCheck(this);--%>
-<form class="form" action="<c:url value='/login/updatePwd'/>" method="post" accept-charset="UTF-8">
+<form class="form" action="<c:url value='/login/updatePwd'/>" method="post" onsubmit="return formCheck(this)">
     <h3 id="title">Update Pwd</h3>
-    <input type="text" name="pwd"  placeholder="사용하실 비밀번호를 입력해주세요.">
-    <input type="text" name="pwdRepeat" placeholder="비밀번호를 다시한번 입력해주세요.">
+    <input type="password" name="pwd"  placeholder="사용하실 비밀번호를 입력해주세요.">
+    <input type="password" name="pwdRepeat" placeholder="비밀번호를 다시한번 입력해주세요.">
+    <p id="check" size="2"></p>
     <input type="hidden" name="id" value="${id}">
     <input type="hidden" name="email" value="${email}">
     <button id="findIdBtn">Register</button>
 </form>
 <script>
+    var pwdStatus = false;
+    function formCheck(frm){
+        if($('input[name="pwd"]').val() === "" || $('input[name="pwdRepeat"]').val() === ""){
+            alert("모든 필수 필드를 입력하세요.");
+            return false;
+        }
+        if($('input[name="pwd"]').val().length < 5){
+            alert("비밀번호는 최소 5글자여야합니다.");
+            return false;
+        }
+        if($('input[name="pwd"]').val() === $('input[name="pwdRepeat"]').val()){
+            return true
+        }
+        else{
+            alert("비밀번호가 일치하지 않습니다.");
+            return false;
+        }
 
+    }
+    $(function(){ // 비밀번호와 비밀번호 재확인을 확인해서 바로바로 알려줄 수 있게 하는 것임.
+        $('#pwd').keyup(function(){
+            $('#check').html('');
+        });
+        $('#pwdRepeat').keyup(function(){
+
+            if($('#pwd').val() != $('#pwdRepeat').val()){
+                $('#check').html('비밀번호 일치하지 않음<br><br>');
+                $('#check').attr('color', '#f82a2aa3');
+
+            } else{
+                $('#check').html('비밀번호 일치함<br><br>');
+                $('#check').attr('color', '#199894b3');
+                pwdStatus=true;
+            }
+
+        });
+    });
 </script>
 </body>
 </html>

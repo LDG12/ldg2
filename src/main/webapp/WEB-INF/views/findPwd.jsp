@@ -13,6 +13,7 @@
     <title>Login</title>
     <link rel="stylesheet" href="<c:url value='/css/menu.css'/>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css" />
+
     <style>
         * { box-sizing:border-box; }
         a { text-decoration: none; }
@@ -37,7 +38,7 @@
             padding: 0 10px;
             margin-bottom: 10px;
         }
-        button {
+        #registerBtn {
             background-color: rgb(89,117,196);
             color : white;
             width:300px;
@@ -59,6 +60,7 @@
             margin-bottom: 20px;
         }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
 <div id="menu">
@@ -71,11 +73,10 @@
         <li><a href=""><i class="fas fa-search small"></i></a></li>
     </ul>
 </div>
-<form action="<c:url value='/login/findPwd'/>" method="post">
+<form class="form" action="<c:url value='/login/findPwd'/>" method="post" onsubmit="return formCheck(this)">
     <h3 id="title">Find Password</h3><br><br>
-
     <div class="inputGroup">
-        <input type="text" name="id" class="form-control" placeholder="사용하실 ID를 입력해주세요."><button id="idCheck" type="submit" class="btnPrimary">중복 확인</button>
+        <input type="text" name="id" class="form-control" placeholder="사용자 ID를 입력해주세요."><button id="idCheck" type="submit" class="btnPrimary">아이디 확인</button>
     </div>
     <div>
         <input type="text" name="email" placeholder="이메일을 입력해주세요."><button id="emailCheck" type="submit">이메일 인증</button>
@@ -83,15 +84,27 @@
     <div>
         <input type="text" name="inputCultiNum" placeholder="인증번호를 입력해주세요."><button id="cultiNumCheck" type="submit">인증 확인</button>
     </div>
-    <input type="hidden" name="id" value="${id}">
+    <input type="hidden" name="userid" value="${id}">
     <div>
         <p>아이디를 잊어버리셨나요? <a href="<c:url value="/login/findID"/>">아이디 찾기</a>.</p>
     </div>
-    <button id="registerBtn">찾기</button>
+    <button id="registerBtn" type="submit">찾기</button>
     <script>
         var EmailCheck = false;
         var IdCheck = false;
         function formCheck(frm){
+            if($('input[name="id"]').val() === "" || $('input[name="email"]').val() === "" || $('input[name="inputCultiNum"]').val()===""){
+                alert("모든 필수 필드를 입력하세요.");
+                return false;
+            }
+            if($('input[name="id"]').val().length < 5){
+                alert("아이디는 최소 5글자여야합니다.");
+                return false;
+            }
+            if(EmailCheck==false){
+                alert("이메일 인증을 진행해주세요.");
+                return false;
+            }
             if(EmailCheck == true && IdCheck==true){
                 return true;
             }
@@ -114,7 +127,8 @@
                     method : "POST",
                     data : {id:id},
                     success:function(response){
-                        if(response=="possible"){
+                        if(response=="impossible"){
+                            IdCheck=true;
                             alert("아이디가 정상적으로 확인되었습니다.");
                         }else{
                             alert("존재하지않는 ID입니다..");
@@ -160,7 +174,7 @@
                 data: { inputCultiNum: inputCultiNum },
                 success: function(response) {
                     if (response === "possible") {
-                        cultiNumVali = true;
+                        EmailCheck=true;
                         alert("인증번호가 일치합니다. 회원가입이 가능합니다.");
 
                     } else {

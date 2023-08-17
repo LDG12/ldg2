@@ -26,7 +26,7 @@ public class UserDaoImpl implements UserDao {
     public UserDto selectFindUser(Map map)throws Exception{
         return session.selectOne(namespace+"selectFindUser", map);
     }
-    public int updateUser(Map map)throws Exception{
-
+    public int updatePwd(UserDto user)throws Exception{
+        return session.update(namespace+"updateUser", user);
     }
 }
