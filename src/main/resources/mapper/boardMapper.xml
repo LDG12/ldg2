@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.person456.ldg.dao.BoardMapper">
+    <select id="count" resultType="int">
+        select count(*) from board
+    </select>
+    <select id="selectAll">
+        select bno,title,content,writer,view_cnt,comment_cnt,reg_date
+        from board
+        order by reg_date desc, bno desc
+    </select>
+    <select id="select" parameterType="int" resultType="BoardDto">
+        select * from board
+        where bno = #{bno}
+    </select>
+    <delete id="deleteAll">
+        delete all from board
+    </delete>
+
+</mapper>
