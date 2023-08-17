@@ -78,7 +78,7 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public String login(String id, String pwd, boolean rememberId, HttpServletResponse response,
+    public String login(String id, String pwd, String toURL, boolean rememberId, HttpServletResponse response,
                         HttpServletRequest request) throws Exception {
         // 1. id와 pwd를 확인
         if(!loginCheck(id, pwd)) {
@@ -103,8 +103,9 @@ public class LoginController {
         HttpSession session = request.getSession();
         session.setAttribute("id", id);
         System.out.println("session.getAttribute(\"id\") = " + session.getAttribute("id"));
+        toURL = toURL==null || toURL.equals("")? "/" :toURL;
 //		3. 홈으로 이동
-        return "redirect:/";
+        return "redirect:"+toURL;
     }
 
     private boolean loginCheck(String id, String pwd) throws Exception{

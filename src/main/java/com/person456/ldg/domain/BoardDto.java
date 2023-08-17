@@ -3,6 +3,7 @@ package com.person456.ldg.domain;
 import java.util.Date;
 import java.util.Objects;
 
+
 public class BoardDto {
     private Integer bno;
     private String title;
@@ -14,6 +15,12 @@ public class BoardDto {
     private Date up_date;
 
     public BoardDto(){}
+    public BoardDto(Integer bno, String title, String content, String writer){
+        this.bno = bno;
+        this.title = title;
+        this.content = content;
+        this.writer = writer;
+    }
     public BoardDto(Integer bno, String title, String content, String writer, Integer view_cnt, Integer comment_cnt, Date reg_date, Date up_date) {
         this.bno = bno;
         this.title = title;

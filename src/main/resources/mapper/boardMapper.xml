@@ -5,7 +5,7 @@
     <select id="count" resultType="int">
         select count(*) from board
     </select>
-    <select id="selectAll">
+    <select id="selectAll" resultType="BoardDto">
         select bno,title,content,writer,view_cnt,comment_cnt,reg_date
         from board
         order by reg_date desc, bno desc
@@ -14,8 +14,23 @@
         select * from board
         where bno = #{bno}
     </select>
+    <select id="selectPage" parameterType="map" resultType="BoardDto">
+        select * from board
+        order by reg_date desc, bno desc
+        LIMIT #{offset}, #{pageSize}
+    </select>
     <delete id="deleteAll">
         delete all from board
     </delete>
-
+    <delete id="delete" parameterType="map">
+        delete from board where bno = #{bno} and writer = #{writer}
+    </delete>
+    <insert id="insert" parameterType="BoardDto">
+        insert into board(bno, title, content, writer)
+        values(#{bno}, #{title}, #{content}, #{writer})
+    </insert>
+    <insert id="insertAll" parameterType="BoardDto">
+        insert into board(bno, title, content, writer, view_cnt, comment_cnt, reg_date, up_date)
+        values(#{bno}, #{title}, #{content}, #{writer}, #{view_cnt}, #{comment_cnt}, #{reg_date}, #{up_date})
+    </insert>
 </mapper>

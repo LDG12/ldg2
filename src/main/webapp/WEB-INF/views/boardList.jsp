@@ -192,13 +192,13 @@
     <div class="board-container">
         <div class="search-container">
             <form action="<c:url value="/board/list"/>" class="search-form" method="get">
-                <select class="search-option" name="option">
-                    <option value="A" ${ph.sc.option=='A' || ph.sc.option=='' ? "selected" : ""}>제목+내용</option>
-                    <option value="T" ${ph.sc.option=='T' ? "selected" : ""}>제목만</option>
-                    <option value="W" ${ph.sc.option=='W' ? "selected" : ""}>작성자</option>
-                </select>
+<%--                <select class="search-option" name="option">--%>
+<%--                    <option value="A" ${ph.sc.option=='A' || ph.sc.option=='' ? "selected" : ""}>제목+내용</option>--%>
+<%--                    <option value="T" ${ph.sc.option=='T' ? "selected" : ""}>제목만</option>--%>
+<%--                    <option value="W" ${ph.sc.option=='W' ? "selected" : ""}>작성자</option>--%>
+<%--                </select>--%>
 
-                <input type="text" name="keyword" class="search-input" type="text" value="${ph.sc.keyword}" placeholder="검색어를 입력해주세요">
+                <input type="text" name="keyword" class="search-input" type="text" value="" placeholder="검색어를 입력해주세요">
                 <input type="submit" class="search-button" value="검색">
             </form>
             <button id="writeBtn" class="btn-write" onclick="location.href='<c:url value="/board/write"/>'"><i class="fa fa-pencil"></i> 글쓰기</button>
@@ -212,43 +212,31 @@
                 <th class="regdate">등록일</th>
                 <th class="viewcnt">조회수</th>
             </tr>
-            <c:forEach var="boardDto" items="${list}">
+            <c:forEach var="boardDto" items="${List}">
                 <tr>
-                    <td class="no">${boardDto.bno}</td>
-                    <td class="title"><a href="<c:url value="/board/read${ph.sc.queryString}&bno=${boardDto.bno}"/>"><c:out value='${boardDto.title}'/></a></td>
-                    <td class="writer">${boardDto.writer}</td>
-                    <c:choose>
-                        <c:when test="${boardDto.reg_date.time >= startOfToday}">
-                            <td class="regdate"><fmt:formatDate value="${boardDto.reg_date}" pattern="HH:mm" type="time"/></td>
-                        </c:when>
-                        <c:otherwise>
-                            <td class="regdate"><fmt:formatDate value="${boardDto.reg_date}" pattern="yyyy-MM-dd" type="date"/></td>
-                        </c:otherwise>
-                    </c:choose>
-                    <td class="viewcnt">${boardDto.view_cnt}</td>
+                <td class="no">${boardDto.bno}</td>
+                <td class="title"><a href="<c:url value="/board/read?bno=${boardDto.bno}&page=${ph.page}&pageSize=${ph.pageSize}"/>">${boardDto.title}</td>
+                <td class="writer">${boardDto.writer}</td>
+                <td class="regdate">${boardDto.reg_date}</td>
+                <td class="viewcnt">${boardDto.view_cnt}</td>
                 </tr>
             </c:forEach>
         </table>
         <br>
         <div class="paging-container">
             <div class="paging">
-                <c:if test="${totalCnt==null || totalCnt==0}">
-                    <div> 게시물이 없습니다. </div>
+                <c:if test="${ph.showPrev}">
+                    <a class="page" href="<c:url value="/board/list?page=${ph.beginPage-1}"/>">&lt;</a>
                 </c:if>
-                <c:if test="${totalCnt!=null && totalCnt!=0}">
-                    <c:if test="${ph.showPrev}">
-                        <a class="page" href="<c:url value="/board/list${ph.sc.getQueryString(ph.beginPage-1)}"/>">&lt;</a>
-                    </c:if>
-                    <c:forEach var="i" begin="${ph.beginPage}" end="${ph.endPage}">
-                        <a class="page ${i==ph.sc.page? "paging-active" : ""}" href="<c:url value="/board/list${ph.sc.getQueryString(i)}"/>">${i}</a>
-                    </c:forEach>
-                    <c:if test="${ph.showNext}">
-                        <a class="page" href="<c:url value="/board/list${ph.sc.getQueryString(ph.endPage+1)}"/>">&gt;</a>
-                    </c:if>
+                <c:forEach var="i" begin="${ph.beginPage}" end="${ph.endPage}">
+                    <a class="page ${i==ph.page? "paging-active" : ""}" href="<c:url value="/board/list?page=${i}"/>">${i}</a>
+                </c:forEach>
+                <c:if test="${ph.showNext}">
+                    <a class="page" href="<c:url value="/board/list?page=${ph.endPage+1}"/>">&gt;</a>
                 </c:if>
             </div>
         </div>
-    </div>
+</div>
 </div>
 </body>
 </html>
