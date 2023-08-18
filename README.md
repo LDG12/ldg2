@@ -14,3 +14,5 @@
 
 8/17
 1. 비밀번호 찾기 기능 구현(아이디, 이메일 validate 이후 해당 아이디와 이메일을 가진 user의 password를 set하고 update)
+2. 게시판(Board)와 관련된 Dto, Dao, My-batis, DB 구현
+3. boardList에 게시물이 뜨게 하긴 했는데 페이징이 안됨 -> 1페이지면 10개, 2페이지면 다음 10개인데 안움직임
