@@ -2,7 +2,7 @@ package com.person456.ldg.domain;
 
 public class PageHandler {
     private int totalCnt;
-    private int pageSize;
+    private int pageSize=10;
     private int naviSize =10;
     private int totalPage;
     private  int page;
@@ -20,7 +20,7 @@ public class PageHandler {
         this.pageSize=pageSize;
 
         totalPage = (int)Math.ceil(totalCnt / (double)pageSize);
-        beginPage = page/naviSize *naviSize+1;
+        beginPage = (page-1)/naviSize *naviSize+1;
         endPage = Math.min((beginPage+naviSize)-1, totalPage);
         showPrev = beginPage!=1;
         showNext = endPage != totalPage;

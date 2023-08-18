@@ -82,9 +82,9 @@
     </ul>
 </div>
 <script>
-    let msg = "${msg}";
-    if(msg=="WRT_ERR") alert("게시물 등록에 실패하였습니다. 다시 시도해 주세요.");
-    if(msg=="MOD_ERR") alert("게시물 수정에 실패하였습니다. 다시    시도해 주세요.");
+    let modifyMsg = "${msg}"
+    if(modifyMsg=="MODIFY OK")alert("게시글 수정이 정상적으로 완료되었습니다.");
+    else if(modifyMsg =="MODIFY ERROR") alert("게시글 수정이 실패하였습니다. 다시 시도해주세요.");
 </script>
 <div class="container">
     <h2 class="writing-header">게시판 ${mode=="new" ? "글쓰기" : "읽기"}</h2>

@@ -26,4 +26,13 @@ public class BoardService {
     public int insertBoard(BoardDto boardDto) throws Exception{
         return boardDao.insertAllBoard(boardDto);
     }
+    public int write(BoardDto boardDto)throws Exception{
+        return boardDao.insertBoard(boardDto);
+    }
+    public int remove(Map map)throws Exception{
+        return boardDao.delete(map);
+    }
+    public int update(BoardDto boardDto)throws Exception{
+        return boardDao.updateBoard(boardDto);
+    }
 }

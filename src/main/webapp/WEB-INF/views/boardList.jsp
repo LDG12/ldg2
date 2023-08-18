@@ -166,6 +166,16 @@
             text-decoration: underline;
         }
     </style>
+    <script>
+        let msg = "${msg}";
+        if(msg=="LIST_ERR")  alert("게시물 목록을 가져오는데 실패했습니다. 다시 시도해 주세요.");
+        if(msg=="READ_ERR")  alert("삭제되었거나 없는 게시물입니다.");
+        if(msg=="REMOVE ERROR")   alert("삭제되었거나 없는 게시물입니다.");
+
+        if(msg=="REMOVE OK")    alert("성공적으로 삭제되었습니다.");
+        if(msg=="WRITE OK")    alert("성공적으로 등록되었습니다.");
+        if(msg=="MODIFY OK")    alert("성공적으로 수정되었습니다.");
+    </script>
 </head>
 <body>
 <div id="menu">
@@ -178,16 +188,6 @@
         <li><a href=""><i class="fa fa-search"></i></a></li>
     </ul>
 </div>
-<script>
-    let msg = "${msg}";
-    if(msg=="LIST_ERR")  alert("게시물 목록을 가져오는데 실패했습니다. 다시 시도해 주세요.");
-    if(msg=="READ_ERR")  alert("삭제되었거나 없는 게시물입니다.");
-    if(msg=="DEL_ERR")   alert("삭제되었거나 없는 게시물입니다.");
-
-    if(msg=="DEL_OK")    alert("성공적으로 삭제되었습니다.");
-    if(msg=="WRT_OK")    alert("성공적으로 등록되었습니다.");
-    if(msg=="MOD_OK")    alert("성공적으로 수정되었습니다.");
-</script>
 <div style="text-align:center">
     <div class="board-container">
         <div class="search-container">
@@ -212,7 +212,7 @@
                 <th class="regdate">등록일</th>
                 <th class="viewcnt">조회수</th>
             </tr>
-            <c:forEach var="boardDto" items="${List}">
+            <c:forEach var="boardDto" items="${List}" >
                 <tr>
                 <td class="no">${boardDto.bno}</td>
                 <td class="title"><a href="<c:url value="/board/read?bno=${boardDto.bno}&page=${ph.page}&pageSize=${ph.pageSize}"/>">${boardDto.title}</td>

@@ -26,11 +26,16 @@
         delete from board where bno = #{bno} and writer = #{writer}
     </delete>
     <insert id="insert" parameterType="BoardDto">
-        insert into board(bno, title, content, writer)
-        values(#{bno}, #{title}, #{content}, #{writer})
+        insert into board(title, content, writer)
+        values(#{title}, #{content}, #{writer})
     </insert>
     <insert id="insertAll" parameterType="BoardDto">
         insert into board(bno, title, content, writer, view_cnt, comment_cnt, reg_date, up_date)
         values(#{bno}, #{title}, #{content}, #{writer}, #{view_cnt}, #{comment_cnt}, #{reg_date}, #{up_date})
     </insert>
+    <update id="update" parameterType="BoardDto">
+        update board
+        set title=#{title}, content=#{content} , up_date= now()
+        where bno=#{bno}
+    </update>
 </mapper>
