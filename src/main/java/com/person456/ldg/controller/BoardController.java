@@ -2,6 +2,7 @@ package com.person456.ldg.controller;
 
 import com.person456.ldg.domain.BoardDto;
 import com.person456.ldg.domain.PageHandler;
+import com.person456.ldg.domain.SearchPage;
 import com.person456.ldg.service.BoardService;
 import com.sun.mail.imap.Rights;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,24 +25,19 @@ public class BoardController {
     @Autowired
     BoardService boardService;
     @GetMapping("/list")
-    public String boardList(Integer page, Integer pageSize, Model m, HttpServletRequest request)throws Exception{
+    public String boardList(SearchPage sp, Model m, HttpServletRequest request)throws Exception{
         if(!loginCheck(request)){
             return "redirect:/login/login?toURL="+request.getRequestURL();
         }
-        if(page==null) page=1;
-        if(pageSize==null) pageSize=10;
+        if(sp.getPage()==null) sp.setPage(1);
+        if(sp.getPageSize()==null) sp.setPageSize(10);
         int totalCnt = boardService.getCount();
-        PageHandler ph = new PageHandler(totalCnt, page, pageSize);
-        System.out.println("page = " + page);
-        System.out.println("pageSize = " + pageSize);
-        System.out.println("totalCnt = " + totalCnt);
-        System.out.println("ph.getBeginPage() = " + ph.getBeginPage());
-        System.out.println("ph.getEndPage() = " + ph.getEndPage());
-        System.out.println("(page-1)*pageSize = " + (page - 1) * pageSize);
+        PageHandler ph = new PageHandler(totalCnt, sp);
+
         Map map = new HashMap();
-        map.put("offset", (page-1)*pageSize);
-        map.put("pageSize", pageSize);
-        List<BoardDto> list = boardService.getAllBoard(map);
+        map.put("offset", (sp.getPage()-1)*sp.getPageSize());
+        map.put("pageSize", sp.getPageSize());
+        List<BoardDto> list = boardService.searchPage(sp);
         m.addAttribute("List", list);
         m.addAttribute("ph", ph);
         return "boardList";

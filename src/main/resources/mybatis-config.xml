@@ -6,5 +6,6 @@
     <typeAliases>
         <typeAlias alias="UserDto" type="com.person456.ldg.domain.UserDto"/>
         <typeAlias alias="BoardDto" type="com.person456.ldg.domain.BoardDto"/>
+        <typeAlias alias="SearchPage" type="com.person456.ldg.domain.SearchPage"/>
     </typeAliases>
 </configuration>

@@ -2,6 +2,7 @@ package com.person456.ldg.service;
 
 import com.person456.ldg.dao.BoardDaoImpl;
 import com.person456.ldg.domain.BoardDto;
+import com.person456.ldg.domain.SearchPage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,5 +35,11 @@ public class BoardService {
     }
     public int update(BoardDto boardDto)throws Exception{
         return boardDao.updateBoard(boardDto);
+    }
+    public List<BoardDto> searchPage(SearchPage sp)throws Exception{
+        return boardDao.selectSearchPage(sp);
+    }
+    public int searchPageCnt(SearchPage sp) throws Exception{
+        return boardDao.selectResultCnt(sp);
     }
 }

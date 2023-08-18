@@ -10,16 +10,22 @@ public class PageHandler {
     private int endPage;
     private boolean showPrev;
     private boolean showNext;
+    private SearchPage sp;
 
-    public PageHandler(int totalCnt, int page){
-        this(totalCnt,page,10);
-    }
-    public PageHandler(int totalCnt, int page, int pageSize){
+
+
+    public PageHandler(int totalCnt, SearchPage sp){
         this.totalCnt=totalCnt;
-        this.page=page;
-        this.pageSize=pageSize;
+        this.sp = sp;
 
-        totalPage = (int)Math.ceil(totalCnt / (double)pageSize);
+        doPaging(totalCnt, sp);
+    }
+    public void doPaging(int totalCnt, SearchPage sp){
+        this.totalCnt=totalCnt;
+        this.page=sp.getPage();
+        this.pageSize=sp.getPageSize();
+
+        totalPage = (int)Math.ceil(totalCnt / (double)sp.getPageSize());
         beginPage = (page-1)/naviSize *naviSize+1;
         endPage = Math.min((beginPage+naviSize)-1, totalPage);
         showPrev = beginPage!=1;
@@ -32,21 +38,6 @@ public class PageHandler {
             System.out.print(i+" ");
         }
         System.out.println(showNext?"[NEXT]":"");
-    }
-
-    @Override
-    public String toString() {
-        return "PageHandler{" +
-                "totalCnt=" + totalCnt +
-                ", pageSize=" + pageSize +
-                ", naviSize=" + naviSize +
-                ", totalPage=" + totalPage +
-                ", page=" + page +
-                ", beginPage=" + beginPage +
-                ", endPage=" + endPage +
-                ", showPrev=" + showPrev +
-                ", showNext=" + showNext +
-                '}';
     }
 
     public int getTotalCnt() {
@@ -119,5 +110,29 @@ public class PageHandler {
 
     public void setShowNext(boolean showNext) {
         this.showNext = showNext;
+    }
+
+    public SearchPage getSp() {
+        return sp;
+    }
+
+    public void setSp(SearchPage sp) {
+        this.sp = sp;
+    }
+
+    @Override
+    public String toString() {
+        return "PageHandler{" +
+                "totalCnt=" + totalCnt +
+                ", pageSize=" + pageSize +
+                ", naviSize=" + naviSize +
+                ", totalPage=" + totalPage +
+                ", page=" + page +
+                ", beginPage=" + beginPage +
+                ", endPage=" + endPage +
+                ", showPrev=" + showPrev +
+                ", showNext=" + showNext +
+                ", sp=" + sp +
+                '}';
     }
 }

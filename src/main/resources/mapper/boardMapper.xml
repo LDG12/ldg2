@@ -19,6 +19,30 @@
         order by reg_date desc, bno desc
         LIMIT #{offset}, #{pageSize}
     </select>
+    <select id="selectSearchPage" parameterType="SearchPage" resultType="BoardDto">
+        select * from board
+        where true
+          <choose>
+              <when test='option=="T"'>
+                  and title like concat('%', #{keyword} ,'%')
+              </when>
+              <when test='option=="W"'>
+                  and writer like concat('%', #{keyword}, '%')
+              </when>
+              <otherwise>
+                  and (title like concat('%', #{keyword}, '%')
+                      or content like concat('%', #{keyword}, '%'))
+              </otherwise>
+          </choose>
+        and title like concat('%', #{keyword}, '%')
+        order by reg_date desc, bno desc
+        LIMIT #{offset}, #{pageSize}
+    </select>
+    <select id="selectResultCnt" parameterType="SearchPage" resultType="int">
+        select count(*) from board
+        where true
+          and title like concat('%', #{keyword}, '%')
+    </select>
     <delete id="deleteAll">
         delete all from board
     </delete>

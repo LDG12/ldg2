@@ -1,6 +1,7 @@
 package com.person456.ldg.dao;
 
 import com.person456.ldg.domain.BoardDto;
+import com.person456.ldg.domain.SearchPage;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -38,5 +39,11 @@ public class BoardDaoImpl implements BoardDao {
     }
     public int updateBoard(BoardDto boardDto)throws Exception{
         return session.update(namespace+"update", boardDto);
+    }
+    public List<BoardDto> selectSearchPage(SearchPage sp)throws Exception{
+        return session.selectList(namespace+"selectSearchPage", sp);
+    }
+    public int selectResultCnt(SearchPage sp) throws Exception{
+        return session.selectOne(namespace+"selectResultCnt", sp);
     }
 }
