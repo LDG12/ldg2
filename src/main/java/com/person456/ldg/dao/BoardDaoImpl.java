@@ -46,4 +46,7 @@ public class BoardDaoImpl implements BoardDao {
     public int selectResultCnt(SearchPage sp) throws Exception{
         return session.selectOne(namespace+"selectResultCnt", sp);
     }
+    public int increaseViewCnt(BoardDto boardDto) throws Exception{
+        return session.update(namespace+"increaseViewCnt",boardDto);
+    }
 }

@@ -15,6 +15,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,22 +32,25 @@ public class BoardController {
         if(!loginCheck(request)){
             return "redirect:/login/login?toURL="+request.getRequestURL();
         }
+        //sp page=1 pageSize=10 option=a keyword=m 으로 생성
         if(sp.getPage()==null) sp.setPage(1);
         if(sp.getPageSize()==null) sp.setPageSize(10);
-        int totalCnt = boardService.getCount();
+        int totalCnt = boardService.searchPageCnt(sp);
         PageHandler ph = new PageHandler(totalCnt, sp);
-
         Map map = new HashMap();
         map.put("offset", (sp.getPage()-1)*sp.getPageSize());
         map.put("pageSize", sp.getPageSize());
         List<BoardDto> list = boardService.searchPage(sp);
         m.addAttribute("List", list);
         m.addAttribute("ph", ph);
+        Instant startOfToday = LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant();
+        m.addAttribute("startOfToday", startOfToday);
         return "boardList";
     }
     @GetMapping("/read")
     public String boardRead(Integer bno, Model m)throws Exception{
         BoardDto boardDto = boardService.getOneBoard(bno);
+        boardService.increaseViewCnt(boardDto);
         m.addAttribute("boardDto", boardDto);
         m.addAttribute("mode", "");
         return "board";

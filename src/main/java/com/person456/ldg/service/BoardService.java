@@ -42,4 +42,7 @@ public class BoardService {
     public int searchPageCnt(SearchPage sp) throws Exception{
         return boardDao.selectResultCnt(sp);
     }
+    public int increaseViewCnt(BoardDto boardDto)throws Exception{
+        return boardDao.increaseViewCnt(boardDto);
+    }
 }

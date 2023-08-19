@@ -17,4 +17,5 @@ public interface BoardDao {
     public int updateBoard(BoardDto boardDto)throws Exception;
     public List<BoardDto> selectSearchPage(SearchPage sp)throws Exception;
     public int selectResultCnt(SearchPage sp) throws Exception;
+    public int increaseViewCnt(BoardDto boardDto) throws Exception;
 }

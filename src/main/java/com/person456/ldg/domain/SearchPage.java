@@ -10,7 +10,7 @@ public class SearchPage {
     private String option="";
     private String keyword="";
 
-
+    public static final int DEFAULT_PAGE=1;
     public static final int DEFAULT_PAGE_SIZE=10;
 
     public SearchPage(){}
@@ -20,13 +20,15 @@ public class SearchPage {
         this.option = option;
         this.keyword = keyword;
     }
-
+    public SearchPage(Integer page, Integer pageSize){
+        this(page, pageSize, "", "");
+    }
     public String getQueryString(Integer page){
         return UriComponentsBuilder.newInstance()
-                .queryParam("page", page)
+                .queryParam("page",     page)
                 .queryParam("pageSize", pageSize)
-                .queryParam("option", option)
-                .queryParam("keyword", keyword)
+                .queryParam("option",   option)
+                .queryParam("keyword",  keyword)
                 .build().toString();
     }
     public String getQueryString(){

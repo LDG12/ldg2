@@ -180,7 +180,7 @@
 <body>
 <div id="menu">
     <ul>
-        <li id="logo">fastcampus</li>
+        <li id="logo">ldg2</li>
         <li><a href="<c:url value='/'/>">Home</a></li>
         <li><a href="<c:url value='/board/list'/>">Board</a></li>
         <li><a href="<c:url value='${loginOutLink}'/>">${loginOut}</a></li>
@@ -215,9 +215,16 @@
             <c:forEach var="boardDto" items="${List}" >
                 <tr>
                 <td class="no">${boardDto.bno}</td>
-                <td class="title"><a href="<c:url value="/board/read?bno=${boardDto.bno}&page=${ph.page}&pageSize=${ph.pageSize}"/>">${boardDto.title}</td>
+                    <td class="title"><a href="<c:url value="/board/read?bno=${boardDto.bno}&page=${ph.page}&pageSize=${ph.pageSize}"/>">${boardDto.title}</a></td>
                 <td class="writer">${boardDto.writer}</td>
-                <td class="regdate">${boardDto.reg_date}</td>
+                    <c:choose>
+                        <c:when test="${boardDto.reg_date.time >= startOfToday.toEpochMilli()}">
+                            <td class="regdate"><fmt:formatDate value="${boardDto.reg_date}" pattern="HH:mm" type="time"/></td>
+                        </c:when>
+                        <c:otherwise>
+                            <td class="regdate"><fmt:formatDate value="${boardDto.reg_date}" pattern="yyyy-MM-dd" type="date"/></td>
+                        </c:otherwise>
+                    </c:choose>
                 <td class="viewcnt">${boardDto.view_cnt}</td>
                 </tr>
             </c:forEach>
@@ -226,13 +233,13 @@
         <div class="paging-container">
             <div class="paging">
                 <c:if test="${ph.showPrev}">
-                    <a class="page" href="<c:url value="/board/list?page=${ph.beginPage-1}"/>">&lt;</a>
+                    <a class="page" href="<c:url value="/board/list${ph.sp.getQueryString(ph.beginPage-1)}"/>">&lt;</a>
                 </c:if>
                 <c:forEach var="i" begin="${ph.beginPage}" end="${ph.endPage}">
-                    <a class="page ${i==ph.page? "paging-active" : ""}" href="<c:url value="/board/list?page=${i}"/>">${i}</a>
+                    <a class="page ${i==ph.sp.page? "paging-active" : ""}" href="<c:url value="/board/list${ph.sp.getQueryString(i)}"/>">${i}</a>
                 </c:forEach>
                 <c:if test="${ph.showNext}">
-                    <a class="page" href="<c:url value="/board/list?page=${ph.endPage+1}"/>">&gt;</a>
+                    <a class="page" href="<c:url value="/board/list${ph.sp.getQueryString(ph.endPage+1)}"/>">&gt;</a>
                 </c:if>
             </div>
         </div>
