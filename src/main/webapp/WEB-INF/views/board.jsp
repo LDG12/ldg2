@@ -24,6 +24,10 @@
             width : 50%;
             margin : auto;
         }
+        .comment-container{
+            width : 50%;
+            margin : auto;
+        }
 
         .writing-header {
             position: relative;
@@ -107,7 +111,36 @@
         <button type="button" id="listBtn" class="btn btn-list"><i class="fa fa-bars"></i> 목록</button>
     </form>
 </div>
+
+<br>
+<form id="commentForm" class="form-container" action="" method="">
+    <input type="hidden" name="bno" value="${param.bno}"/>
+    <input type="hidden" name="page" value="${param.page}"/>
+    <input type="hidden" name="pageSize" value="${param.pageSize}"/>
+    <div class="comment-container">
+        <input type="text" name="comment" placeholder="댓글을 입력하세요">
+        <button id="commentAddBtn" class="btn commentAddBtn">등록</button>
+        <button id="commentReadBtn" class="btn commentReadBtn">댓글 보기</button>
+    </div>
+</form>
+<form class="form-container">
+    <c:choose>
+        <c:when test="${sessionScope.commentOpen eq true}">
+            <c:if test="${not empty commentList}">
+                <c:forEach var="commentDto" items="${commentList}">
+                    <div>
+                            ${commentDto.commenter}, ${commentDto.comment}, ${commentDto.reg_date}
+                    </div>
+                </c:forEach>
+            </c:if>
+        </c:when>
+        <c:otherwise>
+            댓글 보기가 막혀있습니다.
+        </c:otherwise>
+    </c:choose>
+</form>
 <script>
+    var commentOpen= false;
     $(document).ready(function(){
         let formCheck = function() {
             let form = document.getElementById("form");
@@ -124,6 +157,22 @@
             }
             return true;
         }
+        $(document).ready(function(){
+            $("#commentAddBtn").on("click", function (event){
+                var form = $("#commentForm");
+                form.attr("action", "<c:url value='/comment/add'/>");
+                form.attr("method", "post");
+                form.submit();
+            })
+            $("#commentReadBtn").on("click", function(event){
+                commentOpen = true;
+                var form = $("#commentForm");
+                form.attr("action", "<c:url value='/comment/read'/>");
+                form.attr("method", "get");
+                form.submit();
+            })
+            $("#commentBtn")
+        })
 
         $("#writeNewBtn").on("click", function(){
             location.href="<c:url value='/board/write'/>";

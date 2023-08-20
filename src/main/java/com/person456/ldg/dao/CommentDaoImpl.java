@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class CommentDaoImpl implements CommentDao {
@@ -16,6 +17,9 @@ public class CommentDaoImpl implements CommentDao {
     public int deleteAll(Integer bno)throws Exception{
         return session.delete(namespace+"deleteAll", bno);
     }
+    public int delete(Map map) throws Exception{
+        return session.delete(namespace+"delete", map);
+    }
     public int insertComment(CommentDto commentDto)throws Exception{
         return session.insert(namespace+"insertComment", commentDto);
     }
@@ -25,5 +29,7 @@ public class CommentDaoImpl implements CommentDao {
     public CommentDto selectOneComment(CommentDto commentDto)throws Exception{
         return session.selectOne(namespace+"selectOneComment", commentDto);
     }
-
+    public int count(Integer bno)throws Exception{
+        return session.selectOne(namespace+"count", bno);
+    }
 }

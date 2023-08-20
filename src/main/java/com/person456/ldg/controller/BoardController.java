@@ -48,7 +48,18 @@ public class BoardController {
         return "boardList";
     }
     @GetMapping("/read")
-    public String boardRead(Integer bno, Model m)throws Exception{
+    public String boardRead(Integer bno, HttpServletRequest request, Model m)throws Exception{
+        HttpSession session = request.getSession();
+        boolean commentOpen;
+        if(session.getAttribute("commentOpen") == null){
+            commentOpen = false;
+        }
+        else{
+            commentOpen = (boolean)session.getAttribute("commentOpen");
+        }
+        if(commentOpen) session.setAttribute("commentOpen", true);
+        else session.setAttribute("commentOpen", false);
+        System.out.println("session.getAttribute(\"commentOpen\") = " + session.getAttribute("commentOpen"));
         BoardDto boardDto = boardService.getOneBoard(bno);
         boardService.increaseViewCnt(boardDto);
         m.addAttribute("boardDto", boardDto);
