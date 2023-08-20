@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/comment")
@@ -27,15 +29,11 @@ public class CommentController {
         String writer = (String)session.getAttribute("id");
         commentDto.setCommenter(writer);
         commentDto.setBno(bno);
-        boolean commentOpen = (boolean)session.getAttribute("commentOpen");
-        System.out.println("commentOpen = " + commentOpen);
         try {
             int rowCnt = commentService.insertComment(commentDto);
             if(rowCnt!=1){
                 throw new Exception("COMMENT_ADD_ERROR");
             }
-            if(commentOpen) session.setAttribute("commentOpen", true);
-            else session.setAttribute("commentOpen", false);
             m.addAttribute("msg", "COMMENT_ADD_OK");
         } catch (Exception e) {
             e.printStackTrace();
@@ -59,5 +57,30 @@ public class CommentController {
             e.printStackTrace();
             return "forward:"+url;
         }
+    }
+
+    @PostMapping("/remove")
+    public String commentRemove(CommentDto commentDto, Integer cno, Integer bno, HttpServletRequest request, Model m){
+        HttpSession session = request.getSession();
+        String userId = (String)session.getAttribute("id");
+        Map map = new HashMap();
+        map.put("cno", cno);
+        map.put("commenter", userId);
+        System.out.println("cno = " + cno);
+        System.out.println("userId = " + userId);
+        System.out.println("bno = " + bno);
+        try {
+            if(commentDto.getComment().equals(userId)){
+                int rowCnt = commentService.delete(map);
+                if(rowCnt != 1){
+                    throw new Exception("COMMENT_REMOVE_ERROR");
+                }
+                return "redirect:/board/read?bno="+bno;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "redirect:/";
+        }
+        return "redirect:/";
     }
 }

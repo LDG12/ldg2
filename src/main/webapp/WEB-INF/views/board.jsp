@@ -120,26 +120,38 @@
     <div class="comment-container">
         <input type="text" name="comment" placeholder="댓글을 입력하세요">
         <button id="commentAddBtn" class="btn commentAddBtn">등록</button>
-        <button id="commentReadBtn" class="btn commentReadBtn">댓글 보기</button>
     </div>
 </form>
-<form class="form-container">
-    <c:choose>
-        <c:when test="${sessionScope.commentOpen eq true}">
-            <c:if test="${not empty commentList}">
-                <c:forEach var="commentDto" items="${commentList}">
-                    <div>
-                            ${commentDto.commenter}, ${commentDto.comment}, ${commentDto.reg_date}
-                    </div>
-                </c:forEach>
-            </c:if>
-        </c:when>
-        <c:otherwise>
-            댓글 보기가 막혀있습니다.
-        </c:otherwise>
-    </c:choose>
+<form id="commentReadForm" class="form-container" action="" method="">
+    <c:if test="${not empty commentList}">
+        <c:forEach var="commentDto" items="${commentList}">
+            <div id="commentCnoCheck${commentDto.cno}" >
+                  ${commentDto.commenter}, ${commentDto.comment}, ${commentDto.reg_date}
+                  <c:if test="${sessionScope.id eq commentDto.commenter}">
+                      <button type=submit id="commentRemoveBtn" class="btn commentRemoveBtn" data-cno="${commentDto.cno}">[x]</button>
+                          <input type="hidden" name="cno" value="${commentDto.cno}">
+                  </c:if>
+            </div>
+        </c:forEach>
+    </c:if>
 </form>
 <script>
+    $(document).ready(function() {
+        $(".commentRemoveBtn").on("click", function() {
+            var cno = $(this).data("cno");
+            var form = $("<form></form>").attr({
+                method: "post",
+                action: "<c:url value='/comment/remove'/>"
+            });
+            form.append($("<input>").attr({
+                type: "hidden",
+                name: "cno",
+                value: cno
+            }));
+            $("body").append(form);
+            form.submit();
+        });
+    });
     var commentOpen= false;
     $(document).ready(function(){
         let formCheck = function() {
@@ -164,13 +176,15 @@
                 form.attr("method", "post");
                 form.submit();
             })
-            $("#commentReadBtn").on("click", function(event){
-                commentOpen = true;
-                var form = $("#commentForm");
-                form.attr("action", "<c:url value='/comment/read'/>");
-                form.attr("method", "get");
-                form.submit();
-            })
+            <%--$("#commentRemoveBtn").on("click", function(){--%>
+            <%--    if(confirm("댓글을 삭제하시겠습니까?")){--%>
+
+            <%--    }--%>
+            <%--    var form = $("#commentForm");--%>
+            <%--    form.attr("action", "<c:url value='/comment/remove'/>");--%>
+            <%--    form.attr("method", "post");--%>
+            <%--    form.submit();--%>
+            <%--})--%>
             $("#commentBtn")
         })
 

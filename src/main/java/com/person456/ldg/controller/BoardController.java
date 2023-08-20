@@ -1,9 +1,11 @@
 package com.person456.ldg.controller;
 
 import com.person456.ldg.domain.BoardDto;
+import com.person456.ldg.domain.CommentDto;
 import com.person456.ldg.domain.PageHandler;
 import com.person456.ldg.domain.SearchPage;
 import com.person456.ldg.service.BoardService;
+import com.person456.ldg.service.CommentService;
 import com.sun.mail.imap.Rights;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,6 +29,8 @@ import java.util.Map;
 public class BoardController {
     @Autowired
     BoardService boardService;
+    @Autowired
+    CommentService commentService;
     @GetMapping("/list")
     public String boardList(SearchPage sp, Model m, HttpServletRequest request)throws Exception{
         if(!loginCheck(request)){
@@ -49,19 +53,10 @@ public class BoardController {
     }
     @GetMapping("/read")
     public String boardRead(Integer bno, HttpServletRequest request, Model m)throws Exception{
-        HttpSession session = request.getSession();
-        boolean commentOpen;
-        if(session.getAttribute("commentOpen") == null){
-            commentOpen = false;
-        }
-        else{
-            commentOpen = (boolean)session.getAttribute("commentOpen");
-        }
-        if(commentOpen) session.setAttribute("commentOpen", true);
-        else session.setAttribute("commentOpen", false);
-        System.out.println("session.getAttribute(\"commentOpen\") = " + session.getAttribute("commentOpen"));
         BoardDto boardDto = boardService.getOneBoard(bno);
         boardService.increaseViewCnt(boardDto);
+        List<CommentDto> list = commentService.selectComment(bno);
+        m.addAttribute("commentList", list);
         m.addAttribute("boardDto", boardDto);
         m.addAttribute("mode", "");
         return "board";
