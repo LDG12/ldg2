@@ -16,4 +16,5 @@ public interface CommentService {
 
     CommentDto selectOneComment(CommentDto commentDto) throws Exception;
     int insertComment(CommentDto commentDto)throws Exception;
+    public int updateComment(Map map)throws Exception;
 }

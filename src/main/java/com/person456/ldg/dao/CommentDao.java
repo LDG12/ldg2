@@ -12,4 +12,5 @@ public interface CommentDao {
     public List<CommentDto> selectComment(Integer bno) throws Exception;
     public CommentDto selectOneComment(CommentDto commentDto)throws Exception;
     public int count(Integer bno)throws Exception;
+    public int update(Map map)throws Exception;
 }

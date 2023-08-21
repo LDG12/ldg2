@@ -32,4 +32,7 @@ public class CommentDaoImpl implements CommentDao {
     public int count(Integer bno)throws Exception{
         return session.selectOne(namespace+"count", bno);
     }
+    public int update(Map map)throws Exception{
+        return session.update(namespace+"update", map);
+    }
 }

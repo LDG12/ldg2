@@ -26,5 +26,9 @@
         insert into comment(bno, pcno, comment, commenter, reg_date, up_date)
         values(#{bno}, #{pcno}, #{comment}, #{commenter}, #{reg_date}, #{up_date})
     </insert>
-
+    <update id="update" parameterType="map">
+        update comment
+        set comment=#{comment}, up_date = now()
+        where cno = #{cno}
+    </update>
 </mapper>

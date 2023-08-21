@@ -43,4 +43,8 @@ public class CommentServiceImpl implements CommentService {
         commentDto.setPcno(0);
         return commentDao.insertComment(commentDto);
     }
+    @Override
+    public int updateComment(Map map)throws Exception{
+        return commentDao.update(map);
+    }
 }

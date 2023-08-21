@@ -80,4 +80,22 @@ public class CommentController {
             return ResponseEntity.ok("impossible");
         }
     }
+    @PostMapping("/modify")
+    public ResponseEntity<String> commentModify(Integer cno, String comment, Model m){
+        Map map = new HashMap();
+        System.out.println("cno = " + cno);
+        System.out.println("comment = " + comment);
+        map.put("cno", cno);
+        map.put("comment", comment);
+        try {
+            int rowCnt = commentService.updateComment(map);
+            if(rowCnt!=1){
+                throw new Exception("COMMENT_MODIFY_ERROR");
+            }
+            return ResponseEntity.ok("possible");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.ok("impossible");
+        }
+    }
 }
