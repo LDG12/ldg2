@@ -31,3 +31,8 @@
 8/20
 1. 댓글 read, write 구현 완료
 2. 그런데 삭제가 잘 안됨. 수정도 구현해야함
+
+8/21
+1. 댓글 remove, modify 구현 완료
+2. remove가 안됐던 이유는 form의 action이랑 method 관련한 자바스크립트, j쿼리 사용법 미숙
+3. modify도 해당 사항 미숙으로 시간이 너무 걸림
