@@ -4,34 +4,34 @@ import com.person456.ldg.domain.BoardDto;
 import com.person456.ldg.domain.CommentDto;
 import com.person456.ldg.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.security.interfaces.RSAKey;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Controller
-@RequestMapping("/comment")
+@RequestMapping("/comment/")
 public class CommentController {
     @Autowired
     CommentService commentService;
 
     @PostMapping("/add")
-    public String commentAdd(CommentDto commentDto, Integer bno, String page, String pageSize, HttpServletRequest request, Model m){
-        String url = "/board/read?bno="+bno+"&page="+page+"&pageSize="+pageSize;
+    public String commentAdd(CommentDto commentDto, Integer bno, String page, String pageSize, HttpServletRequest request, Model m) {
+        String url = "/board/read?bno=" + bno + "&page=" + page + "&pageSize=" + pageSize;
         HttpSession session = request.getSession();
-        String writer = (String)session.getAttribute("id");
+        String writer = (String) session.getAttribute("id");
         commentDto.setCommenter(writer);
         commentDto.setBno(bno);
         try {
             int rowCnt = commentService.insertComment(commentDto);
-            if(rowCnt!=1){
+            if (rowCnt != 1) {
                 throw new Exception("COMMENT_ADD_ERROR");
             }
             m.addAttribute("msg", "COMMENT_ADD_OK");
@@ -39,12 +39,12 @@ public class CommentController {
             e.printStackTrace();
             m.addAttribute("msg", "COMMENT_ADD_ERROR");
         }
-        return "redirect:"+url;
+        return "redirect:" + url;
     }
 
     @GetMapping("/read")
-    public String commentRead(Integer bno, String page, String pageSize, HttpServletRequest request, Model m){
-        String url = "/board/read?bno="+bno+"&page="+page+"&pageSize="+pageSize;
+    public String commentRead(Integer bno, String page, String pageSize, HttpServletRequest request, Model m) {
+        String url = "/board/read?bno=" + bno + "&page=" + page + "&pageSize=" + pageSize;
         try {
             int count = commentService.getCount(bno);
             m.addAttribute("count", count);
@@ -52,35 +52,32 @@ public class CommentController {
             m.addAttribute("commentList", list);
             HttpSession session = request.getSession();
             session.setAttribute("commentOpen", true);
-            return "forward:"+url;
+            return "forward:" + url;
         } catch (Exception e) {
             e.printStackTrace();
-            return "forward:"+url;
+            return "forward:" + url;
         }
     }
 
     @PostMapping("/remove")
-    public String commentRemove(CommentDto commentDto, Integer cno, Integer bno, HttpServletRequest request, Model m){
+    public ResponseEntity<String> commentRemove(Integer cno, Integer bno, HttpServletRequest request, Model m) {
         HttpSession session = request.getSession();
-        String userId = (String)session.getAttribute("id");
-        Map map = new HashMap();
-        map.put("cno", cno);
-        map.put("commenter", userId);
+        String userId = (String) session.getAttribute("id");
         System.out.println("cno = " + cno);
         System.out.println("userId = " + userId);
         System.out.println("bno = " + bno);
+        Map map = new HashMap();
+        map.put("cno", cno);
+        map.put("commenter", userId);
         try {
-            if(commentDto.getComment().equals(userId)){
-                int rowCnt = commentService.delete(map);
-                if(rowCnt != 1){
-                    throw new Exception("COMMENT_REMOVE_ERROR");
-                }
-                return "redirect:/board/read?bno="+bno;
+            int rowCnt = commentService.delete(map);
+            if(rowCnt!=1){
+                throw new Exception("COMMENT_DELETE_ERROR");
             }
+            return ResponseEntity.ok("possible");
         } catch (Exception e) {
             e.printStackTrace();
-            return "redirect:/";
+            return ResponseEntity.ok("impossible");
         }
-        return "redirect:/";
     }
 }

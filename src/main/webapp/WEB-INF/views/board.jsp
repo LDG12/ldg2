@@ -4,6 +4,7 @@
 <c:set var="loginId" value="${sessionScope.id}"/>
 <c:set var="loginOutLink" value="${loginId=='' ? '/login/login' : '/login/logout'}"/>
 <c:set var="loginOut" value="${loginId=='' ? 'Login' : 'ID='+=loginId}"/>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -124,34 +125,22 @@
 </form>
 <form id="commentReadForm" class="form-container" action="" method="">
     <c:if test="${not empty commentList}">
+        <div id="commentsList">
         <c:forEach var="commentDto" items="${commentList}">
-            <div id="commentCnoCheck${commentDto.cno}" >
-                  ${commentDto.commenter}, ${commentDto.comment}, ${commentDto.reg_date}
-                  <c:if test="${sessionScope.id eq commentDto.commenter}">
-                      <button type=submit id="commentRemoveBtn" class="btn commentRemoveBtn" data-cno="${commentDto.cno}">[x]</button>
-                          <input type="hidden" name="cno" value="${commentDto.cno}">
-                  </c:if>
+            <div class="comment" data-comment="${commentDto.comment}" data-cno="${commentDto.cno}">
+                <c:out value="${commentDto.commenter}, ${commentDto.comment}, ${commentDto.reg_date}" />
+                <input type="text" value="asdfasdf"/>
             </div>
+           <c:if test="${sessionScope.id eq commentDto.commenter}">
+                 <button type=button id="commentRemoveBtn" class="btn commentRemoveBtn" data-cno="${commentDto.cno}">[x]</button>
+                 <input type="hidden" name="cno" value="${commentDto.cno}">
+            </c:if>
+            <br>
         </c:forEach>
+        <div>
     </c:if>
 </form>
 <script>
-    $(document).ready(function() {
-        $(".commentRemoveBtn").on("click", function() {
-            var cno = $(this).data("cno");
-            var form = $("<form></form>").attr({
-                method: "post",
-                action: "<c:url value='/comment/remove'/>"
-            });
-            form.append($("<input>").attr({
-                type: "hidden",
-                name: "cno",
-                value: cno
-            }));
-            $("body").append(form);
-            form.submit();
-        });
-    });
     var commentOpen= false;
     $(document).ready(function(){
         let formCheck = function() {
@@ -176,17 +165,99 @@
                 form.attr("method", "post");
                 form.submit();
             })
-            <%--$("#commentRemoveBtn").on("click", function(){--%>
-            <%--    if(confirm("댓글을 삭제하시겠습니까?")){--%>
+            $('#commentRemoveBtn').on('click', function(){
+                if (!confirm("정말로 삭제하시겠습니까?")) return;
 
-            <%--    }--%>
-            <%--    var form = $("#commentForm");--%>
-            <%--    form.attr("action", "<c:url value='/comment/remove'/>");--%>
-            <%--    form.attr("method", "post");--%>
+                var cno = $(this).data("cno");
+                var comment = $(".comment[data-cno='" + cno + "']").data("comment");
+
+                // URL 파라미터 값을 가져오기
+                var urlParams = new URLSearchParams(window.location.search);
+                var bno = urlParams.get('bno');
+                var page = urlParams.get('page');
+                var pageSize = urlParams.get('pageSize');
+
+                // Create a data object with the values to send
+                var data = {
+                    cno: cno,
+                    comment: comment,
+                    bno: bno,
+                    page: page,
+                    pageSize: pageSize
+                };
+
+                // Send the POST request using $.ajax()
+                $.ajax({
+                    type: "POST",
+                    url: "<c:url value='/comment/remove'/>",
+                    data: data,
+                    success: function(response) {
+                        if(response == "possible"){
+                            alert("댓글 삭제가 완료되었습니다.");
+                            location.reload();
+                        }
+                        else{
+                            alert("댓글 삭제 실패");
+                        }
+                        console.log(response);
+                    },
+                    error: function(xhr, status, error) {
+                        alert("댓글 삭제 오류 발생");
+                        // Handle the error response
+                        console.error(error);
+                    }
+                });
+            });
+            <%--$('#commentRemoveBtn').on('click', function(){--%>
+            <%--    if (!confirm("정말로 삭제하시겠습니까?")) return;--%>
+            <%--    var cno = $(this).data("cno");--%>
+            <%--    var comment = $(".comment[data-cno='" + cno + "']").data("comment");--%>
+
+            <%--    // Create a form dynamically to send the cno and comment values to the server--%>
+            <%--    var form = $("<form>", {--%>
+            <%--        "action": "<c:url value='/comment/remove'/>",--%>
+            <%--        "method": "post"--%>
+            <%--    }).append(--%>
+            <%--        $("<input>", {--%>
+            <%--            "type": "hidden",--%>
+            <%--            "name": "cno",--%>
+            <%--            "value": cno--%>
+            <%--        }),--%>
+            <%--        $("<input>", {--%>
+            <%--            "type": "hidden",--%>
+            <%--            "name": "comment",--%>
+            <%--            "value": comment--%>
+            <%--        })--%>
+            <%--    );--%>
+
+            <%--    // Append the form to the body and submit it--%>
+            <%--    $("body").append(form);--%>
             <%--    form.submit();--%>
             <%--})--%>
-            $("#commentBtn")
         })
+        // $(document).on('click', '.commentRemoveBtn', function(){
+        //     var cno = $(this).data('cno');
+        //     var nowUrl = window.location.href;
+        //     var urlParam = new URLSearchParams(new URL(nowUrl).search);
+        //     var bno = urlParam.get('bno');
+        //     $.ajax({
+        //         type : "DELETE",
+        //         url : "/comment/"+cno,
+        //         data : {cno: cno, bno : bno},
+        //         success:function(response){
+        //             if(response=="possible"){
+        //                 alert("댓글 삭제가 완료되었습니다.");
+        //                 $('#commentCnoCheck' + cno).remove();
+        //             }
+        //             else{
+        //                 alert("댓글 삭제에 실패했습니다.");
+        //             }
+        //         },
+        //         error:function(error){
+        //             alert("댓글 삭제중 오류가 발생했습니다.");
+        //         }
+        //     })
+        // })
 
         $("#writeNewBtn").on("click", function(){
             location.href="<c:url value='/board/write'/>";
