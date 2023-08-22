@@ -1,0 +1,22 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.person456.ldg.dao.ScheduleMapper">
+    <select id="count" parameterType="String">
+        select count(*) from schedule
+        where sid=#{sid}
+    </select>
+    <select id="selectOneSchedule" parameterType="String" resultType="ScheduleDto">
+        select * from schedule
+        where sid=#{sid}
+    </select>
+    <insert id="insert" parameterType="ScheduleDto">
+        insert into schedule(sid, begin_class, end_class, class_name, reg_date, class_date)
+        values(#{sid}, #{begin_class}, #{end_class}, #{class_name}, now(), #{class_date})
+    </insert>
+    <delete id="deleteAll" parameterType="int">
+        delete from schedule where sno=#{sno}
+    </delete>
+    <delete id="delete" parameterType="map">
+        delete from schedule where sno=#{sno} and sid=#{sid}
+    </delete>
+</mapper>

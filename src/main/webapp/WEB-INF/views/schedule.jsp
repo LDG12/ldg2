@@ -95,13 +95,37 @@
             border-radius: 5px;
             margin: 0 auto; /* 가운데 정렬 */
         }
+        #subjects {
+            position: fixed;
+            bottom: 0; /* 아래쪽에 밀착되도록 설정 */
+            left: 0;
+            width: 100%;
+            height: 50%; /* 전체 높이의 50% 비중 설정 */
+            background-color: #f8f8f8;
+            overflow-y: auto; /* 내용이 넘칠 경우 스크롤 표시 */
+            box-shadow: 0px -2px 5px rgba(0, 0, 0, 0.1); /* 아래에 그림자 추가 */
+        }
+
+        #filter {
+            text-align: right;
+            padding: 10px;
+        }
     </style>
+    <script>
+        $(function(){
+            var test = $('#subjects').css('display');
+            if(test=='block'){
+                $('#searchSubject').css('display', 'none');
+            }
+        })
+    </script>
 </head>
 <body>
 <div id="menu">
     <ul>
         <li id="logo">ldg2</li>
         <li><a href="<c:url value='/'/>">Home</a></li>
+        <li><a href="<c:url value='/schedule/test'/>">Schedule</a></li>
         <li><a href="<c:url value='/board/list'/>">Board</a></li>
         <li><a href="<c:url value='${loginOutLink}'/>">${loginOut}</a></li>
         <li><a href="<c:url value='/register/add'/>">Sign in</a></li>
@@ -209,7 +233,55 @@
     </div>
 </div>
 <div id="button-container">
-    <button>수업 목록 찾기</button>
+    <form action="<c:url value='/subject/read'/>" method="get">
+        <button id="searchSubject">수업 목록 찾기</button>
+    </form>
 </div>
+<div id="subjects" style="display:${not empty List ? 'block' : 'none'}">
+    <div id="filter"><button id="closeSearchSubject">닫기</button></div>
+    <table>
+        <thead>
+        <th><div>학수번호</div></th>
+        <th><div>교과명목</div></th>
+        <th><div>이수</div></th>
+        <th><div>학점</div></th>
+        <th><div>교수</div></th>
+        <th><div>강의 시간</div></th>
+        <th><div>강의실</div></th>
+        <th><div>정원</div></th>
+        <th><div>비고</div></th>
+        </thead>
+        <tbody>
+        <c:if test="${not empty List}">
+            <c:forEach var="subjectDto" items="${List}">
+                <tr>
+                <td><div>${subjectDto.course_num}</div></td>
+                <td><div>${subjectDto.subject_name}</div></td>
+                <td><div>${subjectDto.major}</div></td>
+                <td><div>${subjectDto.credit}</div></td>
+                <td><div>${subjectDto.professor}</div></td>
+                <td><div>${subjectDto.subject_time}</div></td>
+                <td><div>${subjectDto.subject_place}</div></td>
+                <td><div>${subjectDto.subject_nop}</div></td>
+                <td><div>${subjectDto.etc}</div></td>
+                </tr>
+            </c:forEach>
+        </c:if>
+        </tbody>
+    </table>
+</div>
+<script>
+    $(document).ready(function(){
+        $('#searchSubject').on('click', function() {
+            $('#subjects').css('display', 'block');
+            $(this).css('display', 'none');
+        });
+
+        $('#closeSearchSubject').on('click', function(){
+            $('#subjects').css('display', 'none');
+            $('#searchSubject').css('display', 'block');
+        });
+    })
+</script>
 </body>
 </html>

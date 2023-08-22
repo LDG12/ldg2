@@ -8,5 +8,7 @@
         <typeAlias alias="BoardDto" type="com.person456.ldg.domain.BoardDto"/>
         <typeAlias alias="SearchPage" type="com.person456.ldg.domain.SearchPage"/>
         <typeAlias alias="CommentDto" type="com.person456.ldg.domain.CommentDto"/>
+        <typeAlias alias="ScheduleDto" type="com.person456.ldg.domain.ScheduleDto"/>
+        <typeAlias alias="SubjectDto" type="com.person456.ldg.domain.SubjectDto"/>
     </typeAliases>
 </configuration>
