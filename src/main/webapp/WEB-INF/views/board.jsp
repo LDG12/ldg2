@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page session="true"%>
 <c:set var="loginId" value="${sessionScope.id}"/>
 <c:set var="loginOutLink" value="${loginId=='' ? '/login/login' : '/login/logout'}"/>
@@ -128,7 +129,15 @@
         <div id="commentsList">
         <c:forEach var="commentDto" items="${commentList}">
             <div class="comment" data-comment="${commentDto.comment}" data-cno="${commentDto.cno}">
-                <div>${commentDto.commenter} / ${commentDto.reg_date}</div>
+                <c:choose>
+                    <c:when test="${commentDto.reg_date.time >= startOfToday.toEpochMilli()}">
+                        <div>${commentDto.commenter} / <fmt:formatDate value="${commentDto.reg_date}" pattern="HH:mm" type="time"/></div>
+                    </c:when>
+                    <c:otherwise>
+                        <div>${commentDto.commenter} / <fmt:formatDate value="${commentDto.reg_date}" pattern="yyyy-MM-dd" type="date"/></div>
+                    </c:otherwise>
+                </c:choose>
+
                 <input type="text" value=" ${commentDto.comment}" readonly="readonly" data-cno="${commentDto.cno}"/>
             </div>
            <c:if test="${sessionScope.id eq commentDto.commenter}">

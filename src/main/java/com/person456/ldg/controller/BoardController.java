@@ -56,6 +56,8 @@ public class BoardController {
         BoardDto boardDto = boardService.getOneBoard(bno);
         boardService.increaseViewCnt(boardDto);
         List<CommentDto> list = commentService.selectComment(bno);
+        Instant startOfToday = LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant();
+        m.addAttribute("startOfToday", startOfToday);
         m.addAttribute("commentList", list);
         m.addAttribute("boardDto", boardDto);
         m.addAttribute("mode", "");

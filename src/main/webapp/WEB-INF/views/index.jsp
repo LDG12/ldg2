@@ -27,6 +27,7 @@
   <ul>
     <li id="logo">person456</li>
     <li><a href="<c:url value='/'/>">Home</a></li>
+    <li><a href="<c:url value='/schedule/test'/>">Schedule</a></li>
     <li><a href="<c:url value='/board/list'/>">Board</a></li>
     <li><a href="<c:url value='${loginOutLink}'/>">${loginOut}</a></li>
     <li><a href="<c:url value='/register/add'/>">Sign in</a></li>
