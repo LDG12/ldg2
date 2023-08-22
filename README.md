@@ -36,3 +36,9 @@
 1. 댓글 remove, modify 구현 완료
 2. remove가 안됐던 이유는 form의 action이랑 method 관련한 자바스크립트, j쿼리 사용법 미숙
 3. modify도 해당 사항 미숙으로 시간이 너무 걸림
+
+8/22
+1. 수강생이 브라우저에서 수강할 과목인 Subject 테이블이랑 dto, dao, service 생성
+2. 수강생의 시간표인 Schedule 테이블, dto, dao, service 생성
+3. view에서 'search'버튼을 누르면 subject에 있는 과목들이 테이블로 나오게 구현
+4. 해당 과목을 누르면 시간표에 적용이 되게 해야함
