@@ -8,21 +8,27 @@ public class SubjectDto {
     private String major;
     private Integer credit;
     private String professor;
-    private String subject_time;
-    private String subject_place;
-    private Integer subject_nop;
+    private String subject_first_day;
+    private Integer subject_first_hour;
+    private String subject_second_day;
+    private Integer subject_second_hour;
+    private String place;
+    private Integer nop;
     private String etc;
 
     public SubjectDto(){}
-    public SubjectDto(Integer course_num, String subject_name, String major, Integer credit, String professor, String subject_time, String subject_place, Integer subject_nop, String etc) {
+    public SubjectDto(Integer course_num, String subject_name, String major, Integer credit, String professor, String subject_first_day, Integer subject_first_hour, String subject_second_day, Integer subject_second_hour, String place, Integer nop, String etc) {
         this.course_num = course_num;
         this.subject_name = subject_name;
         this.major = major;
         this.credit = credit;
         this.professor = professor;
-        this.subject_time = subject_time;
-        this.subject_place = subject_place;
-        this.subject_nop = subject_nop;
+        this.subject_first_day = subject_first_day;
+        this.subject_first_hour = subject_first_hour;
+        this.subject_second_day = subject_second_day;
+        this.subject_second_hour = subject_second_hour;
+        this.place = place;
+        this.nop = nop;
         this.etc = etc;
     }
 
@@ -31,12 +37,12 @@ public class SubjectDto {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         SubjectDto that = (SubjectDto) o;
-        return Objects.equals(course_num, that.course_num) && Objects.equals(subject_name, that.subject_name) && Objects.equals(major, that.major) && Objects.equals(credit, that.credit) && Objects.equals(professor, that.professor) && Objects.equals(subject_time, that.subject_time) && Objects.equals(subject_place, that.subject_place) && Objects.equals(subject_nop, that.subject_nop) && Objects.equals(etc, that.etc);
+        return Objects.equals(course_num, that.course_num) && Objects.equals(subject_name, that.subject_name) && Objects.equals(major, that.major) && Objects.equals(credit, that.credit) && Objects.equals(professor, that.professor) && Objects.equals(subject_first_day, that.subject_first_day) && Objects.equals(subject_first_hour, that.subject_first_hour) && Objects.equals(subject_second_day, that.subject_second_day) && Objects.equals(subject_second_hour, that.subject_second_hour) && Objects.equals(place, that.place) && Objects.equals(nop, that.nop) && Objects.equals(etc, that.etc);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(course_num, subject_name, major, credit, professor, subject_time, subject_place, subject_nop, etc);
+        return Objects.hash(course_num, subject_name, major, credit, professor, subject_first_day, subject_first_hour, subject_second_day, subject_second_hour, place, nop, etc);
     }
 
     @Override
@@ -47,9 +53,12 @@ public class SubjectDto {
                 ", major='" + major + '\'' +
                 ", credit=" + credit +
                 ", professor='" + professor + '\'' +
-                ", subject_time='" + subject_time + '\'' +
-                ", subject_place='" + subject_place + '\'' +
-                ", subject_nop=" + subject_nop +
+                ", subject_first_day='" + subject_first_day + '\'' +
+                ", subject_first_hour=" + subject_first_hour +
+                ", subject_second_day='" + subject_second_day + '\'' +
+                ", subject_second_hour=" + subject_second_hour +
+                ", place='" + place + '\'' +
+                ", nop=" + nop +
                 ", etc='" + etc + '\'' +
                 '}';
     }
@@ -94,28 +103,52 @@ public class SubjectDto {
         this.professor = professor;
     }
 
-    public String getSubject_time() {
-        return subject_time;
+    public String getSubject_first_day() {
+        return subject_first_day;
     }
 
-    public void setSubject_time(String subject_time) {
-        this.subject_time = subject_time;
+    public void setSubject_first_day(String subject_first_day) {
+        this.subject_first_day = subject_first_day;
     }
 
-    public String getSubject_place() {
-        return subject_place;
+    public Integer getSubject_first_hour() {
+        return subject_first_hour;
     }
 
-    public void setSubject_place(String subject_place) {
-        this.subject_place = subject_place;
+    public void setSubject_first_hour(Integer subject_first_hour) {
+        this.subject_first_hour = subject_first_hour;
     }
 
-    public Integer getSubject_nop() {
-        return subject_nop;
+    public String getSubject_second_day() {
+        return subject_second_day;
     }
 
-    public void setSubject_nop(Integer subject_nop) {
-        this.subject_nop = subject_nop;
+    public void setSubject_second_day(String subject_second_day) {
+        this.subject_second_day = subject_second_day;
+    }
+
+    public Integer getSubject_second_hour() {
+        return subject_second_hour;
+    }
+
+    public void setSubject_second_hour(Integer subject_second_hour) {
+        this.subject_second_hour = subject_second_hour;
+    }
+
+    public String getPlace() {
+        return place;
+    }
+
+    public void setPlace(String place) {
+        this.place = place;
+    }
+
+    public Integer getNop() {
+        return nop;
+    }
+
+    public void setNop(Integer nop) {
+        this.nop = nop;
     }
 
     public String getEtc() {

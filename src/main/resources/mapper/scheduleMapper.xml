@@ -10,8 +10,8 @@
         where sid=#{sid}
     </select>
     <insert id="insert" parameterType="ScheduleDto">
-        insert into schedule(sid, begin_class, end_class, class_name, reg_date, class_date)
-        values(#{sid}, #{begin_class}, #{end_class}, #{class_name}, now(), #{class_date})
+        insert into schedule(sid, subject_name, major, credit, subject_first_day, subject_first_hour, subject_second_day, subject_second_hour, place)
+        values(#{sid}, #{subject_name}, #{major}, #{credit}, #{subject_first_day}, #{subject_first_hour}, #{subject_second_day}, #{subject_second_hour}, #{place})
     </insert>
     <delete id="deleteAll" parameterType="int">
         delete from schedule where sno=#{sno}

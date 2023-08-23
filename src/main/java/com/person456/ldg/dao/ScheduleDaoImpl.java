@@ -5,6 +5,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Map;
 
 @Repository
@@ -18,8 +19,8 @@ public class ScheduleDaoImpl implements ScheduleDao {
         return session.selectOne(namespace+"count", sid);
     }
     @Override
-    public ScheduleDto selectOneSchedule(String sid){
-        return session.selectOne(namespace+"selectOneSchedule", sid);
+    public List<ScheduleDto> selectOneSchedule(String sid){
+        return session.selectList(namespace+"selectOneSchedule", sid);
     }
     @Override
     public int insert(ScheduleDto scheduleDto){

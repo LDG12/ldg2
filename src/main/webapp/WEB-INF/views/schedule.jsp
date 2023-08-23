@@ -110,6 +110,14 @@
             text-align: right;
             padding: 10px;
         }
+        .row {
+            transition: background-color 0.3s; /* 배경색 변화를 부드럽게 만듭니다. */
+            background-color: white; /* 초기 배경색을 설정합니다. */
+        }
+
+        .row:hover {
+            background-color: #f0f0f0; /* 마우스를 갖다대었을 때의 배경색을 설정합니다. */
+        }
     </style>
     <script>
         $(function(){
@@ -134,9 +142,12 @@
 </div>
 <div id="container">
     <aside>
-        <div id="now_Schedule">
-            현재 시간표
-        </div>
+        <form action="/schedule/read" method="get">
+            <div id="now_Schedule">
+                현재 시간표
+                <button>시간표 불러오기</button>
+            </div>
+        </form>
     </aside>
     <div id="table-container">
         <table height="600" style="color: #121212">
@@ -254,16 +265,26 @@
         <tbody>
         <c:if test="${not empty List}">
             <c:forEach var="subjectDto" items="${List}">
-                <tr>
+                <tr class="row" id="subjectAdd${subjectDto.course_num}">
+                <form id="addSubject${subjectDto.course_num}" action="" method="">
                 <td><div>${subjectDto.course_num}</div></td>
-                <td><div>${subjectDto.subject_name}</div></td>
-                <td><div>${subjectDto.major}</div></td>
-                <td><div>${subjectDto.credit}</div></td>
-                <td><div>${subjectDto.professor}</div></td>
-                <td><div>${subjectDto.subject_time}</div></td>
-                <td><div>${subjectDto.subject_place}</div></td>
-                <td><div>${subjectDto.subject_nop}</div></td>
+                <td><input type="hidden" name="subject_name" value="${subjectDto.subject_name}">${subjectDto.subject_name}</td>
+                <td><input tpye="hidden" name="major" value="${subjectDto.major}">${subjectDto.major}</td>
+                <td><input type="hidden" name="credit" value="${subjectDto.credit}">${subjectDto.credit}</td>
+                <td><input type="hidden" name="professor" value="${subjectDto.professor}">${subjectDto.professor}</td>
+                <td>
+                    <input type="hidden" name="subject_first_day" value="${subjectDto.subject_first_day}">
+                    <input type="hidden" name="subject_first_hour" value="${subjectDto.subject_first_hour}">
+                    <input type="hidden" name="subject_second_day" value="${subjectDto.subject_second_day}">
+                    <input type="hidden" name="subject_second_hour" value="${subjectDto.subject_second_hour}">
+                    <div>
+                        ${subjectDto.subject_first_day}${subjectDto.subject_first_hour},${subjectDto.subject_second_day}${subjectDto.subject_second_hour}
+                    </div>
+                </td>
+                <td><input type="hidden" name="place" value="${subjectDto.place}">${subjectDto.place}</td>
+                <td><div>${subjectDto.nop}</div></td>
                 <td><div>${subjectDto.etc}</div></td>
+                </form>
                 </tr>
             </c:forEach>
         </c:if>
@@ -281,6 +302,40 @@
             $('#subjects').css('display', 'none');
             $('#searchSubject').css('display', 'block');
         });
+        $('tr.row').on('click', function (){
+            // $(this).find('td').not(':last-child').on('click', function(){
+            var clickedRow = $(this);
+
+            var formData = {
+                subject_name: clickedRow.find('input[name="subject_name"]').val(),
+                major: clickedRow.find('input[name="major"]').val(),
+                credit: clickedRow.find('input[name="credit"]').val(),
+                professor: clickedRow.find('input[name="professor"]').val(),
+                subject_first_day: clickedRow.find('input[name="subject_first_day"]').val(),
+                subject_first_hour: clickedRow.find('input[name="subject_first_hour"]').val(),
+                subject_second_day: clickedRow.find('input[name="subject_second_day"]').val(),
+                subject_second_hour: clickedRow.find('input[name="subject_second_hour"]').val(),
+                place: clickedRow.find('input[name="place"]').val()
+            };
+
+            $.ajax({
+                    url : "<c:url value='/schedule/add'/>",
+                    type : "POST",
+                    data : formData,
+                    success : function(response){
+                        if(response=='possible'){
+                            alert("성공적으로 등록되었습니다.");
+                        }
+                        else{
+                            alert("같은 시간대에 이미 수업이 있습니다.");
+                        }
+                    },
+                    error:function(error){
+                        alert("오류 발생");
+                    }
+                })
+            })
+        // })
     })
 </script>
 </body>

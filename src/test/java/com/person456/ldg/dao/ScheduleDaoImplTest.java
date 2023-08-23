@@ -17,12 +17,6 @@ public class ScheduleDaoImplTest {
     @Test
     public void test(){
         ScheduleDto user = new ScheduleDto();
-        user.setSno(1);
-        user.setSid("ehdrlf0815");
-        user.setBegin_class(9);
-        user.setEnd_class(11);
-        user.setClass_name("컴퓨터공학개론");
-        user.setClass_date("월");
         int rowCnt = scheduleDao.insert(user);
         assertTrue(rowCnt==1);
     }
