@@ -10,5 +10,6 @@
         <typeAlias alias="CommentDto" type="com.person456.ldg.domain.CommentDto"/>
         <typeAlias alias="ScheduleDto" type="com.person456.ldg.domain.ScheduleDto"/>
         <typeAlias alias="SubjectDto" type="com.person456.ldg.domain.SubjectDto"/>
+        <typeAlias alias="Color_InfoDto" type="com.person456.ldg.domain.Color_InfoDto"/>
     </typeAliases>
 </configuration>

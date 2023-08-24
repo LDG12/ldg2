@@ -1,0 +1,11 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.person456.ldg.dao.Color_InfoMapper">
+    <select id="count">
+        select count(*) from color_info
+    </select>
+    <select id="select" parameterType="int" resultType="Color_InfoDto">
+        select * from color_info
+        where sno=#{sno}
+    </select>
+</mapper>

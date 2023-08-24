@@ -142,12 +142,10 @@
     </div>
     <div id="container">
         <aside>
-            <form>
                 <div id="now_Schedule">
                     현재 시간표
                     <button id="loadSchedule">시간표 불러오기</button>
                 </div>
-            </form>
         </aside>
         <div id="table-container">
             <table height="600" style="color: #121212">
@@ -162,19 +160,19 @@
                 </tr>
                 <tr id="1hour">
                     <th>오전 9시</th>
-                    <td id="mon1"></td>
-                    <td id="tue1"></td>
-                    <td id="wed1"></td>
-                    <td id="thu1"></td>
-                    <td id="fri1"></td>
+                    <td id="mon-1"></td>
+                    <td id="tue-1"></td>
+                    <td id="wed-1"></td>
+                    <td id="thu-1"></td>
+                    <td id="fri-1"></td>
                 </tr>
                 <tr id="2hour">
                     <th>오전 10시</th>
-                    <td id="mon2"></td>
-                    <td id="the2"></td>
-                    <td id="wed2"></td>
-                    <td id="thu2"></td>
-                    <td id="fri2"></td>
+                    <td id="mon-2"></td>
+                    <td id="the-2"></td>
+                    <td id="wed-2"></td>
+                    <td id="thu-2"></td>
+                    <td id="fri-2"></td>
                 </tr>
                 <tr>
                     <th>오전 11시</th>
@@ -292,38 +290,61 @@
         </table>
     </div>
     <script>
-        // $(document).ready(function(){
-        //     $('#loadSchedule').on('click', function(){
-        //         $.ajax({
-        //             url : '/ldg/schedule/read',
-        //             type : "get",
-        //             success:function(data){
-        //                 updateCell(data);
-        //             },
-        //             error:function(error){
-        //                 alert("실패");
-        //             }
-        //         })
-        //
-        //     })
+
+        $(document).ready(function(){
+
+            $('#loadSchedule').on('click', function(){
+                $.ajax({
+                    url : "<c:url value='/schedule/read'/>",
+                    type : "get",
+                    success:function(data){
+                        alert("시간표 불러오기 성공");
+                        updateCell(data);
+                    },
+                    error:function(error){
+                        alert("실패");
+                    }
+                })
+
+            })
+
             function updateCell(data){
                 for(var i=0; i<data.length; i++){
                     var item = data[i];
                     var firstCellID;
                     var secondCellID;
+                    var mon = "mon-";
+                    var tue = "tue-";
+                    var wed = "wed-";
+                    var thu = "thu-";
+                    var fri = "fri-";
+                    var subject_name = item.subject_name;
                     var tmp = item.subject_first_day;
-                    var f_hour = item.subject_first_hour;
+                    var f_hour = item.subject_first_hour.toString();
                     var tmp2 = item.subject_second_day;
-                    var s_hour = item.subject_second_hour;
-                    if(tmp.eq('월')){
-                        firstCellID='mon-'+f_hour;
+                    var s_hour = item.subject_second_hour.toString();
+                    if(tmp == '월'){
+                        firstCellID=mon+f_hour;
                     }
-                    if(tmp2.eq('월')){
-                        secondCellID = 'mon'+s_hour;
+                    if(tmp2 == '월'){
+                        secondCellID = mon+s_hour;
                     }
-                    var random = '#' + Math.floor(Math.random()*16777215).toString(16);
+                    console.log(mon+f_hour);
+                    console.log(tmp2);
+                    console.log(f_hour);
+                    console.log(s_hour);
+                    console.log(firstCellID);
+                    console.log(secondCellID);
+                    var random = getRandomLightColor(hexColors);
                     $('#'+firstCellID).css('background-color', random);
                     $('#'+secondCellID).css('background-color', random);
+                    if(tmp != tmp2){
+                        $('#'+firstCellID).html(subject_name).css('text-align', 'center');
+                        $('#'+secondCellID).html(subject_name).css('text-align', 'center');
+                    }
+                    else{
+                        $('#'+firstCellID).html(subject_name).css('text-align', 'center');
+                    }
                 }
             }
             $('#searchSubject').on('click', function() {
@@ -368,8 +389,66 @@
                         }
                     })
                 })
-            // })
-
+             })
+        function updateCellRe(){
+            $.ajax({
+                url : "<c:url value='/schedule/read'/>",
+                type : "get",
+                success:function(data){
+                    alert("시간표 불러오기 성공");
+                    for(var i=0; i<data.length; i++){
+                        var item = data[i];
+                        var firstCellID;
+                        var secondCellID;
+                        var mon = "mon-";
+                        var tue = "tue-";
+                        var wed = "wed-";
+                        var thu = "thu-";
+                        var fri = "fri-";
+                        var subject_name = item.subject_name;
+                        var tmp = item.subject_first_day;
+                        var f_hour = item.subject_first_hour.toString();
+                        var tmp2 = item.subject_second_day;
+                        var s_hour = item.subject_second_hour.toString();
+                        if(tmp == '월'){
+                            firstCellID=mon+f_hour;
+                        }
+                        if(tmp2 == '월'){
+                            secondCellID = mon+s_hour;
+                        }
+                        console.log(mon+f_hour);
+                        console.log(tmp2);
+                        console.log(f_hour);
+                        console.log(s_hour);
+                        console.log(firstCellID);
+                        console.log(secondCellID);
+                        var random = getRandomLightColor(hexColors);
+                        $('#'+firstCellID).css('background-color', random);
+                        $('#'+secondCellID).css('background-color', random);
+                        if(tmp != tmp2){
+                            $('#'+firstCellID).html(subject_name).css('text-align', 'center');
+                            $('#'+secondCellID).html(subject_name).css('text-align', 'center');
+                        }
+                        else{
+                            $('#'+firstCellID).html(subject_name).css('text-align', 'center');
+                        }
+                    }
+                },
+                error:function(error){
+                    alert("실패");
+                }
+            })
+        }
+        //랜덤 색깔을 얻어오는 함수
+        function getRandomLightColor(colorArray) {
+            var randomIndex = Math.floor(Math.random() * colorArray.length);
+            return colorArray[randomIndex];
+        }
+        var hexColors = [
+            "#FFE5CC", "#FFCCCC", "#FFFFCC", "#CCFFCC",
+            "#FFCC99", "#FF9999", "#FFFF99", "#CCFF99",
+            "#99FF99", "#99FFCC", "#99FFFF", "#CCFFFF"
+        ];
     </script>
     </body>
     </html>
