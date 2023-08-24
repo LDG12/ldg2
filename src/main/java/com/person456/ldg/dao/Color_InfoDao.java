@@ -2,8 +2,10 @@ package com.person456.ldg.dao;
 
 import com.person456.ldg.domain.Color_InfoDto;
 
+import java.util.List;
+
 public interface Color_InfoDao {
     int count();
-
-    Color_InfoDto select(Integer sno);
+    List<Color_InfoDto> select(String sid);
+    int insert(Color_InfoDto color_infoDto);
 }

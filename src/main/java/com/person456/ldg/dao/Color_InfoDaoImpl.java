@@ -5,6 +5,8 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public class Color_InfoDaoImpl implements Color_InfoDao {
     @Autowired
@@ -16,7 +18,11 @@ public class Color_InfoDaoImpl implements Color_InfoDao {
         return session.selectOne(namespace+"count");
     }
     @Override
-    public Color_InfoDto select(Integer sno){
-        return session.selectOne(namespace+"select", sno);
+    public List<Color_InfoDto> select(String sid){
+        return session.selectList(namespace+"select", sid);
+    }
+    @Override
+    public int insert(Color_InfoDto color_infoDto){
+        return session.insert(namespace+"insert", color_infoDto);
     }
 }

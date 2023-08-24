@@ -13,6 +13,8 @@ import static org.junit.Assert.*;
 public class ScheduleDaoImplTest {
     @Autowired
     ScheduleDao scheduleDao;
+    @Autowired
+    Color_InfoDao color_infoDao;
 
     @Test
     public void test(){
@@ -25,5 +27,9 @@ public class ScheduleDaoImplTest {
         int rowCnt = scheduleDao.deleteAll(1);
         System.out.println("rowCnt = " + rowCnt);
         assertTrue(rowCnt==1);
+    }
+    @Test
+    public void test3(){
+
     }
 }

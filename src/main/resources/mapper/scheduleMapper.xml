@@ -9,6 +9,12 @@
         select * from schedule
         where sid=#{sid}
     </select>
+    <select id="selectSno" parameterType="ScheduleDto" resultType="int">
+        select sno from schedule
+        where subject_name=#{subject_name} and major=#{major} and credit=#{credit} and subject_first_day=#{subject_first_day}
+        and subject_first_hour=#{subject_first_hour} and subject_second_day=#{subject_second_day}
+        and subject_second_hour=#{subject_second_hour} and place=#{place}
+    </select>
     <insert id="insert" parameterType="ScheduleDto">
         insert into schedule(sid, subject_name, major, credit, subject_first_day, subject_first_hour, subject_second_day, subject_second_hour, place)
         values(#{sid}, #{subject_name}, #{major}, #{credit}, #{subject_first_day}, #{subject_first_hour}, #{subject_second_day}, #{subject_second_hour}, #{place})

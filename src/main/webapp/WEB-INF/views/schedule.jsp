@@ -158,7 +158,7 @@
                     <th>목</th>
                     <th>금</th>
                 </tr>
-                <tr id="1hour">
+                <tr class="BRow">
                     <th>오전 9시</th>
                     <td id="mon-1"></td>
                     <td id="tue-1"></td>
@@ -166,77 +166,77 @@
                     <td id="thu-1"></td>
                     <td id="fri-1"></td>
                 </tr>
-                <tr id="2hour">
+                <tr class="BRow">
                     <th>오전 10시</th>
                     <td id="mon-2"></td>
-                    <td id="the-2"></td>
+                    <td id="tue-2"></td>
                     <td id="wed-2"></td>
                     <td id="thu-2"></td>
                     <td id="fri-2"></td>
                 </tr>
-                <tr>
+                <tr class="BRow">
                     <th>오전 11시</th>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td id="mon-3"></td>
+                    <td id="tue-3"></td>
+                    <td id="wed-3"></td>
+                    <td id="tur-3"></td>
+                    <td id="fri-3"></td>
                 </tr>
-                <tr>
+                <tr class="BRow">
                     <th>오후 12시</th>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td id="mon-4"></td>
+                    <td id="tue-4"></td>
+                    <td id="wed-4"></td>
+                    <td id="tur-4"></td>
+                    <td id="fri-4"></td>
                 </tr>
-                <tr>
+                <tr class="BRow">
                     <th>오후 1시</th>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td id="mon-5"></td>
+                    <td id="tue-5"></td>
+                    <td id="wed-5"></td>
+                    <td id="tur-5"></td>
+                    <td id="fri-5"></td>
                 </tr>
-                <tr>
+                <tr class="BRow">
                     <th>오후 2시</th>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td id="mon-6"></td>
+                    <td id="tue-6"></td>
+                    <td id="wed-6"></td>
+                    <td id="tur-6"></td>
+                    <td id="fri-6"></td>
                 </tr>
-                <tr>
+                <tr class="BRow">
                     <th>오후 3시</th>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td id="mon-7"></td>
+                    <td id="tue-7"></td>
+                    <td id="wed-7"></td>
+                    <td id="tur-7"></td>
+                    <td id="fri-7"></td>
                 </tr>
-                <tr>
+                <tr class="BRow">
                     <th>오후 4시</th>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td id="mon-8"></td>
+                    <td id="tue-8"></td>
+                    <td id="wed-8"></td>
+                    <td id="tur-8"></td>
+                    <td id="fri-8"></td>
                 </tr>
-                <tr>
+                <tr class="BRow">
                     <th>오후 5시</th>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td id="mon-9"></td>
+                    <td id="tue-9"></td>
+                    <td id="wed-9"></td>
+                    <td id="tur-9"></td>
+                    <td id="fri-9"></td>
                 </tr>
-                <tr>
+                <tr class="BRow">
                     <th>오후 6시</th>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td id="mon-10"></td>
+                    <td id="tue-10"></td>
+                    <td id="wed-10"></td>
+                    <td id="tur-10"></td>
+                    <td id="fri-10"></td>
                 </tr>
             </table>
         </div>
@@ -290,63 +290,63 @@
         </table>
     </div>
     <script>
-
         $(document).ready(function(){
+            updateCellRe();
+            <%--$('#loadSchedule').on('click', function(){--%>
+            <%--    $.ajax({--%>
+            <%--        url : "<c:url value='/schedule/read'/>",--%>
+            <%--        type : "get",--%>
+            <%--        success:function(data){--%>
+            <%--            alert("시간표 불러오기 성공");--%>
+            <%--            updateCell(data);--%>
+            <%--        },--%>
+            <%--        error:function(error){--%>
+            <%--            alert("실패");--%>
+            <%--        }--%>
+            <%--    })--%>
 
-            $('#loadSchedule').on('click', function(){
-                $.ajax({
-                    url : "<c:url value='/schedule/read'/>",
-                    type : "get",
-                    success:function(data){
-                        alert("시간표 불러오기 성공");
-                        updateCell(data);
-                    },
-                    error:function(error){
-                        alert("실패");
-                    }
-                })
+            <%--})--%>
 
-            })
-
-            function updateCell(data){
-                for(var i=0; i<data.length; i++){
-                    var item = data[i];
-                    var firstCellID;
-                    var secondCellID;
-                    var mon = "mon-";
-                    var tue = "tue-";
-                    var wed = "wed-";
-                    var thu = "thu-";
-                    var fri = "fri-";
-                    var subject_name = item.subject_name;
-                    var tmp = item.subject_first_day;
-                    var f_hour = item.subject_first_hour.toString();
-                    var tmp2 = item.subject_second_day;
-                    var s_hour = item.subject_second_hour.toString();
-                    if(tmp == '월'){
-                        firstCellID=mon+f_hour;
-                    }
-                    if(tmp2 == '월'){
-                        secondCellID = mon+s_hour;
-                    }
-                    console.log(mon+f_hour);
-                    console.log(tmp2);
-                    console.log(f_hour);
-                    console.log(s_hour);
-                    console.log(firstCellID);
-                    console.log(secondCellID);
-                    var random = getRandomLightColor(hexColors);
-                    $('#'+firstCellID).css('background-color', random);
-                    $('#'+secondCellID).css('background-color', random);
-                    if(tmp != tmp2){
-                        $('#'+firstCellID).html(subject_name).css('text-align', 'center');
-                        $('#'+secondCellID).html(subject_name).css('text-align', 'center');
-                    }
-                    else{
-                        $('#'+firstCellID).html(subject_name).css('text-align', 'center');
-                    }
-                }
-            }
+            <%--function updateCell(data){--%>
+            <%--    for(var i=0; i<data.length; i++){--%>
+            <%--        var item = data[i];--%>
+            <%--        var firstCellID;--%>
+            <%--        var secondCellID;--%>
+            <%--        var mon = "mon-";--%>
+            <%--        var tue = "tue-";--%>
+            <%--        var wed = "wed-";--%>
+            <%--        var thu = "thu-";--%>
+            <%--        var fri = "fri-";--%>
+            <%--        var subject_name = item.subject_name;--%>
+            <%--        var tmp = item.subject_first_day;--%>
+            <%--        var f_hour = item.subject_first_hour.toString();--%>
+            <%--        var tmp2 = item.subject_second_day;--%>
+            <%--        var s_hour = item.subject_second_hour.toString();--%>
+            <%--        if(tmp == '월'){--%>
+            <%--            firstCellID=mon+f_hour;--%>
+            <%--        }--%>
+            <%--        if(tmp2 == '월'){--%>
+            <%--            secondCellID = mon+s_hour;--%>
+            <%--        }--%>
+            <%--        console.log(mon+f_hour);--%>
+            <%--        console.log(tmp2);--%>
+            <%--        console.log(f_hour);--%>
+            <%--        console.log(s_hour);--%>
+            <%--        console.log(firstCellID);--%>
+            <%--        console.log(secondCellID);--%>
+            <%--        var random = getRandomLightColor(hexColors);--%>
+            <%--        $('#'+firstCellID).css('background-color', random);--%>
+            <%--        $('#'+secondCellID).css('background-color', random);--%>
+            <%--        if(tmp != tmp2){--%>
+            <%--            $('#'+firstCellID).html(subject_name).css('text-align', 'center');--%>
+            <%--            $('#'+secondCellID).html(subject_name).css('text-align', 'center');--%>
+            <%--        }--%>
+            <%--        else{--%>
+            <%--            $('#'+firstCellID).html(subject_name).css('text-align', 'center');--%>
+            <%--        }--%>
+            <%--    }--%>
+            <%--}--%>
+<%--            수업 목록 보기 를 누르면 리스트가 나오고, 버튼은 사라지게 만들기--%>
             $('#searchSubject').on('click', function() {
                 $('#subjects').css('display', 'block');
                 $(this).css('display', 'none');
@@ -356,6 +356,7 @@
                 $('#subjects').css('display', 'none');
                 $('#searchSubject').css('display', 'block');
             });
+            //테이블의 행을 누르면 add하기.
             $('tr.row').on('click', function (){
                 // $(this).find('td').not(':last-child').on('click', function(){
                 var clickedRow = $(this);
@@ -369,7 +370,8 @@
                     subject_first_hour: clickedRow.find('input[name="subject_first_hour"]').val(),
                     subject_second_day: clickedRow.find('input[name="subject_second_day"]').val(),
                     subject_second_hour: clickedRow.find('input[name="subject_second_hour"]').val(),
-                    place: clickedRow.find('input[name="place"]').val()
+                    place: clickedRow.find('input[name="place"]').val(),
+                    cell_color : getRandomLightColor(hexColors)
                 };
 
                 $.ajax({
@@ -378,7 +380,7 @@
                         data : formData,
                         success : function(response){
                             if(response=='possible'){
-                                alert("성공적으로 등록되었습니다.");
+                                updateCellRe();
                             }
                             else{
                                 alert("같은 시간대에 이미 수업이 있습니다.");
@@ -394,10 +396,21 @@
             $.ajax({
                 url : "<c:url value='/schedule/read'/>",
                 type : "get",
+                dataType:"json",
                 success:function(data){
-                    alert("시간표 불러오기 성공");
-                    for(var i=0; i<data.length; i++){
-                        var item = data[i];
+                    console.log(data);
+                    var schedules = data.scheduleDtoList;
+                    var colors = data.color_infoDtoList;
+
+                    for(var i=0; i<schedules.length; i++){
+                        var color;
+                        var item = schedules[i];
+                        for(var j=0; j<colors.length; j++){
+                            if(item.sno == colors[j].sno){
+                                color = colors[j].cell_color;
+                            }
+                        }
+                        console.log(color);
                         var firstCellID;
                         var secondCellID;
                         var mon = "mon-";
@@ -410,27 +423,30 @@
                         var f_hour = item.subject_first_hour.toString();
                         var tmp2 = item.subject_second_day;
                         var s_hour = item.subject_second_hour.toString();
-                        if(tmp == '월'){
-                            firstCellID=mon+f_hour;
-                        }
-                        if(tmp2 == '월'){
-                            secondCellID = mon+s_hour;
-                        }
+                        if(tmp == '월'){firstCellID=mon+f_hour;}
+                        else if(tmp == '화'){firstCellID=tue+f_hour;}
+                        else if(tmp=='수'){firstCellID=wed+f_hour;}
+                        else if(tmp=='목'){firstCellID=thu+f_hour;}
+                        else if(tmp=='금'){firstCellID=fri+f_hour;}
+                        if(tmp2 == '월'){secondCellID = mon+s_hour;}
+                        else if(tmp2=='화'){secondCellID=tue+s_hour;}
+                        else if(tmp=='수'){secondCellID=wed+s_hour;}
+                        else if(tmp=='목'){secondCellID=thu+s_hour;}
+                        else if(tmp=='금'){secondCellID=fri+s_hour;}
                         console.log(mon+f_hour);
                         console.log(tmp2);
                         console.log(f_hour);
                         console.log(s_hour);
                         console.log(firstCellID);
                         console.log(secondCellID);
-                        var random = getRandomLightColor(hexColors);
-                        $('#'+firstCellID).css('background-color', random);
-                        $('#'+secondCellID).css('background-color', random);
+                        $('#'+firstCellID).css('background-color', color);
+                        $('#'+secondCellID).css('background-color', color);
                         if(tmp != tmp2){
-                            $('#'+firstCellID).html(subject_name).css('text-align', 'center');
-                            $('#'+secondCellID).html(subject_name).css('text-align', 'center');
+                            $('#'+firstCellID).html(subject_name).append(createBtn(subject_name,'#'+firstCellID)).css('text-align', 'center');
+                            $('#'+secondCellID).html(subject_name).append(createBtn(subject_name,'#'+secondCellID)).css('text-align', 'center');
                         }
                         else{
-                            $('#'+firstCellID).html(subject_name).css('text-align', 'center');
+                            $('#'+firstCellID).html(subject_name).append(createBtn(subject_name,'#'+firstCellID)).css('text-align', 'center');
                         }
                     }
                 },
@@ -449,6 +465,11 @@
             "#FFCC99", "#FF9999", "#FFFF99", "#CCFF99",
             "#99FF99", "#99FFCC", "#99FFFF", "#CCFFFF"
         ];
+        function createBtn(subject_name, CellId){
+            var btnClass = subject_name;
+            var btnContent ='<button id="'+CellId+'" class="'+btnClass+'">[x]</button>';
+            return btnContent
+        }
     </script>
     </body>
     </html>

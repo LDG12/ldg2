@@ -19,6 +19,9 @@ public class ScheduleServiceImpl implements ScheduleService {
     public List<ScheduleDto> selectOneSchedule(String sid){
         return scheduleDao.selectOneSchedule(sid);
     }
+    public int selectSno(ScheduleDto scheduleDto){
+        return scheduleDao.selectSno(scheduleDto);
+    }
     public int insert(ScheduleDto scheduleDto){
         String first_day = scheduleDto.getSubject_first_day();
         Integer first_hour = scheduleDto.getSubject_first_hour();

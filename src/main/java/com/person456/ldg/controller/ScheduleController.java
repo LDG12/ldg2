@@ -1,7 +1,10 @@
 package com.person456.ldg.controller;
 
+import com.person456.ldg.domain.Color_InfoDto;
 import com.person456.ldg.domain.ScheduleDto;
+import com.person456.ldg.domain.ScheduleWithColor;
 import com.person456.ldg.domain.SubjectDto;
+import com.person456.ldg.service.Color_InfoService;
 import com.person456.ldg.service.ScheduleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +21,8 @@ import java.util.List;
 public class ScheduleController {
     @Autowired
     ScheduleService scheduleService;
-
+    @Autowired
+    Color_InfoService color_infoService;
     @RequestMapping("/test")
     public String scheduleMain(){
         return "schedule";
@@ -26,20 +30,29 @@ public class ScheduleController {
 
     @GetMapping("/read")
     @ResponseBody
-    public List<ScheduleDto> scheduleRead(HttpSession session, Model m){
+    public ScheduleWithColor scheduleRead(HttpSession session, Model m){
         String sid = (String)session.getAttribute("id");
-        List<ScheduleDto> list = scheduleService.selectOneSchedule(sid);
-        System.out.println("list = " + list);
-        return list;
+        List<Color_InfoDto> color_infoDtoList = color_infoService.select(sid);
+        List<ScheduleDto> scheduleDtoList= scheduleService.selectOneSchedule(sid);
+        ScheduleWithColor scheduleWithColor = new ScheduleWithColor(scheduleDtoList, color_infoDtoList);
+        System.out.println("scheduleWithColor = " + scheduleWithColor);
+        return scheduleWithColor;
     }
     @PostMapping("/add")
-    public ResponseEntity<String> scheduleAdd(ScheduleDto scheduleDto, HttpSession session, Model m){
+    public ResponseEntity<String> scheduleAdd(ScheduleDto scheduleDto, Color_InfoDto color_infoDto, HttpSession session, Model m){
         String sid = (String)session.getAttribute("id");
         scheduleDto.setSid(sid);
         int rowCnt = scheduleService.insert(scheduleDto);
         System.out.println("rowCnt = " + rowCnt);
         if(rowCnt==1){
-            return ResponseEntity.ok("possible");
+            Integer sno = scheduleService.selectSno(scheduleDto);
+            int colorRow = color_infoService.insert(color_infoDto, sid, sno);
+            if(colorRow == 1){
+                return ResponseEntity.ok("possible");
+            }
+            else{
+                return ResponseEntity.ok("impossible");
+            }
         }
         else if(rowCnt == 0){
             return ResponseEntity.ok("impossible");
@@ -47,5 +60,6 @@ public class ScheduleController {
         else{
             return ResponseEntity.ok("impossible");
         }
+
     }
 }

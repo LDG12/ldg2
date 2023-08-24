@@ -23,6 +23,10 @@ public class ScheduleDaoImpl implements ScheduleDao {
         return session.selectList(namespace+"selectOneSchedule", sid);
     }
     @Override
+    public int selectSno(ScheduleDto scheduleDto){
+        return session.selectOne(namespace+"selectSno", scheduleDto);
+    }
+    @Override
     public int insert(ScheduleDto scheduleDto){
         return session.insert(namespace+"insert", scheduleDto);
     }

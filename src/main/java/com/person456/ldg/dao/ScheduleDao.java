@@ -13,6 +13,6 @@ public interface ScheduleDao {
     int insert(ScheduleDto scheduleDto);
 
     int deleteAll(Integer sno);
-
+    int selectSno(ScheduleDto scheduleDto);
     int delete(Map map);
 }
