@@ -42,3 +42,8 @@
 2. 수강생의 시간표인 Schedule 테이블, dto, dao, service 생성
 3. view에서 'search'버튼을 누르면 subject에 있는 과목들이 테이블로 나오게 구현
 4. 해당 과목을 누르면 시간표에 적용이 되게 해야함
+
+8/23
+1. subject에 들어있는 목록들을 누르면 schedule db에 insert 하는것 구현
+2. 만약 같은 요일, 같은 시간에 이미 과목이 있다면 insert 못하게 구현
+3. 해당 schedule을 read해서 테이블 background에 맞게 설정해야함
