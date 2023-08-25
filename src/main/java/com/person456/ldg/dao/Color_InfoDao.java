@@ -7,5 +7,6 @@ import java.util.List;
 public interface Color_InfoDao {
     int count();
     List<Color_InfoDto> select(String sid);
+    int delete(Integer sno);
     int insert(Color_InfoDto color_infoDto);
 }

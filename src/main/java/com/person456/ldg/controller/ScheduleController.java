@@ -39,7 +39,22 @@ public class ScheduleController {
         return scheduleWithColor;
     }
     @PostMapping("/add")
-    public ResponseEntity<String> scheduleAdd(ScheduleDto scheduleDto, Color_InfoDto color_infoDto, HttpSession session, Model m){
+    public ResponseEntity<String> scheduleAdd(ScheduleDto scheduleDto, @RequestParam String subject_third_hour,
+                                              @RequestParam String subject_fourth_hour, Color_InfoDto color_infoDto, HttpSession session, Model m){
+        Integer third_hour;
+        Integer fourth_hour;
+        if(subject_fourth_hour.equals("")&&subject_third_hour.equals("")){
+            third_hour = 0;
+            fourth_hour = 0;
+        }
+        else{
+            third_hour = Integer.parseInt(subject_third_hour);
+            fourth_hour = Integer.parseInt(subject_third_hour);
+        }
+        scheduleDto.setSubject_third_hour(third_hour);
+        scheduleDto.setSubject_fourth_hour(fourth_hour);
+        System.out.println("scheduleDto.getSubject_third_hour() = " + scheduleDto.getSubject_third_hour());
+        System.out.println("scheduleDto.getSubject_fourth_hour() = " + scheduleDto.getSubject_fourth_hour());
         String sid = (String)session.getAttribute("id");
         scheduleDto.setSid(sid);
         int rowCnt = scheduleService.insert(scheduleDto);
@@ -60,6 +75,23 @@ public class ScheduleController {
         else{
             return ResponseEntity.ok("impossible");
         }
-
+    }
+    @PostMapping("/delete")
+    public ResponseEntity<String> subjectDelete(String subject_name, Integer sno){
+        System.out.println("subject_name = " + subject_name);
+        System.out.println("sno = " + sno);
+        int colorRow = color_infoService.delete(sno);
+        if(colorRow==1){
+            int scheduleRow = scheduleService.deleteAll(sno);
+            if(scheduleRow == 1){
+                return ResponseEntity.ok("possible");
+            }
+            else{
+                return ResponseEntity.ok("impossible");
+            }
+        }
+        else{
+            return ResponseEntity.ok("impossible");
+        }
     }
 }

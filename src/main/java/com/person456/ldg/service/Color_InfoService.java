@@ -9,4 +9,5 @@ public interface Color_InfoService {
 
     List<Color_InfoDto> select(String sid);
     int insert(Color_InfoDto color_infoDto, String sid, Integer sno);
+    int delete(Integer sno);
 }

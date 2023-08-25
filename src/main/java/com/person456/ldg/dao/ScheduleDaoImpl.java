@@ -24,6 +24,7 @@ public class ScheduleDaoImpl implements ScheduleDao {
     }
     @Override
     public int selectSno(ScheduleDto scheduleDto){
+        System.out.println("scheduleDto = " + scheduleDto);
         return session.selectOne(namespace+"selectSno", scheduleDto);
     }
     @Override

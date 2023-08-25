@@ -25,4 +25,8 @@ public class Color_InfoDaoImpl implements Color_InfoDao {
     public int insert(Color_InfoDto color_infoDto){
         return session.insert(namespace+"insert", color_infoDto);
     }
+    @Override
+    public int delete(Integer sno){
+        return session.delete(namespace+"delete", sno);
+    }
 }

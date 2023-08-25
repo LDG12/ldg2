@@ -57,6 +57,7 @@
                 width : 100px;
             }
             td {
+                position: relative;
                 width: 200px;
                 height: 60px;
             }
@@ -85,7 +86,7 @@
                 z-index: 1; /* 다른 요소 위에 표시 */
             }
 
-            button {
+            .shared-btn {
                 background-color: rgb(89, 117, 196);
                 color: white;
                 width: 100%; /* 버튼을 가로 중앙에 맞추기 위해 100%로 설정 */
@@ -118,6 +119,16 @@
             .row:hover {
                 background-color: #f0f0f0; /* 마우스를 갖다대었을 때의 배경색을 설정합니다. */
             }
+            .subject_del{
+                display: none;
+                position: absolute;
+                top : 0;
+                right : 0;
+                sizd:1px;
+            }
+            td:hover .subject_del{
+                display:block;
+            }
         </style>
         <script>
             $(function(){
@@ -144,7 +155,7 @@
         <aside>
                 <div id="now_Schedule">
                     현재 시간표
-                    <button id="loadSchedule">시간표 불러오기</button>
+                    <button id="loadSchedule" class="shared-btn">시간표 불러오기</button>
                 </div>
         </aside>
         <div id="table-container">
@@ -243,11 +254,11 @@
     </div>
     <div id="button-container">
         <form action="<c:url value='/subject/read'/>" method="get">
-            <button id="searchSubject">수업 목록 찾기</button>
+            <button id="searchSubject" class="shared-btn">수업 목록 찾기</button>
         </form>
     </div>
     <div id="subjects" style="display:${not empty List ? 'block' : 'none'}">
-        <div id="filter"><button id="closeSearchSubject">닫기</button></div>
+        <div id="filter"><button id="closeSearchSubject" class="shared-btn">닫기</button></div>
         <table>
             <thead>
             <th><div>학수번호</div></th>
@@ -267,7 +278,7 @@
                     <form id="addSubject${subjectDto.course_num}" action="" method="">
                     <td><div>${subjectDto.course_num}</div></td>
                     <td><input type="hidden" name="subject_name" value="${subjectDto.subject_name}">${subjectDto.subject_name}</td>
-                    <td><input tpye="hidden" name="major" value="${subjectDto.major}">${subjectDto.major}</td>
+                    <td><input type="hidden" name="major" value="${subjectDto.major}">${subjectDto.major}</td>
                     <td><input type="hidden" name="credit" value="${subjectDto.credit}">${subjectDto.credit}</td>
                     <td><input type="hidden" name="professor" value="${subjectDto.professor}">${subjectDto.professor}</td>
                     <td>
@@ -275,8 +286,12 @@
                         <input type="hidden" name="subject_first_hour" value="${subjectDto.subject_first_hour}">
                         <input type="hidden" name="subject_second_day" value="${subjectDto.subject_second_day}">
                         <input type="hidden" name="subject_second_hour" value="${subjectDto.subject_second_hour}">
+                        <input type="hidden" name="subject_third_day" value="${subjectDto.subject_third_day}">
+                        <input type="hidden" name="subject_third_hour" value="${subjectDto.subject_third_hour}">
+                        <input type="hidden" name="subject_fourth_day" value="${subjectDto.subject_fourth_day}">
+                        <input type="hidden" name="subject_fourth_hour" value="${subjectDto.subject_fourth_hour}">
                         <div>
-                            ${subjectDto.subject_first_day}${subjectDto.subject_first_hour},${subjectDto.subject_second_day}${subjectDto.subject_second_hour}
+                            ${subjectDto.subject_first_day}${subjectDto.subject_first_hour} ${subjectDto.subject_second_day}${subjectDto.subject_second_hour} ${subjectDto.subject_third_day}${subjectDto.subject_third_hour} ${subjectDto.subject_fourth_day}${subjectDto.subject_fourth_hour}
                         </div>
                     </td>
                     <td><input type="hidden" name="place" value="${subjectDto.place}">${subjectDto.place}</td>
@@ -292,60 +307,50 @@
     <script>
         $(document).ready(function(){
             updateCellRe();
-            <%--$('#loadSchedule').on('click', function(){--%>
-            <%--    $.ajax({--%>
-            <%--        url : "<c:url value='/schedule/read'/>",--%>
-            <%--        type : "get",--%>
-            <%--        success:function(data){--%>
-            <%--            alert("시간표 불러오기 성공");--%>
-            <%--            updateCell(data);--%>
-            <%--        },--%>
-            <%--        error:function(error){--%>
-            <%--            alert("실패");--%>
-            <%--        }--%>
-            <%--    })--%>
-
-            <%--})--%>
-
-            <%--function updateCell(data){--%>
-            <%--    for(var i=0; i<data.length; i++){--%>
-            <%--        var item = data[i];--%>
-            <%--        var firstCellID;--%>
-            <%--        var secondCellID;--%>
-            <%--        var mon = "mon-";--%>
-            <%--        var tue = "tue-";--%>
-            <%--        var wed = "wed-";--%>
-            <%--        var thu = "thu-";--%>
-            <%--        var fri = "fri-";--%>
-            <%--        var subject_name = item.subject_name;--%>
-            <%--        var tmp = item.subject_first_day;--%>
-            <%--        var f_hour = item.subject_first_hour.toString();--%>
-            <%--        var tmp2 = item.subject_second_day;--%>
-            <%--        var s_hour = item.subject_second_hour.toString();--%>
-            <%--        if(tmp == '월'){--%>
-            <%--            firstCellID=mon+f_hour;--%>
-            <%--        }--%>
-            <%--        if(tmp2 == '월'){--%>
-            <%--            secondCellID = mon+s_hour;--%>
-            <%--        }--%>
-            <%--        console.log(mon+f_hour);--%>
-            <%--        console.log(tmp2);--%>
-            <%--        console.log(f_hour);--%>
-            <%--        console.log(s_hour);--%>
-            <%--        console.log(firstCellID);--%>
-            <%--        console.log(secondCellID);--%>
-            <%--        var random = getRandomLightColor(hexColors);--%>
-            <%--        $('#'+firstCellID).css('background-color', random);--%>
-            <%--        $('#'+secondCellID).css('background-color', random);--%>
-            <%--        if(tmp != tmp2){--%>
-            <%--            $('#'+firstCellID).html(subject_name).css('text-align', 'center');--%>
-            <%--            $('#'+secondCellID).html(subject_name).css('text-align', 'center');--%>
-            <%--        }--%>
-            <%--        else{--%>
-            <%--            $('#'+firstCellID).html(subject_name).css('text-align', 'center');--%>
-            <%--        }--%>
-            <%--    }--%>
-            <%--}--%>
+            $(document).on('click','.subject_del', function(){
+                var arr =$(this).attr('id').split(',');
+                var subject_name = arr[0];
+                var sno = arr[1];
+                var cellID = arr[2];
+                var btns = $('[name="'+subject_name+'"]');
+                var named = $('.subject-cell-'+sno);
+                if(confirm("이 수업을 삭제하시겠습니까?")){
+                    deleteSubject(subject_name, sno);
+                    named.each(function(){
+                        var name = $(this);
+                        name.empty();
+                        name.removeAttr('style');
+                    })
+                    // btns.each(function(){
+                    //     var btn = $(this);
+                    //     var tdElement = btn.parent();
+                    //     // var tdID = tdElement.attr('id');
+                    //     tdElement.empty();
+                    //     tdElement.removeAttr('style');
+                    // })
+                }
+            })
+            function deleteSubject(subject_name, sno) {
+                $.ajax({
+                    url: "<c:url value='/schedule/delete'/>",
+                    type: "post",
+                    data: {
+                        subject_name: subject_name,
+                        sno: sno
+                    },
+                    success: function(response) {
+                        if (response == "possible") {
+                            alert("수업 삭제에 성공했습니다.");
+                            updateCellRe();
+                        } else {
+                            alert("수업 삭제에 실패했습니다.");
+                        }
+                    },
+                    error: function(error) {
+                        alert("시간표 삭제 중 오류가 발생했습니다.");
+                    }
+                });
+            }
 <%--            수업 목록 보기 를 누르면 리스트가 나오고, 버튼은 사라지게 만들기--%>
             $('#searchSubject').on('click', function() {
                 $('#subjects').css('display', 'block');
@@ -360,7 +365,14 @@
             $('tr.row').on('click', function (){
                 // $(this).find('td').not(':last-child').on('click', function(){
                 var clickedRow = $(this);
-
+                var third_day = $('input[name="subject_third_day"]').val();
+                var third_hour=$('input[name="subject_third_hour"]').val();
+                var fourth_day = $('input[name="subject_fourth_day"]').val();
+                var fourth_hour=$('input[name="subject_fourth_hour"]').val();
+                console.log(third_day);
+                console.log(third_hour);
+                console.log(fourth_day);
+                console.log(fourth_hour);
                 var formData = {
                     subject_name: clickedRow.find('input[name="subject_name"]').val(),
                     major: clickedRow.find('input[name="major"]').val(),
@@ -371,10 +383,25 @@
                     subject_second_day: clickedRow.find('input[name="subject_second_day"]').val(),
                     subject_second_hour: clickedRow.find('input[name="subject_second_hour"]').val(),
                     place: clickedRow.find('input[name="place"]').val(),
+                    subject_third_day : clickedRow.find('input[name="subject_third_day"]').val(),
+                    subject_third_hour :clickedRow.find('input[name="subject_third_hour"]').val(),
+                    subject_fourth_day:clickedRow.find('input[name="subject_fourth_day"]').val(),
+                    subject_fourth_hour:clickedRow.find('input[name="subject_fourth_hour"]').val(),
                     cell_color : getRandomLightColor(hexColors)
                 };
-
-                $.ajax({
+                var formDataV2={
+                    subject_name: clickedRow.find('input[name="subject_name"]').val(),
+                    major: clickedRow.find('input[name="major"]').val(),
+                    credit: clickedRow.find('input[name="credit"]').val(),
+                    professor: clickedRow.find('input[name="professor"]').val(),
+                    subject_first_day: clickedRow.find('input[name="subject_first_day"]').val(),
+                    subject_first_hour: clickedRow.find('input[name="subject_first_hour"]').val(),
+                    subject_second_day: clickedRow.find('input[name="subject_second_day"]').val(),
+                    subject_second_hour: clickedRow.find('input[name="subject_second_hour"]').val(),
+                    place: clickedRow.find('input[name="place"]').val(),
+                }
+                if(third_day==="" && third_hour==="" && fourth_day==="" && fourth_hour===""){
+                    $.ajax({
                         url : "<c:url value='/schedule/add'/>",
                         type : "POST",
                         data : formData,
@@ -390,13 +417,33 @@
                             alert("오류 발생");
                         }
                     })
-                })
-             })
+                }
+                else{
+                    $.ajax({
+                        url : "<c:url value='/schedule/add'/>",
+                        type : "POST",
+                        data : formDataV2,
+                        success : function(response){
+                            if(response=='possible'){
+                                updateCellRe();
+                            }
+                            else{
+                                alert("같은 시간대에 이미 수업이 있습니다.");
+                            }
+                        },
+                        error:function(error){
+                            alert("오류 발생");
+                        }
+                    })
+                }
+            })
+        })
         function updateCellRe(){
             $.ajax({
                 url : "<c:url value='/schedule/read'/>",
                 type : "get",
                 dataType:"json",
+                cache : false,
                 success:function(data){
                     console.log(data);
                     var schedules = data.scheduleDtoList;
@@ -413,16 +460,23 @@
                         console.log(color);
                         var firstCellID;
                         var secondCellID;
+                        var thirdCellID;
+                        var fourthCellID;
                         var mon = "mon-";
                         var tue = "tue-";
                         var wed = "wed-";
                         var thu = "thu-";
                         var fri = "fri-";
+                        var subject_sno = item.sno;
                         var subject_name = item.subject_name;
                         var tmp = item.subject_first_day;
                         var f_hour = item.subject_first_hour.toString();
                         var tmp2 = item.subject_second_day;
                         var s_hour = item.subject_second_hour.toString();
+                        var tmp3 = item.subject_third_day;
+                        var t_hour = item.subject_third_hour.toString();
+                        var tmp4 = item.subject_fourth_day;
+                        var fourth_hour = item.subject_fourth_hour.toString();
                         if(tmp == '월'){firstCellID=mon+f_hour;}
                         else if(tmp == '화'){firstCellID=tue+f_hour;}
                         else if(tmp=='수'){firstCellID=wed+f_hour;}
@@ -430,23 +484,55 @@
                         else if(tmp=='금'){firstCellID=fri+f_hour;}
                         if(tmp2 == '월'){secondCellID = mon+s_hour;}
                         else if(tmp2=='화'){secondCellID=tue+s_hour;}
-                        else if(tmp=='수'){secondCellID=wed+s_hour;}
-                        else if(tmp=='목'){secondCellID=thu+s_hour;}
-                        else if(tmp=='금'){secondCellID=fri+s_hour;}
-                        console.log(mon+f_hour);
-                        console.log(tmp2);
-                        console.log(f_hour);
-                        console.log(s_hour);
-                        console.log(firstCellID);
-                        console.log(secondCellID);
-                        $('#'+firstCellID).css('background-color', color);
-                        $('#'+secondCellID).css('background-color', color);
-                        if(tmp != tmp2){
-                            $('#'+firstCellID).html(subject_name).append(createBtn(subject_name,'#'+firstCellID)).css('text-align', 'center');
-                            $('#'+secondCellID).html(subject_name).append(createBtn(subject_name,'#'+secondCellID)).css('text-align', 'center');
+                        else if(tmp2=='수'){secondCellID=wed+s_hour;}
+                        else if(tmp2=='목'){secondCellID=thu+s_hour;}
+                        else if(tmp2=='금'){secondCellID=fri+s_hour;}
+                        if(tmp3!="" && tmp4!=""){
+                            if(tmp3 == '월'){thirdCellID = mon+t_hour;}
+                            else if(tmp3=='화'){thirdCellID=tue+t_hour;}
+                            else if(tmp3=='수'){thirdCellID=wed+t_hour;}
+                            else if(tmp3=='목'){thirdCellID=thu+t_hour;}
+                            else if(tmp3=='금'){thirdCellID=fri+t_hour;}
+                            if(tmp4 == '월'){fourthCellID = mon+fourth_hour;}
+                            else if(tmp4=='화'){fourthCellID=tue+fourth_hour;}
+                            else if(tmp4=='수'){fourthCellID=wed+fourth_hour;}
+                            else if(tmp4=='목'){fourthCellID=thu+fourth_hour;}
+                            else if(tmp4=='금'){fourthCellID=fri+fourth_hour;}
+                            $('#'+firstCellID).css('background-color', color);
+                            $('#'+secondCellID).css('background-color', color);
+                            $('#'+thirdCellID).css('background-color', color);
+                            $('#'+fourthCellID).css('background-color', color);
+                            if(tmp == tmp2 && tmp == tmp3 && tmp == tmp4){
+                                $('#'+firstCellID).html(subject_name).append(createBtn(subject_name,subject_sno, firstCellID)).css('text-align', 'center');
+                                $('#'+firstCellID).addClass('subject-cell-' + subject_sno);
+                                $('#'+secondCellID).addClass('subject-cell-' + subject_sno);
+                                $('#'+thirdCellID).addClass('subject-cell-' + subject_sno);
+                                $('#'+fourthCellID).addClass('subject-cell-' + subject_sno);
+                            }
+                            else if((tmp == tmp2) !== (tmp3 == tmp4)){
+                                $('#'+firstCellID).html(subject_name).append(createBtn(subject_name,subject_sno, firstCellID)).css('text-align', 'center');
+                                $('#'+thirdCellID).html(subject_name).append(createBtn(subject_name,subject_sno, thirdCellID)).css('text-align', 'center');
+                                $('#'+firstCellID).addClass('subject-cell-' + subject_sno);
+                                $('#'+secondCellID).addClass('subject-cell-' + subject_sno);
+                                $('#'+thirdCellID).addClass('subject-cell-' + subject_sno);
+                                $('#'+fourthCellID).addClass('subject-cell-' + subject_sno);
+
+                            }
                         }
                         else{
-                            $('#'+firstCellID).html(subject_name).append(createBtn(subject_name,'#'+firstCellID)).css('text-align', 'center');
+                            $('#'+firstCellID).css('background-color', color);
+                            $('#'+secondCellID).css('background-color', color);
+                            if(tmp != tmp2){
+                                $('#'+firstCellID).html(subject_name).append(createBtn(subject_name,subject_sno,firstCellID)).css('text-align', 'center');
+                                $('#'+firstCellID).addClass('subject-cell-' + subject_sno);
+                                $('#'+secondCellID).html(subject_name).append(createBtn(subject_name,subject_sno,secondCellID)).css('text-align', 'center');
+                                $('#'+secondCellID).addClass('subject-cell-' + subject_sno);
+                            }
+                            else{
+                                $('#'+firstCellID).html(subject_name).append(createBtn(subject_name,subject_sno, firstCellID)).css('text-align', 'center');
+                                $('#'+firstCellID).addClass('subject-cell-' + subject_sno);
+                                $('#'+secondCellID).addClass('subject-cell-' + subject_sno);
+                            }
                         }
                     }
                 },
@@ -465,10 +551,10 @@
             "#FFCC99", "#FF9999", "#FFFF99", "#CCFF99",
             "#99FF99", "#99FFCC", "#99FFFF", "#CCFFFF"
         ];
-        function createBtn(subject_name, CellId){
+        function createBtn(subject_name, sno, CellID){
             var btnClass = subject_name;
-            var btnContent ='<button id="'+CellId+'" class="'+btnClass+'">[x]</button>';
-            return btnContent
+            var btnContent ='<button name="'+subject_name+'"id="'+subject_name+','+sno+','+CellID+'" class="subject_del">[x]</button>';
+            return btnContent;
         }
     </script>
     </body>

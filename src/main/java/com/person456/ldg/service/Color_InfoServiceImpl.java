@@ -26,4 +26,8 @@ public class Color_InfoServiceImpl implements Color_InfoService {
         color_infoDto.setSno(sno);
         return color_infoDao.insert(color_infoDto);
     }
+    @Override
+    public int delete(Integer sno){
+        return color_infoDao.delete(sno);
+    }
 }

@@ -12,4 +12,7 @@
         insert into color_info(sid, sno, cell_color)
         values(#{sid}, #{sno}, #{cell_color})
     </insert>
+    <delete id="delete" parameterType="int">
+        delete from color_info where sno=#{sno}
+    </delete>
 </mapper>

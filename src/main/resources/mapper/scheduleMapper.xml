@@ -13,11 +13,12 @@
         select sno from schedule
         where subject_name=#{subject_name} and major=#{major} and credit=#{credit} and subject_first_day=#{subject_first_day}
         and subject_first_hour=#{subject_first_hour} and subject_second_day=#{subject_second_day}
-        and subject_second_hour=#{subject_second_hour} and place=#{place}
+        and subject_second_hour=#{subject_second_hour} and place=#{place} and subject_third_day=#{subject_third_day} and subject_third_hour=#{subject_third_hour}
+        and subject_fourth_day=#{subject_fourth_day} and subject_fourth_hour = #{subject_fourth_hour}
     </select>
     <insert id="insert" parameterType="ScheduleDto">
-        insert into schedule(sid, subject_name, major, credit, subject_first_day, subject_first_hour, subject_second_day, subject_second_hour, place)
-        values(#{sid}, #{subject_name}, #{major}, #{credit}, #{subject_first_day}, #{subject_first_hour}, #{subject_second_day}, #{subject_second_hour}, #{place})
+        insert into schedule(sid, subject_name, major, credit, subject_first_day, subject_first_hour, subject_second_day, subject_second_hour, place, subject_third_day, subject_third_hour, subject_fourth_day, subject_fourth_hour)
+        values(#{sid}, #{subject_name}, #{major}, #{credit}, #{subject_first_day}, #{subject_first_hour}, #{subject_second_day}, #{subject_second_hour}, #{place},#{subject_third_day},#{subject_third_hour},#{subject_fourth_day},#{subject_fourth_hour})
     </insert>
     <delete id="deleteAll" parameterType="int">
         delete from schedule where sno=#{sno}
