@@ -47,3 +47,11 @@
 1. subject에 들어있는 목록들을 누르면 schedule db에 insert 하는것 구현
 2. 만약 같은 요일, 같은 시간에 이미 과목이 있다면 insert 못하게 구현
 3. 해당 schedule을 read해서 테이블 background에 맞게 설정해야함
+
+8//24
+1. 페이지가 로딩되면 schedule을 read하는 것 구현
+2. read한 내용을 바탕으로 해당 subject의 요일, 시간에 따라 background-color 변경 구현
+3. 색상 변경을 위한 테이블 color_info 생성(sno << schedule 외래키 / sid << user_info의 외래키) Dto, Dao, Service 생성완료
+4. 과목표에서 해당 과목을 고르면 바로 read하여 background-color 변경 구현
+5. 추가로 insert 하자 마자 해당 위치에 버튼생기도록 만듬
+6. 이제 버튼(delete)을 누르면 해당 과목이 스케쥴에서 삭제되도록 해야함
