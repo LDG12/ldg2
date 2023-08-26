@@ -312,10 +312,19 @@
                 var subject_name = arr[0];
                 var sno = arr[1];
                 var cellID = arr[2];
-                var btns = $('[name="'+subject_name+'"]');
+                var arr = cellID.split('-');
+                var hour = arr[1];
                 var named = $('.subject-cell-'+sno);
+                var rowspan = parseInt($('.subject-cell-'+sno).attr('rowspan'));
                 if(confirm("이 수업을 삭제하시겠습니까?")){
                     deleteSubject(subject_name, sno);
+                    $('.subject-cell-'+sno).removeAttr('rowspan');
+                    if(rowspan>0){
+                        for(var i=hour; i<=rowspan; i++){
+                            $('#'+arr[0]+'-'+i).removeAttr('style');
+                            $('#'+arr[0]+'-'+i).show();
+                        }
+                    }
                     named.each(function(){
                         var name = $(this);
                         name.empty();
@@ -365,10 +374,10 @@
             $('tr.row').on('click', function (){
                 // $(this).find('td').not(':last-child').on('click', function(){
                 var clickedRow = $(this);
-                var third_day = $('input[name="subject_third_day"]').val();
-                var third_hour=$('input[name="subject_third_hour"]').val();
-                var fourth_day = $('input[name="subject_fourth_day"]').val();
-                var fourth_hour=$('input[name="subject_fourth_hour"]').val();
+                var third_day = clickedRow.find('input[name="subject_third_day"]').val();
+                var third_hour=clickedRow.find('input[name="subject_third_hour"]').val();
+                var fourth_day = clickedRow.find('input[name="subject_fourth_day"]').val();
+                var fourth_hour=clickedRow.find('input[name="subject_fourth_hour"]').val();
                 console.log(third_day);
                 console.log(third_hour);
                 console.log(fourth_day);
@@ -398,13 +407,18 @@
                     subject_first_hour: clickedRow.find('input[name="subject_first_hour"]').val(),
                     subject_second_day: clickedRow.find('input[name="subject_second_day"]').val(),
                     subject_second_hour: clickedRow.find('input[name="subject_second_hour"]').val(),
+                    subject_third_day: "",
+                    subject_third_hour:"",
+                    subject_fourth_day:"",
+                    subject_fourth_hour:"",
                     place: clickedRow.find('input[name="place"]').val(),
+                    cell_color: getRandomLightColor(hexColors)
                 }
                 if(third_day==="" && third_hour==="" && fourth_day==="" && fourth_hour===""){
                     $.ajax({
                         url : "<c:url value='/schedule/add'/>",
                         type : "POST",
-                        data : formData,
+                        data : formDataV2,
                         success : function(response){
                             if(response=='possible'){
                                 updateCellRe();
@@ -422,7 +436,7 @@
                     $.ajax({
                         url : "<c:url value='/schedule/add'/>",
                         type : "POST",
-                        data : formDataV2,
+                        data : formData,
                         success : function(response){
                             if(response=='possible'){
                                 updateCellRe();
@@ -470,58 +484,98 @@
                         var subject_sno = item.sno;
                         var subject_name = item.subject_name;
                         var tmp = item.subject_first_day;
-                        var f_hour = item.subject_first_hour.toString();
+                        var f_hour = item.subject_first_hour;
                         var tmp2 = item.subject_second_day;
-                        var s_hour = item.subject_second_hour.toString();
+                        var s_hour = item.subject_second_hour;
                         var tmp3 = item.subject_third_day;
-                        var t_hour = item.subject_third_hour.toString();
+                        var t_hour = item.subject_third_hour;
                         var tmp4 = item.subject_fourth_day;
-                        var fourth_hour = item.subject_fourth_hour.toString();
+                        var fourth_hour = item.subject_fourth_hour;
+
                         if(tmp == '월'){firstCellID=mon+f_hour;}
                         else if(tmp == '화'){firstCellID=tue+f_hour;}
                         else if(tmp=='수'){firstCellID=wed+f_hour;}
                         else if(tmp=='목'){firstCellID=thu+f_hour;}
                         else if(tmp=='금'){firstCellID=fri+f_hour;}
+
                         if(tmp2 == '월'){secondCellID = mon+s_hour;}
                         else if(tmp2=='화'){secondCellID=tue+s_hour;}
                         else if(tmp2=='수'){secondCellID=wed+s_hour;}
                         else if(tmp2=='목'){secondCellID=thu+s_hour;}
                         else if(tmp2=='금'){secondCellID=fri+s_hour;}
+
                         if(tmp3!="" && tmp4!=""){
                             if(tmp3 == '월'){thirdCellID = mon+t_hour;}
                             else if(tmp3=='화'){thirdCellID=tue+t_hour;}
                             else if(tmp3=='수'){thirdCellID=wed+t_hour;}
                             else if(tmp3=='목'){thirdCellID=thu+t_hour;}
                             else if(tmp3=='금'){thirdCellID=fri+t_hour;}
+
                             if(tmp4 == '월'){fourthCellID = mon+fourth_hour;}
                             else if(tmp4=='화'){fourthCellID=tue+fourth_hour;}
                             else if(tmp4=='수'){fourthCellID=wed+fourth_hour;}
                             else if(tmp4=='목'){fourthCellID=thu+fourth_hour;}
                             else if(tmp4=='금'){fourthCellID=fri+fourth_hour;}
+
                             $('#'+firstCellID).css('background-color', color);
                             $('#'+secondCellID).css('background-color', color);
                             $('#'+thirdCellID).css('background-color', color);
                             $('#'+fourthCellID).css('background-color', color);
-                            if(tmp == tmp2 && tmp == tmp3 && tmp == tmp4){
-                                $('#'+firstCellID).html(subject_name).append(createBtn(subject_name,subject_sno, firstCellID)).css('text-align', 'center');
-                                $('#'+firstCellID).addClass('subject-cell-' + subject_sno);
-                                $('#'+secondCellID).addClass('subject-cell-' + subject_sno);
-                                $('#'+thirdCellID).addClass('subject-cell-' + subject_sno);
-                                $('#'+fourthCellID).addClass('subject-cell-' + subject_sno);
-                            }
-                            else if((tmp == tmp2) !== (tmp3 == tmp4)){
-                                $('#'+firstCellID).html(subject_name).append(createBtn(subject_name,subject_sno, firstCellID)).css('text-align', 'center');
-                                $('#'+thirdCellID).html(subject_name).append(createBtn(subject_name,subject_sno, thirdCellID)).css('text-align', 'center');
-                                $('#'+firstCellID).addClass('subject-cell-' + subject_sno);
-                                $('#'+secondCellID).addClass('subject-cell-' + subject_sno);
-                                $('#'+thirdCellID).addClass('subject-cell-' + subject_sno);
-                                $('#'+fourthCellID).addClass('subject-cell-' + subject_sno);
 
+                            var test = DayAndRowspanCal(firstCellID, secondCellID, thirdCellID, fourthCellID);
+                            console.log(test);
+                            if(Array.isArray(test)){
+                                $('#'+test[0]).html(subject_name).addClass('subject-cell-'+ subject_sno).attr('rowspan', 2).css('text-align', 'center').append(createBtn(subject_name,subject_sno, test));
+                                $('#'+test[1]).html(subject_name).addClass('subject-cell-'+ subject_sno).attr('rowspan', 2).css('text-align', 'center').append(createBtn(subject_name,subject_sno, test));
+                                $('#'+secondCellID).hide();
+                                $('#'+fourthCellID).hide();
                             }
+                            else{
+                                $('#'+test).html(subject_name).addClass('subject-cell-' + subject_sno).attr('rowspan', 4).css('text-align', 'center').append(createBtn(subject_name,subject_sno, test));
+                                $('#'+secondCellID).hide();
+                                $('#'+thirdCellID).hide();
+                                $('#'+fourthCellID).hide();
+                            }
+                            // if(tmp == tmp2 && tmp == tmp3 && tmp == tmp4){
+                            //     if((f_hour+1==s_hour)&&(s_hour+1==t_hour)&&(t_hour+1==fourth_hour)){
+                            //         $('#'+firstCellID).html(subject_name).append(createBtn(subject_name,subject_sno, firstCellID)).css('text-align', 'center');
+                            //         $('#'+firstCellID).addClass('subject-cell-' + subject_sno);
+                            //         $('#'+firstCellID).attr('rowspan', fourth_hour);
+                            //         $('#'+secondCellID).hide();
+                            //         $('#'+thirdCellID).hide();
+                            //         $('#'+fourthCellID).hide();
+                            //     }
+                            //     $('#'+firstCellID).html(subject_name).append(createBtn(subject_name,subject_sno, firstCellID)).css('text-align', 'center');
+                            //     $('#'+firstCellID).addClass('subject-cell-' + subject_sno);
+                            //     $('#'+firstCellID).attr('rowspan', fourth_hour);
+                            //     $('#'+secondCellID).addClass('subject-cell-' + subject_sno);
+                            //     $('#'+thirdCellID).addClass('subject-cell-' + subject_sno);
+                            //     $('#'+fourthCellID).addClass('subject-cell-' + subject_sno);
+                            // }
+                            // else if((tmp == tmp2) !== (tmp3 == tmp4)){
+                            //     $('#'+firstCellID).html(subject_name).append(createBtn(subject_name,subject_sno, firstCellID)).css('text-align', 'center');
+                            //     $('#'+thirdCellID).html(subject_name).append(createBtn(subject_name,subject_sno, thirdCellID)).css('text-align', 'center');
+                            //     $('#'+firstCellID).addClass('subject-cell-' + subject_sno);
+                            //     $('#'+secondCellID).addClass('subject-cell-' + subject_sno);
+                            //     $('#'+thirdCellID).addClass('subject-cell-' + subject_sno);
+                            //     $('#'+fourthCellID).addClass('subject-cell-' + subject_sno);
+                            //
+                            // }
                         }
                         else{
                             $('#'+firstCellID).css('background-color', color);
                             $('#'+secondCellID).css('background-color', color);
+                            var test2 =DayAndRowspanCal2(firstCellID, secondCellID);
+                            if(Array.isArray(test2)){
+                                $('#'+firstCellID).html(subject_name).append(createBtn(subject_name,subject_sno,firstCellID)).css('text-align', 'center');
+                                $('#'+firstCellID).addClass('subject-cell-' + subject_sno);
+                                $('#'+secondCellID).html(subject_name).append(createBtn(subject_name,subject_sno,secondCellID)).css('text-align', 'center');
+                                $('#'+secondCellID).addClass('subject-cell-' + subject_sno);
+                            }
+                            else{
+                                $('#'+test2).html(subject_name).addClass('subject-cell-' + subject_sno).attr('rowspan', 2).css('text-align', 'center').append(createBtn(subject_name,subject_sno, test));
+                                $('#'+secondCellID).hide();
+                            }
                             if(tmp != tmp2){
                                 $('#'+firstCellID).html(subject_name).append(createBtn(subject_name,subject_sno,firstCellID)).css('text-align', 'center');
                                 $('#'+firstCellID).addClass('subject-cell-' + subject_sno);
@@ -555,6 +609,94 @@
             var btnClass = subject_name;
             var btnContent ='<button name="'+subject_name+'"id="'+subject_name+','+sno+','+CellID+'" class="subject_del">[x]</button>';
             return btnContent;
+        }
+        function DayCal(first_day, second_day, third_day, fourth_day){
+                if(first_day==second_day && second_day == third_day && third_day==fourth_day){
+                    return first_day
+                }
+                else if((first_day==second_day) != (third_day==fourth_day)){
+                    return [first_day, third_day];
+                }
+
+        }
+        function rowspanCal2(first_hour, second_hour, third_hour, fourth_hour){
+                if(first_hour+1 == second_hour && second_hour+1==third_hour && third_hour+1 == fourth_hour){
+                    return first_hour;
+                }
+                else if((first_hour+1==second_hour) && (second_hour+1!=third_hour) && (third_hour+1==fourth_hour)){
+                    return [first_hour, third_hour];
+                }
+        }
+        function DayAndRowspanCal(firstCellID, secondCellID, thirdCellID, fourthCellID){
+            var calArr = [firstCellID, secondCellID, thirdCellID, fourthCellID];
+            var dayArr =[];
+            var hourArr=[];
+            for(var i=0; i<calArr.length; i++){
+                var tmp = calArr[i].split('-');
+                dayArr.push(tmp[0]);
+                hourArr.push(parseInt(tmp[1]));
+                console.log(dayArr);
+                console.log(hourArr);
+            }
+            var day = DayCal(dayArr[0], dayArr[1], dayArr[2], dayArr[3]);
+            var rowspan = rowspanCal2(hourArr[0], hourArr[1], hourArr[2], hourArr[3]);
+            console.log(day);
+            console.log(rowspan);
+            if(Array.isArray(day) && Array.isArray(rowspan)){
+                var arr=[];
+                arr.push(day[0]+'-'+rowspan[0]);
+                arr.push(day[1]+'-'+rowspan[1]);
+                return arr;
+            }
+            else{
+                return day+'-'+rowspan;
+            }
+        }
+        function DayCal2(first_day, second_day){
+            if(first_day==second_day){
+                return first_day
+            }
+            else{
+                return [first_day, second_day];
+            }
+        }
+        function rowspanCal3(day, first_hour, second_hour){
+            if(Array.isArray(day)){
+                return [first_hour, second_hour];
+            }
+            else{
+                if(first_hour+1 == second_hour){
+                    return first_hour;
+                }
+                else {
+                    return[first_hour, second_hour];
+                }
+            }
+        }
+        function DayAndRowspanCal2(firstCellID, secondCellID){
+            var calArr = [firstCellID, secondCellID];
+            var dayArr =[];
+            var hourArr=[];
+            for(var i=0; i<calArr.length; i++){
+                var tmp = calArr[i].split('-');
+                dayArr.push(tmp[0]);
+                hourArr.push(parseInt(tmp[1]));
+                console.log(dayArr);
+                console.log(hourArr);
+            }
+            var day = DayCal2(dayArr[0], dayArr[1]);
+            var rowspan = rowspanCal3(day, hourArr[0], hourArr[1]);
+            console.log(day);
+            console.log(rowspan);
+            if(Array.isArray(day) && Array.isArray(rowspan)){
+                var arr=[];
+                arr.push(day[0]+'-'+rowspan[0]);
+                arr.push(day[1]+'-'+rowspan[1]);
+                return arr;
+            }
+            else{
+                return day+'-'+rowspan;
+            }
         }
     </script>
     </body>

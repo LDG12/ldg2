@@ -13,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.security.auth.Subject;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 
@@ -24,7 +25,10 @@ public class ScheduleController {
     @Autowired
     Color_InfoService color_infoService;
     @RequestMapping("/test")
-    public String scheduleMain(){
+    public String scheduleMain(HttpServletRequest request){
+        if(!loginCheck(request)){
+            return "redirect:/login/login?toURL="+request.getRequestURL();
+        }
         return "schedule";
     }
 
@@ -49,16 +53,13 @@ public class ScheduleController {
         }
         else{
             third_hour = Integer.parseInt(subject_third_hour);
-            fourth_hour = Integer.parseInt(subject_third_hour);
+            fourth_hour = Integer.parseInt(subject_fourth_hour);
         }
         scheduleDto.setSubject_third_hour(third_hour);
         scheduleDto.setSubject_fourth_hour(fourth_hour);
-        System.out.println("scheduleDto.getSubject_third_hour() = " + scheduleDto.getSubject_third_hour());
-        System.out.println("scheduleDto.getSubject_fourth_hour() = " + scheduleDto.getSubject_fourth_hour());
         String sid = (String)session.getAttribute("id");
         scheduleDto.setSid(sid);
         int rowCnt = scheduleService.insert(scheduleDto);
-        System.out.println("rowCnt = " + rowCnt);
         if(rowCnt==1){
             Integer sno = scheduleService.selectSno(scheduleDto);
             int colorRow = color_infoService.insert(color_infoDto, sid, sno);
@@ -93,5 +94,9 @@ public class ScheduleController {
         else{
             return ResponseEntity.ok("impossible");
         }
+    }
+    private boolean loginCheck(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        return session.getAttribute("id")!=null;
     }
 }

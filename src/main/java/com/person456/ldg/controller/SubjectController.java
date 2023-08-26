@@ -23,7 +23,6 @@ public class SubjectController {
     public String readAll(Model m){
         List<SubjectDto> list  = subjectService.selectAll();
         m.addAttribute("List", list);
-        System.out.println("list = " + list);
         if(list != null){
             return "forward:/schedule/test";
         }
