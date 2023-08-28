@@ -75,6 +75,13 @@
                 height: 50%;
                 margin: 5px 0 0 0;
                 background-color: #f8f8f8;
+                display: flex;
+                flex-direction: column;
+            }
+            #now_Schedule, #list_Schedule,#credit_view {
+                flex: 1;
+                border: 1px solid #ccc;
+                padding: 10px;
             }
             #button-container {
                 position: fixed;
@@ -154,8 +161,12 @@
     <div id="container">
         <aside>
                 <div id="now_Schedule">
-                    현재 시간표
-                    <button id="loadSchedule" class="shared-btn">시간표 불러오기</button>
+                </div>
+                <div id="credit_view"></div>
+                <div id="list_Schedule">
+                    <ol id="list_Schedule2">
+
+                    </ol>
                 </div>
         </aside>
         <div id="table-container">
@@ -307,6 +318,9 @@
     <script>
         $(document).ready(function(){
             updateCellRe();
+            updateSchedule_name(function(){
+                readMajorAndCredit();
+            });
             $(document).on('click','.subject_del', function(){
                 var arr =$(this).attr('id').split(',');
                 var subject_name = arr[0];
@@ -330,13 +344,7 @@
                         name.empty();
                         name.removeAttr('style');
                     })
-                    // btns.each(function(){
-                    //     var btn = $(this);
-                    //     var tdElement = btn.parent();
-                    //     // var tdID = tdElement.attr('id');
-                    //     tdElement.empty();
-                    //     tdElement.removeAttr('style');
-                    // })
+                    readMajorAndCredit();
                 }
             })
             function deleteSubject(subject_name, sno) {
@@ -536,31 +544,6 @@
                                 $('#'+thirdCellID).hide();
                                 $('#'+fourthCellID).hide();
                             }
-                            // if(tmp == tmp2 && tmp == tmp3 && tmp == tmp4){
-                            //     if((f_hour+1==s_hour)&&(s_hour+1==t_hour)&&(t_hour+1==fourth_hour)){
-                            //         $('#'+firstCellID).html(subject_name).append(createBtn(subject_name,subject_sno, firstCellID)).css('text-align', 'center');
-                            //         $('#'+firstCellID).addClass('subject-cell-' + subject_sno);
-                            //         $('#'+firstCellID).attr('rowspan', fourth_hour);
-                            //         $('#'+secondCellID).hide();
-                            //         $('#'+thirdCellID).hide();
-                            //         $('#'+fourthCellID).hide();
-                            //     }
-                            //     $('#'+firstCellID).html(subject_name).append(createBtn(subject_name,subject_sno, firstCellID)).css('text-align', 'center');
-                            //     $('#'+firstCellID).addClass('subject-cell-' + subject_sno);
-                            //     $('#'+firstCellID).attr('rowspan', fourth_hour);
-                            //     $('#'+secondCellID).addClass('subject-cell-' + subject_sno);
-                            //     $('#'+thirdCellID).addClass('subject-cell-' + subject_sno);
-                            //     $('#'+fourthCellID).addClass('subject-cell-' + subject_sno);
-                            // }
-                            // else if((tmp == tmp2) !== (tmp3 == tmp4)){
-                            //     $('#'+firstCellID).html(subject_name).append(createBtn(subject_name,subject_sno, firstCellID)).css('text-align', 'center');
-                            //     $('#'+thirdCellID).html(subject_name).append(createBtn(subject_name,subject_sno, thirdCellID)).css('text-align', 'center');
-                            //     $('#'+firstCellID).addClass('subject-cell-' + subject_sno);
-                            //     $('#'+secondCellID).addClass('subject-cell-' + subject_sno);
-                            //     $('#'+thirdCellID).addClass('subject-cell-' + subject_sno);
-                            //     $('#'+fourthCellID).addClass('subject-cell-' + subject_sno);
-                            //
-                            // }
                         }
                         else{
                             $('#'+firstCellID).css('background-color', color);
@@ -697,6 +680,59 @@
             else{
                 return day+'-'+rowspan;
             }
+        }
+        function updateSchedule_name(callback){
+            $.ajax({
+                url:"<c:url value='/schedule/readSchedule_name'/>",
+                type:"get",
+                dataType :"json",
+                success:function(data){
+                    $('#now_Schedule').html(data[0]);
+                    for(var i=0; i<data.length; i++){
+                        $('#list_Schedule2').append(createSchedule(data[i]));
+                    }
+                    if(typeof callback=='function'){
+                        callback();
+                    }
+                },
+                error:function(error){
+                    alert("오류가 발생하였습니다.");
+                }
+            })
+        }
+        function createSchedule(schedule_name){
+            var realScheduleName = schedule_name;
+            var li = '<li>'+realScheduleName+'</li>';
+            return li;
+        }
+        function createCredit(sum){
+            var credit = sum;
+            var li = '<li>'+sum+'학점'+'</li>';
+            return li;
+        }
+        function readMajorAndCredit(){
+            var schedule_name = $('#now_Schedule').html();
+            console.log(schedule_name);
+            $.ajax({
+                url:"<c:url value='/schedule/readMC'/>",
+                type:'post',
+                data:{schedule_name : schedule_name},
+                success:function(data){
+                    var majorList = data.major;
+                    var creditList = data.credit;
+                    var sum=0;
+                    for(var i=0; i<creditList.length; i++){
+                        sum+=parseInt(creditList[i]);
+                    }
+                    console.log(majorList);
+                    console.log(creditList);
+                    console.log(sum);
+                    $('#credit_view').html(sum.toString()+'학점');
+                },
+                error:function(error){
+                    alert("에러 발생");
+                }
+            })
         }
     </script>
     </body>

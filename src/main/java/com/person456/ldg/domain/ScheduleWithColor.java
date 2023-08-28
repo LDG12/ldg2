@@ -7,6 +7,7 @@ public class ScheduleWithColor {
     private List<ScheduleDto> scheduleDtoList;
     private List<Color_InfoDto> color_infoDtoList;
 
+
     public ScheduleWithColor(){}
     public ScheduleWithColor(List<ScheduleDto> scheduleDtoList, List<Color_InfoDto> color_infoDtoList) {
         this.scheduleDtoList = scheduleDtoList;

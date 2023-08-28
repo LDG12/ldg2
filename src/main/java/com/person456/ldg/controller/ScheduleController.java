@@ -1,11 +1,9 @@
 package com.person456.ldg.controller;
 
-import com.person456.ldg.domain.Color_InfoDto;
-import com.person456.ldg.domain.ScheduleDto;
-import com.person456.ldg.domain.ScheduleWithColor;
-import com.person456.ldg.domain.SubjectDto;
+import com.person456.ldg.domain.*;
 import com.person456.ldg.service.Color_InfoService;
 import com.person456.ldg.service.ScheduleService;
+import com.person456.ldg.service.Schedule_InfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -15,7 +13,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.security.auth.Subject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/schedule")
@@ -24,6 +24,8 @@ public class ScheduleController {
     ScheduleService scheduleService;
     @Autowired
     Color_InfoService color_infoService;
+    @Autowired
+    Schedule_InfoService schedule_infoService;
     @RequestMapping("/test")
     public String scheduleMain(HttpServletRequest request){
         if(!loginCheck(request)){
@@ -32,6 +34,24 @@ public class ScheduleController {
         return "schedule";
     }
 
+    @GetMapping("/readSchedule_name")
+    @ResponseBody
+    public List<String>  schedule_nameRead(HttpSession session){
+        String sid = (String)session.getAttribute("id");
+        List<String> schedule_infoDtoList = schedule_infoService.initial(sid);
+        return schedule_infoDtoList;
+    }
+    @PostMapping("/readMC")
+    @ResponseBody
+    public Map<String, List> schedule_readMC(String schedule_name){
+        Integer schedule_set = schedule_infoService.first(schedule_name);
+        List<String> majorList = scheduleService.readMajor(schedule_set);
+        List<Integer> creditList = scheduleService.readCredit(schedule_set);
+        Map<String, List> map = new HashMap<>();
+        map.put("major", majorList);
+        map.put("credit", creditList);
+        return map;
+    }
     @GetMapping("/read")
     @ResponseBody
     public ScheduleWithColor scheduleRead(HttpSession session, Model m){

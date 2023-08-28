@@ -13,15 +13,27 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Autowired
     ScheduleDao scheduleDao;
 
+    @Override
+    public List<String> readMajor(Integer set_num){
+        return scheduleDao.readMajor(set_num);
+    }
+    @Override
+    public List<Integer> readCredit(Integer set_num){
+        return scheduleDao.readCredit(set_num);
+    }
+    @Override
     public int count(String sid){
         return scheduleDao.count(sid);
     }
+    @Override
     public List<ScheduleDto> selectOneSchedule(String sid){
         return scheduleDao.selectOneSchedule(sid);
     }
+    @Override
     public int selectSno(ScheduleDto scheduleDto){
         return scheduleDao.selectSno(scheduleDto);
     }
+    @Override
     public int insert(ScheduleDto scheduleDto){
         String first_day = scheduleDto.getSubject_first_day();
         Integer first_hour = scheduleDto.getSubject_first_hour();
@@ -35,12 +47,15 @@ public class ScheduleServiceImpl implements ScheduleService {
         }
         return scheduleDao.insert(scheduleDto);
     }
+    @Override
     public int deleteAll(Integer sno){
         return scheduleDao.deleteAll(sno);
     }
+    @Override
     public int delete(Map map){
         return scheduleDao.delete(map);
     }
+
     private boolean checkOverlap(ScheduleDto vali, String day, Integer hour) {
         if (day.equals(vali.getSubject_first_day())) {
             if (hour.equals(vali.getSubject_first_hour())) {
@@ -56,4 +71,5 @@ public class ScheduleServiceImpl implements ScheduleService {
 
         return false;
     }
+
 }

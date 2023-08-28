@@ -12,4 +12,6 @@ public interface ScheduleService {
     public int insert(ScheduleDto scheduleDto);
     public int deleteAll(Integer sno);
     public int delete(Map map);
+    List<String> readMajor(Integer set_num);
+    List<Integer> readCredit(Integer set_num);
 }

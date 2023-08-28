@@ -1,0 +1,12 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.person456.ldg.dao.Schedule_InfoMapper">
+    <select id="initial" resultType="String">
+        select schedule_name from schedule_info
+        where sid=#{sid}
+    </select>
+    <select id="first" resultType="int">
+        select schedule_set from schedule_info
+        where schedule_name = #{schedule_name}
+    </select>
+</mapper>
