@@ -18,15 +18,15 @@
     </select>
     <select id="selectMajor" resultType="String">
         select major from schedule
-        where schedule_set = #{schedule_set}
+        where schedule_set = #{schedule_set} order by sno asc
     </select>
     <select id="selectCredit" resultType="int">
         select credit from schedule
-        where schedule_set = #{schedule_set}
+        where schedule_set = #{schedule_set} order by sno asc
     </select>
     <insert id="insert" parameterType="ScheduleDto">
-        insert into schedule(sid, subject_name, major, credit, subject_first_day, subject_first_hour, subject_second_day, subject_second_hour, place, subject_third_day, subject_third_hour, subject_fourth_day, subject_fourth_hour)
-        values(#{sid}, #{subject_name}, #{major}, #{credit}, #{subject_first_day}, #{subject_first_hour}, #{subject_second_day}, #{subject_second_hour}, #{place},#{subject_third_day},#{subject_third_hour},#{subject_fourth_day},#{subject_fourth_hour})
+        insert into schedule(sid, subject_name, major, credit, subject_first_day, subject_first_hour, subject_second_day, subject_second_hour, place, subject_third_day, subject_third_hour, subject_fourth_day, subject_fourth_hour, schedule_set)
+        values(#{sid}, #{subject_name}, #{major}, #{credit}, #{subject_first_day}, #{subject_first_hour}, #{subject_second_day}, #{subject_second_hour}, #{place},#{subject_third_day},#{subject_third_hour},#{subject_fourth_day},#{subject_fourth_hour}, #{schedule_set})
     </insert>
     <delete id="deleteAll" parameterType="int">
         delete from schedule where sno=#{sno}

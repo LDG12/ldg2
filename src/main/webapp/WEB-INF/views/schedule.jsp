@@ -162,16 +162,19 @@
         <aside>
                 <div id="now_Schedule">
                 </div>
-                <div id="credit_view"></div>
+                <oi id="credit_view">
+                    <li id="majorSum"></li>
+                    <li id="cultureSum"></li>
+                </oi>
                 <div id="list_Schedule">
                     <ol id="list_Schedule2">
 
                     </ol>
+                    <button id="scheduleAdd">새 시간표 만들기</button>
                 </div>
         </aside>
         <div id="table-container">
             <table height="600" style="color: #121212">
-                <caption>▶   강의 시간표  ◀</caption>
                 <tr width=19%>
                     <th></th>
                     <th>월</th>
@@ -185,7 +188,7 @@
                     <td id="mon-1"></td>
                     <td id="tue-1"></td>
                     <td id="wed-1"></td>
-                    <td id="thu-1"></td>
+                    <td id="tur-1"></td>
                     <td id="fri-1"></td>
                 </tr>
                 <tr class="BRow">
@@ -193,7 +196,7 @@
                     <td id="mon-2"></td>
                     <td id="tue-2"></td>
                     <td id="wed-2"></td>
-                    <td id="thu-2"></td>
+                    <td id="tur-2"></td>
                     <td id="fri-2"></td>
                 </tr>
                 <tr class="BRow">
@@ -320,7 +323,110 @@
             updateCellRe();
             updateSchedule_name(function(){
                 readMajorAndCredit();
+                $('tr.row').on('click', function (){
+                    var clickedRow = $(this);
+                    getSchedule_set(function(schedule_set){
+                        var third_day = clickedRow.find('input[name="subject_third_day"]').val();
+                        var third_hour=clickedRow.find('input[name="subject_third_hour"]').val();
+                        var fourth_day = clickedRow.find('input[name="subject_fourth_day"]').val();
+                        var fourth_hour=clickedRow.find('input[name="subject_fourth_hour"]').val();
+                        console.log(schedule_set);
+                        var formData = {
+                            subject_name: clickedRow.find('input[name="subject_name"]').val(),
+                            major: clickedRow.find('input[name="major"]').val(),
+                            credit: clickedRow.find('input[name="credit"]').val(),
+                            professor: clickedRow.find('input[name="professor"]').val(),
+                            subject_first_day: clickedRow.find('input[name="subject_first_day"]').val(),
+                            subject_first_hour: clickedRow.find('input[name="subject_first_hour"]').val(),
+                            subject_second_day: clickedRow.find('input[name="subject_second_day"]').val(),
+                            subject_second_hour: clickedRow.find('input[name="subject_second_hour"]').val(),
+                            place: clickedRow.find('input[name="place"]').val(),
+                            subject_third_day : clickedRow.find('input[name="subject_third_day"]').val(),
+                            subject_third_hour :clickedRow.find('input[name="subject_third_hour"]').val(),
+                            subject_fourth_day:clickedRow.find('input[name="subject_fourth_day"]').val(),
+                            subject_fourth_hour:clickedRow.find('input[name="subject_fourth_hour"]').val(),
+                            cell_color : getRandomLightColor(hexColors),
+                            schedule_set : schedule_set
+                        };
+                        var formDataV2={
+                            subject_name: clickedRow.find('input[name="subject_name"]').val(),
+                            major: clickedRow.find('input[name="major"]').val(),
+                            credit: clickedRow.find('input[name="credit"]').val(),
+                            professor: clickedRow.find('input[name="professor"]').val(),
+                            subject_first_day: clickedRow.find('input[name="subject_first_day"]').val(),
+                            subject_first_hour: clickedRow.find('input[name="subject_first_hour"]').val(),
+                            subject_second_day: clickedRow.find('input[name="subject_second_day"]').val(),
+                            subject_second_hour: clickedRow.find('input[name="subject_second_hour"]').val(),
+                            subject_third_day: "",
+                            subject_third_hour:"",
+                            subject_fourth_day:"",
+                            subject_fourth_hour:"",
+                            place: clickedRow.find('input[name="place"]').val(),
+                            cell_color: getRandomLightColor(hexColors),
+                            schedule_set : schedule_set
+                        }
+                        if(third_day==="" && third_hour==="" && fourth_day==="" && fourth_hour===""){
+                            $.ajax({
+                                url : "<c:url value='/schedule/add'/>",
+                                type : "POST",
+                                data : formDataV2,
+                                success : function(response){
+                                    if(response=='possible'){
+                                        updateCellRe();
+                                        readMajorAndCredit();
+                                    }
+                                    else{
+                                        alert("같은 시간대에 이미 수업이 있습니다.");
+                                    }
+                                },
+                                error:function(error){
+                                    alert("오류 발생");
+                                }
+                            })
+                        }
+                        else{
+                            $.ajax({
+                                url : "<c:url value='/schedule/add'/>",
+                                type : "POST",
+                                data : formData,
+                                success : function(response){
+                                    if(response=='possible'){
+                                        updateCellRe();
+                                    }
+                                    else{
+                                        alert("같은 시간대에 이미 수업이 있습니다.");
+                                    }
+                                },
+                                error:function(error){
+                                    alert("오류 발생");
+                                }
+                            })
+                        }
+                    })
             });
+            $('#scheduleAdd').on('click', function(){
+                var now_schedule = $('#now_Schedule').html();
+                addNewSchedule(now_schedule);
+            })
+            function addNewSchedule(now_schedule){
+                $.ajax({
+                    url:"<c:url value='/schedule/AddNewSchedule'/>",
+                    type : "get",
+                    data :{now_schedule : now_schedule},
+                    success:function(response){
+                        if(response=="possible"){
+                            alert("시간표 생성 성공");
+                        }
+                        else{
+                            alert("시간표 생성 실패");
+                        }
+                    },
+                    error:function(error){
+                        alert("에러가 발생했습니다.");
+                    }
+                })
+            }
+
             $(document).on('click','.subject_del', function(){
                 var arr =$(this).attr('id').split(',');
                 var subject_name = arr[0];
@@ -344,30 +450,9 @@
                         name.empty();
                         name.removeAttr('style');
                     })
-                    readMajorAndCredit();
                 }
             })
-            function deleteSubject(subject_name, sno) {
-                $.ajax({
-                    url: "<c:url value='/schedule/delete'/>",
-                    type: "post",
-                    data: {
-                        subject_name: subject_name,
-                        sno: sno
-                    },
-                    success: function(response) {
-                        if (response == "possible") {
-                            alert("수업 삭제에 성공했습니다.");
-                            updateCellRe();
-                        } else {
-                            alert("수업 삭제에 실패했습니다.");
-                        }
-                    },
-                    error: function(error) {
-                        alert("시간표 삭제 중 오류가 발생했습니다.");
-                    }
-                });
-            }
+
 <%--            수업 목록 보기 를 누르면 리스트가 나오고, 버튼은 사라지게 만들기--%>
             $('#searchSubject').on('click', function() {
                 $('#subjects').css('display', 'block');
@@ -379,86 +464,27 @@
                 $('#searchSubject').css('display', 'block');
             });
             //테이블의 행을 누르면 add하기.
-            $('tr.row').on('click', function (){
+
+
                 // $(this).find('td').not(':last-child').on('click', function(){
-                var clickedRow = $(this);
-                var third_day = clickedRow.find('input[name="subject_third_day"]').val();
-                var third_hour=clickedRow.find('input[name="subject_third_hour"]').val();
-                var fourth_day = clickedRow.find('input[name="subject_fourth_day"]').val();
-                var fourth_hour=clickedRow.find('input[name="subject_fourth_hour"]').val();
-                console.log(third_day);
-                console.log(third_hour);
-                console.log(fourth_day);
-                console.log(fourth_hour);
-                var formData = {
-                    subject_name: clickedRow.find('input[name="subject_name"]').val(),
-                    major: clickedRow.find('input[name="major"]').val(),
-                    credit: clickedRow.find('input[name="credit"]').val(),
-                    professor: clickedRow.find('input[name="professor"]').val(),
-                    subject_first_day: clickedRow.find('input[name="subject_first_day"]').val(),
-                    subject_first_hour: clickedRow.find('input[name="subject_first_hour"]').val(),
-                    subject_second_day: clickedRow.find('input[name="subject_second_day"]').val(),
-                    subject_second_hour: clickedRow.find('input[name="subject_second_hour"]').val(),
-                    place: clickedRow.find('input[name="place"]').val(),
-                    subject_third_day : clickedRow.find('input[name="subject_third_day"]').val(),
-                    subject_third_hour :clickedRow.find('input[name="subject_third_hour"]').val(),
-                    subject_fourth_day:clickedRow.find('input[name="subject_fourth_day"]').val(),
-                    subject_fourth_hour:clickedRow.find('input[name="subject_fourth_hour"]').val(),
-                    cell_color : getRandomLightColor(hexColors)
-                };
-                var formDataV2={
-                    subject_name: clickedRow.find('input[name="subject_name"]').val(),
-                    major: clickedRow.find('input[name="major"]').val(),
-                    credit: clickedRow.find('input[name="credit"]').val(),
-                    professor: clickedRow.find('input[name="professor"]').val(),
-                    subject_first_day: clickedRow.find('input[name="subject_first_day"]').val(),
-                    subject_first_hour: clickedRow.find('input[name="subject_first_hour"]').val(),
-                    subject_second_day: clickedRow.find('input[name="subject_second_day"]').val(),
-                    subject_second_hour: clickedRow.find('input[name="subject_second_hour"]').val(),
-                    subject_third_day: "",
-                    subject_third_hour:"",
-                    subject_fourth_day:"",
-                    subject_fourth_hour:"",
-                    place: clickedRow.find('input[name="place"]').val(),
-                    cell_color: getRandomLightColor(hexColors)
-                }
-                if(third_day==="" && third_hour==="" && fourth_day==="" && fourth_hour===""){
-                    $.ajax({
-                        url : "<c:url value='/schedule/add'/>",
-                        type : "POST",
-                        data : formDataV2,
-                        success : function(response){
-                            if(response=='possible'){
-                                updateCellRe();
-                            }
-                            else{
-                                alert("같은 시간대에 이미 수업이 있습니다.");
-                            }
-                        },
-                        error:function(error){
-                            alert("오류 발생");
-                        }
-                    })
-                }
-                else{
-                    $.ajax({
-                        url : "<c:url value='/schedule/add'/>",
-                        type : "POST",
-                        data : formData,
-                        success : function(response){
-                            if(response=='possible'){
-                                updateCellRe();
-                            }
-                            else{
-                                alert("같은 시간대에 이미 수업이 있습니다.");
-                            }
-                        },
-                        error:function(error){
-                            alert("오류 발생");
-                        }
-                    })
-                }
+
             })
+            function getSchedule_set(callback){
+                var subject_name = $('#now_Schedule').html();
+                console.log(subject_name);
+                $.ajax({
+                    url : "<c:url value='/schedule/getSchedule_set'/>",
+                    type : "get",
+                    data : {subject_name : subject_name},
+                    success:function(schedule_set){
+                        console.log(schedule_set);
+                        callback(schedule_set);
+                    },
+                    error:function(error){
+                        alert("오류 발생");
+                    }
+                })
+            }
         })
         function updateCellRe(){
             $.ajax({
@@ -479,7 +505,6 @@
                                 color = colors[j].cell_color;
                             }
                         }
-                        console.log(color);
                         var firstCellID;
                         var secondCellID;
                         var thirdCellID;
@@ -487,7 +512,7 @@
                         var mon = "mon-";
                         var tue = "tue-";
                         var wed = "wed-";
-                        var thu = "thu-";
+                        var tur = "tur-";
                         var fri = "fri-";
                         var subject_sno = item.sno;
                         var subject_name = item.subject_name;
@@ -503,26 +528,26 @@
                         if(tmp == '월'){firstCellID=mon+f_hour;}
                         else if(tmp == '화'){firstCellID=tue+f_hour;}
                         else if(tmp=='수'){firstCellID=wed+f_hour;}
-                        else if(tmp=='목'){firstCellID=thu+f_hour;}
+                        else if(tmp=='목'){firstCellID=tur+f_hour;}
                         else if(tmp=='금'){firstCellID=fri+f_hour;}
 
                         if(tmp2 == '월'){secondCellID = mon+s_hour;}
                         else if(tmp2=='화'){secondCellID=tue+s_hour;}
                         else if(tmp2=='수'){secondCellID=wed+s_hour;}
-                        else if(tmp2=='목'){secondCellID=thu+s_hour;}
+                        else if(tmp2=='목'){secondCellID=tur+s_hour;}
                         else if(tmp2=='금'){secondCellID=fri+s_hour;}
 
                         if(tmp3!="" && tmp4!=""){
                             if(tmp3 == '월'){thirdCellID = mon+t_hour;}
                             else if(tmp3=='화'){thirdCellID=tue+t_hour;}
                             else if(tmp3=='수'){thirdCellID=wed+t_hour;}
-                            else if(tmp3=='목'){thirdCellID=thu+t_hour;}
+                            else if(tmp3=='목'){thirdCellID=tur+t_hour;}
                             else if(tmp3=='금'){thirdCellID=fri+t_hour;}
 
                             if(tmp4 == '월'){fourthCellID = mon+fourth_hour;}
                             else if(tmp4=='화'){fourthCellID=tue+fourth_hour;}
                             else if(tmp4=='수'){fourthCellID=wed+fourth_hour;}
-                            else if(tmp4=='목'){fourthCellID=thu+fourth_hour;}
+                            else if(tmp4=='목'){fourthCellID=tur+fourth_hour;}
                             else if(tmp4=='금'){fourthCellID=fri+fourth_hour;}
 
                             $('#'+firstCellID).css('background-color', color);
@@ -531,7 +556,6 @@
                             $('#'+fourthCellID).css('background-color', color);
 
                             var test = DayAndRowspanCal(firstCellID, secondCellID, thirdCellID, fourthCellID);
-                            console.log(test);
                             if(Array.isArray(test)){
                                 $('#'+test[0]).html(subject_name).addClass('subject-cell-'+ subject_sno).attr('rowspan', 2).css('text-align', 'center').append(createBtn(subject_name,subject_sno, test));
                                 $('#'+test[1]).html(subject_name).addClass('subject-cell-'+ subject_sno).attr('rowspan', 2).css('text-align', 'center').append(createBtn(subject_name,subject_sno, test));
@@ -618,13 +642,9 @@
                 var tmp = calArr[i].split('-');
                 dayArr.push(tmp[0]);
                 hourArr.push(parseInt(tmp[1]));
-                console.log(dayArr);
-                console.log(hourArr);
             }
             var day = DayCal(dayArr[0], dayArr[1], dayArr[2], dayArr[3]);
             var rowspan = rowspanCal2(hourArr[0], hourArr[1], hourArr[2], hourArr[3]);
-            console.log(day);
-            console.log(rowspan);
             if(Array.isArray(day) && Array.isArray(rowspan)){
                 var arr=[];
                 arr.push(day[0]+'-'+rowspan[0]);
@@ -664,13 +684,9 @@
                 var tmp = calArr[i].split('-');
                 dayArr.push(tmp[0]);
                 hourArr.push(parseInt(tmp[1]));
-                console.log(dayArr);
-                console.log(hourArr);
             }
             var day = DayCal2(dayArr[0], dayArr[1]);
             var rowspan = rowspanCal3(day, hourArr[0], hourArr[1]);
-            console.log(day);
-            console.log(rowspan);
             if(Array.isArray(day) && Array.isArray(rowspan)){
                 var arr=[];
                 arr.push(day[0]+'-'+rowspan[0]);
@@ -721,19 +737,64 @@
                     var majorList = data.major;
                     var creditList = data.credit;
                     var sum=0;
+                    var majorSum =0;
+                    var cultureSum =0;
                     for(var i=0; i<creditList.length; i++){
                         sum+=parseInt(creditList[i]);
                     }
-                    console.log(majorList);
-                    console.log(creditList);
-                    console.log(sum);
-                    $('#credit_view').html(sum.toString()+'학점');
+                    for(var i=0; i<majorList.length; i++){
+                        var cSum = creditList[i];
+                        var tmp= majorList[i];
+                        if(tmp=='전필')majorSum+=creditList[i];
+                        if(tmp=='교양')cultureSum += creditList[i];
+                    }
+                    console.log(majorSum);
+                    console.log(cultureSum);
+                    $('#credit_view').html(sum.toString()+'학점'+'<hr>');
+                    $('#credit_view').append(MCSum('전필', majorSum));
+                    $('#credit_view').append(MCSum('교양', cultureSum));
                 },
                 error:function(error){
                     alert("에러 발생");
                 }
             })
         }
+        function MCSum(major, sum){
+            var MC = major;
+            var MCsum = sum;
+            var tmpID = MC === '전필' || MC === '전선' ? 'major' : 'culture';
+
+            var existingLi = $('#' + tmpID);
+            if (existingLi.length > 0) {
+                existingLi.text(MC + ': ' + MCsum + '학점');
+            } else {
+                var li = '<li id="' + tmpID + '">' + MC + ': ' + MCsum + '학점</li>';
+                $('#credit_view').append(li);
+            }
+        }
+        function deleteSubject(subject_name, sno) {
+            $.ajax({
+                url: "<c:url value='/schedule/delete'/>",
+                type: "post",
+                data: {
+                    subject_name: subject_name,
+                    sno: sno
+                },
+                success: function(response) {
+                    if (response == "possible") {
+                        alert("수업 삭제에 성공했습니다.");
+                        updateCellRe();
+                        readMajorAndCredit();
+                    } else {
+                        alert("수업 삭제에 실패했습니다.");
+                    }
+                },
+                error: function(error) {
+                    alert("시간표 삭제 중 오류가 발생했습니다.");
+                }
+            });
+        }
+
     </script>
     </body>
     </html>

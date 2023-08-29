@@ -9,6 +9,11 @@ public class Schedule_InfoDto {
     private String sid;
 
     public Schedule_InfoDto(){}
+    public Schedule_InfoDto(Integer schedule_set, String schedule_name, String sid){
+        this.schedule_set = schedule_set;
+        this.schedule_name = schedule_name;
+        this.sid=sid;
+    }
     public Schedule_InfoDto(Integer pno, Integer schedule_set, String schedule_name, String sid) {
         this.pno = pno;
         this.schedule_set = schedule_set;

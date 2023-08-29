@@ -34,6 +34,29 @@ public class ScheduleController {
         return "schedule";
     }
 
+    @GetMapping("/AddNewSchedule")
+    public ResponseEntity<String> AddNewSchedule(HttpSession session,String subject_name, Model m){
+        String sid = (String)session.getAttribute("id");
+        String newName = scheduleService.addNewSchedule(sid);
+        Integer newScheduleSet = scheduleService.addNewSchedule_set(sid);
+        Schedule_InfoDto schedule_infoDto = new Schedule_InfoDto(newScheduleSet, newName, sid);
+        int rowCnt = schedule_infoService.addNewSchedule(schedule_infoDto);
+        if(rowCnt==1){
+            return ResponseEntity.ok("possible");
+        }
+        else{
+            return ResponseEntity.ok("impossible");
+        }
+    }
+    @GetMapping("/getSchedule_set")
+    @ResponseBody
+    public Integer getSchedule_set(HttpSession session, String subject_name){
+        String sid = (String)session.getAttribute("id");
+        Integer getSchedule_set = schedule_infoService.first(subject_name);
+        System.out.println("subject_name = " + subject_name);
+        System.out.println("getSchedule_set = " + getSchedule_set);
+        return getSchedule_set;
+    }
     @GetMapping("/readSchedule_name")
     @ResponseBody
     public List<String>  schedule_nameRead(HttpSession session){
@@ -59,7 +82,6 @@ public class ScheduleController {
         List<Color_InfoDto> color_infoDtoList = color_infoService.select(sid);
         List<ScheduleDto> scheduleDtoList= scheduleService.selectOneSchedule(sid);
         ScheduleWithColor scheduleWithColor = new ScheduleWithColor(scheduleDtoList, color_infoDtoList);
-        System.out.println("scheduleWithColor = " + scheduleWithColor);
         return scheduleWithColor;
     }
     @PostMapping("/add")
@@ -99,8 +121,6 @@ public class ScheduleController {
     }
     @PostMapping("/delete")
     public ResponseEntity<String> subjectDelete(String subject_name, Integer sno){
-        System.out.println("subject_name = " + subject_name);
-        System.out.println("sno = " + sno);
         int colorRow = color_infoService.delete(sno);
         if(colorRow==1){
             int scheduleRow = scheduleService.deleteAll(sno);

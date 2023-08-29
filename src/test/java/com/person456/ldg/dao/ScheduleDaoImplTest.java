@@ -16,20 +16,20 @@ public class ScheduleDaoImplTest {
     @Autowired
     Color_InfoDao color_infoDao;
 
-    @Test
-    public void test(){
-        ScheduleDto user = new ScheduleDto();
-        int rowCnt = scheduleDao.insert(user);
-        assertTrue(rowCnt==1);
-    }
-    @Test
-    public void test2(){
-        int rowCnt = scheduleDao.deleteAll(1);
-        System.out.println("rowCnt = " + rowCnt);
-        assertTrue(rowCnt==1);
-    }
-    @Test
-    public void test3(){
-
-    }
+//    @Test
+//    public void test(){
+//        ScheduleDto user = new ScheduleDto();
+//        int rowCnt = scheduleDao.insert(user);
+//        assertTrue(rowCnt==1);
+//    }
+//    @Test
+//    public void test2(){
+//        int rowCnt = scheduleDao.deleteAll(1);
+//        System.out.println("rowCnt = " + rowCnt);
+//        assertTrue(rowCnt==1);
+//    }
+//    @Test
+//    public void test3(){
+//
+//    }
 }

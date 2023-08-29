@@ -18,9 +18,10 @@ public class ScheduleDto {
     private Integer subject_third_hour;
     private String subject_fourth_day;
     private Integer subject_fourth_hour;
+    private Integer schedule_set;
 
     public ScheduleDto(){}
-    public ScheduleDto(Integer sno, String sid, String subject_name, String major, Integer credit, String subject_first_day, Integer subject_first_hour, String subject_second_day, Integer subject_second_hour, String place, String subject_third_day, Integer subject_third_hour, String subject_fourth_day, Integer subject_fourth_hour) {
+    public ScheduleDto(Integer sno, String sid, String subject_name, String major, Integer credit, String subject_first_day, Integer subject_first_hour, String subject_second_day, Integer subject_second_hour, String place, String subject_third_day, Integer subject_third_hour, String subject_fourth_day, Integer subject_fourth_hour, Integer schedule_set) {
         this.sno = sno;
         this.sid = sid;
         this.subject_name = subject_name;
@@ -35,6 +36,7 @@ public class ScheduleDto {
         this.subject_third_hour = subject_third_hour;
         this.subject_fourth_day = subject_fourth_day;
         this.subject_fourth_hour = subject_fourth_hour;
+        this.schedule_set = schedule_set;
     }
 
     @Override
@@ -42,12 +44,12 @@ public class ScheduleDto {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ScheduleDto that = (ScheduleDto) o;
-        return Objects.equals(sno, that.sno) && Objects.equals(sid, that.sid) && Objects.equals(subject_name, that.subject_name) && Objects.equals(major, that.major) && Objects.equals(credit, that.credit) && Objects.equals(subject_first_day, that.subject_first_day) && Objects.equals(subject_first_hour, that.subject_first_hour) && Objects.equals(subject_second_day, that.subject_second_day) && Objects.equals(subject_second_hour, that.subject_second_hour) && Objects.equals(place, that.place) && Objects.equals(subject_third_day, that.subject_third_day) && Objects.equals(subject_third_hour, that.subject_third_hour) && Objects.equals(subject_fourth_day, that.subject_fourth_day) && Objects.equals(subject_fourth_hour, that.subject_fourth_hour);
+        return Objects.equals(sno, that.sno) && Objects.equals(sid, that.sid) && Objects.equals(subject_name, that.subject_name) && Objects.equals(major, that.major) && Objects.equals(credit, that.credit) && Objects.equals(subject_first_day, that.subject_first_day) && Objects.equals(subject_first_hour, that.subject_first_hour) && Objects.equals(subject_second_day, that.subject_second_day) && Objects.equals(subject_second_hour, that.subject_second_hour) && Objects.equals(place, that.place) && Objects.equals(subject_third_day, that.subject_third_day) && Objects.equals(subject_third_hour, that.subject_third_hour) && Objects.equals(subject_fourth_day, that.subject_fourth_day) && Objects.equals(subject_fourth_hour, that.subject_fourth_hour) && Objects.equals(schedule_set, that.schedule_set);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(sno, sid, subject_name, major, credit, subject_first_day, subject_first_hour, subject_second_day, subject_second_hour, place, subject_third_day, subject_third_hour, subject_fourth_day, subject_fourth_hour);
+        return Objects.hash(sno, sid, subject_name, major, credit, subject_first_day, subject_first_hour, subject_second_day, subject_second_hour, place, subject_third_day, subject_third_hour, subject_fourth_day, subject_fourth_hour, schedule_set);
     }
 
     @Override
@@ -67,6 +69,7 @@ public class ScheduleDto {
                 ", subject_third_hour=" + subject_third_hour +
                 ", subject_fourth_day='" + subject_fourth_day + '\'' +
                 ", subject_fourth_hour=" + subject_fourth_hour +
+                ", schedule_set=" + schedule_set +
                 '}';
     }
 
@@ -180,5 +183,13 @@ public class ScheduleDto {
 
     public void setSubject_fourth_hour(Integer subject_fourth_hour) {
         this.subject_fourth_hour = subject_fourth_hour;
+    }
+
+    public Integer getschedule_set() {
+        return schedule_set;
+    }
+
+    public void setschedule_set(Integer schedule_set) {
+        this.schedule_set = schedule_set;
     }
 }
