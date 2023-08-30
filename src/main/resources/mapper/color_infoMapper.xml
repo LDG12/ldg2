@@ -4,9 +4,16 @@
     <select id="count">
         select count(*) from color_info
     </select>
-    <select id="select" parameterType="String" resultType="Color_InfoDto">
+    <select id="select" parameterType="list" resultType="Color_InfoDto">
         select * from color_info
         where sid=#{sid}
+    </select>
+    <select id="select2" parameterType="list" resultType="Color_InfoDto">
+        select * from color_info
+        where sno in
+        <foreach item="sno" collection="list" open="(" separator="," close=")">
+            #{sno}
+        </foreach>
     </select>
     <insert id="insert" parameterType="Color_InfoDto">
         insert into color_info(sid, sno, cell_color)

@@ -27,6 +27,10 @@ public class ScheduleDaoImpl implements ScheduleDao {
         return session.selectOne(namespace+"count", sid);
     }
     @Override
+    public List<ScheduleDto> loadSchedule(Map map){
+        return session.selectList(namespace+"selectLoadSchedule", map);
+    }
+    @Override
     public List<ScheduleDto> selectOneSchedule(String sid){
         return session.selectList(namespace+"selectOneSchedule", sid);
     }

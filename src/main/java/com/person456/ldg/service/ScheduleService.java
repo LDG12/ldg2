@@ -13,6 +13,7 @@ public interface ScheduleService {
     public int deleteAll(Integer sno);
     public int delete(Map map);
     List<String> readMajor(Integer set_num);
+    List<ScheduleDto> loadSchedule(Map map);
     List<Integer> readCredit(Integer set_num);
     String addNewSchedule(String sid);
     Integer addNewSchedule_set(String sid);

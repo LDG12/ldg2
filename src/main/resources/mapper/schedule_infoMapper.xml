@@ -9,9 +9,17 @@
         select schedule_name from schedule_info
         where sid=#{sid}
     </select>
+    <select id="initialSecond" parameterType="map" resultType="String">
+        select schedule_name from schedule_info
+        where sid=#{sid} and schedule_name=#{schedule_name}
+    </select>
     <select id="first" resultType="int">
         select schedule_set from schedule_info
         where schedule_name = #{schedule_name}
+    </select>
+    <select id="second" parameterType="map" resultType="int">
+        select schedule_set from schedule_info
+        where schedule_name = #{schedule_name} and sid=#{sid}
     </select>
     <select id="schedule_setArr" resultType="int">
         select schedule_set from schedule_info

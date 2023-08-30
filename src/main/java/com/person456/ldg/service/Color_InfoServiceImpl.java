@@ -2,9 +2,12 @@ package com.person456.ldg.service;
 
 import com.person456.ldg.dao.Color_InfoDao;
 import com.person456.ldg.domain.Color_InfoDto;
+import com.person456.ldg.domain.ScheduleDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -15,6 +18,21 @@ public class Color_InfoServiceImpl implements Color_InfoService {
     @Override
     public int count(){
         return color_infoDao.count();
+    }
+
+    @Override
+    public List<Color_InfoDto> select2(List<ScheduleDto> scheduleDtoList){
+        if(scheduleDtoList.isEmpty()){
+            return Collections.emptyList();
+        }
+        else{
+            List<Integer> list = new ArrayList<>();
+            for(int i=0; i<scheduleDtoList.size(); i++){
+                Integer tmpSno =scheduleDtoList.get(i).getSno();
+                list.add(tmpSno);
+            }
+            return color_infoDao.select2(list);
+        }
     }
     @Override
     public List<Color_InfoDto> select(String sid){

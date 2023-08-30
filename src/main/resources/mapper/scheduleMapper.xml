@@ -9,6 +9,10 @@
         select * from schedule
         where sid=#{sid}
     </select>
+    <select id="selectLoadSchedule" parameterType="Map" resultType="ScheduleDto">
+        select * from schedule
+        where sid=#{sid} and schedule_set = #{schedule_set}
+    </select>
     <select id="selectSno" parameterType="ScheduleDto" resultType="int">
         select sno from schedule
         where subject_name=#{subject_name} and major=#{major} and credit=#{credit} and subject_first_day=#{subject_first_day}

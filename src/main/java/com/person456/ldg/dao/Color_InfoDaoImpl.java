@@ -18,6 +18,10 @@ public class Color_InfoDaoImpl implements Color_InfoDao {
         return session.selectOne(namespace+"count");
     }
     @Override
+    public List<Color_InfoDto> select2(List<Integer> list){
+        return session.selectList(namespace+"select2", list);
+    }
+    @Override
     public List<Color_InfoDto> select(String sid){
         return session.selectList(namespace+"select", sid);
     }

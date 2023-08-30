@@ -23,6 +23,10 @@ public class ScheduleServiceImpl implements ScheduleService {
         return scheduleDao.readCredit(set_num);
     }
     @Override
+    public List<ScheduleDto> loadSchedule(Map map){
+        return scheduleDao.loadSchedule(map);
+    }
+    @Override
     public Integer addNewSchedule_set(String sid){
         List<Integer> list = schedule_infoService.schedule_set(sid);
         Collections.sort(list);
@@ -100,6 +104,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         }
         return "시간표 "+next;
     }
+
     @Override
     public int count(String sid){
         return scheduleDao.count(sid);
@@ -118,12 +123,31 @@ public class ScheduleServiceImpl implements ScheduleService {
         Integer first_hour = scheduleDto.getSubject_first_hour();
         String second_day = scheduleDto.getSubject_second_day();
         Integer second_hour = scheduleDto.getSubject_second_hour();
-        List<ScheduleDto> valis = scheduleDao.selectOneSchedule(scheduleDto.getSid());
-        for(ScheduleDto vali : valis){
-            if(checkOverlap(vali, first_day, first_hour)||checkOverlap(vali, second_day, second_hour)){
-                return 0;
+        Integer schedule_set = scheduleDto.getschedule_set();
+        String third_day = scheduleDto.getSubject_third_day();
+        Integer third_hour = scheduleDto.getSubject_third_hour();
+        String fourth_day = scheduleDto.getSubject_fourth_day();
+        Integer fourth_hour = scheduleDto.getSubject_fourth_hour();
+        Map<String, String> map = new HashMap<>();
+        map.put("sid", scheduleDto.getSid());
+        map.put("schedule_set", String.valueOf(schedule_set));
+        List<ScheduleDto> list2 = scheduleDao.loadSchedule(map);
+        if(third_day.equals("") && fourth_day.equals("")){
+            for(ScheduleDto list : list2){
+                if(checkOverlap(list, first_day, first_hour)||checkOverlap(list, second_day, second_hour)){
+                    return 0;
+                }
             }
         }
+        else{
+            for(ScheduleDto list : list2){
+                if(checkOverlap(list, first_day, first_hour)||checkOverlap(list, second_day, second_hour)
+                ||checkOverlap(list, third_day, third_hour)||checkOverlap(list, fourth_day, fourth_hour)){
+                    return 0;
+                }
+            }
+        }
+
         return scheduleDao.insert(scheduleDto);
     }
     @Override
@@ -136,16 +160,20 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     private boolean checkOverlap(ScheduleDto vali, String day, Integer hour) {
-        if (day.equals(vali.getSubject_first_day())) {
-            if (hour.equals(vali.getSubject_first_hour())) {
-                return true;
-            }
+        if (day.equals(vali.getSubject_first_day()) && hour.equals(vali.getSubject_first_hour())) {
+            return true;
         }
 
-        if (day.equals(vali.getSubject_second_day())) {
-            if (hour.equals(vali.getSubject_second_hour())) {
-                return true;
-            }
+        if (day.equals(vali.getSubject_second_day()) && hour.equals(vali.getSubject_second_hour())) {
+            return true;
+        }
+
+        if (day.equals(vali.getSubject_third_day()) && hour.equals(vali.getSubject_third_hour())) {
+            return true;
+        }
+
+        if (day.equals(vali.getSubject_fourth_day()) && hour.equals(vali.getSubject_fourth_hour())) {
+            return true;
         }
 
         return false;

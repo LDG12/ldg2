@@ -136,6 +136,10 @@
             td:hover .subject_del{
                 display:block;
             }
+            .LoadSchedule:hover{
+                background-color:lightgray;
+                cursor:pointer;
+            }
         </style>
         <script>
             $(function(){
@@ -320,9 +324,17 @@
     </div>
     <script>
         $(document).ready(function(){
-            updateCellRe();
             updateSchedule_name(function(){
                 readMajorAndCredit();
+                updateCellRe();
+                $('.LoadSchedule').on('click', function(){
+                    var clickedLi = $(this).attr("id");
+                    resetScheduleCells();
+                    updateCellRe(clickedLi);
+                    $('#now_Schedule').html(clickedLi);
+                    readMajorAndCredit();
+
+                })
                 $('tr.row').on('click', function (){
                     var clickedRow = $(this);
                     getSchedule_set(function(schedule_set){
@@ -455,8 +467,14 @@
 
 <%--            수업 목록 보기 를 누르면 리스트가 나오고, 버튼은 사라지게 만들기--%>
             $('#searchSubject').on('click', function() {
+                var schedule_name = $('#now_Schedule').html();
+                console.log(schedule_name);
                 $('#subjects').css('display', 'block');
                 $(this).css('display', 'none');
+                <%--$.ajax({--%>
+                <%--    url:"<c:url value='/subject/read?schedule_name="+schedule_name+"'/>",--%>
+                <%--    type:"get",--%>
+                <%--})--%>
             });
 
             $('#closeSearchSubject').on('click', function(){
@@ -486,9 +504,16 @@
                 })
             }
         })
-        function updateCellRe(){
+        function updateCellRe(schedule_name){
+            var li = schedule_name;
+            if(li=="undefined" || li=="" || li==null){
+                li= document.querySelector("#list_Schedule2 li:first-child").getAttribute("id");
+            }
+            // var firstLi = document.querySelector("#list_Schedule2 li:first-child");
+            // var firstLiId = firstLi.getAttribute("id");
             $.ajax({
-                url : "<c:url value='/schedule/read'/>",
+                url : "<c:url value='/schedule/read?schedule_name=" + li + "' />",
+                <%--url : "<c:url value='/schedule/read?'/>",--%>
                 type : "get",
                 dataType:"json",
                 cache : false,
@@ -496,7 +521,6 @@
                     console.log(data);
                     var schedules = data.scheduleDtoList;
                     var colors = data.color_infoDtoList;
-
                     for(var i=0; i<schedules.length; i++){
                         var color;
                         var item = schedules[i];
@@ -705,6 +729,7 @@
                 success:function(data){
                     $('#now_Schedule').html(data[0]);
                     for(var i=0; i<data.length; i++){
+                        var tmp = data[i];
                         $('#list_Schedule2').append(createSchedule(data[i]));
                     }
                     if(typeof callback=='function'){
@@ -718,8 +743,17 @@
         }
         function createSchedule(schedule_name){
             var realScheduleName = schedule_name;
-            var li = '<li>'+realScheduleName+'</li>';
+            var url = "<c:url value='/schedule/load?schedule_name=" + realScheduleName + "' />";
+            // var atag = '<a href="' + url + '" class="LoadSchedule">' + realScheduleName + '</a>';
+            // var atag = '<a href="" class="LoadSchedule" data-info="'+realScheduleName+'">' + realScheduleName + '</a>';
+            var li = '<li id="' + realScheduleName + '" class="LoadSchedule">' + realScheduleName + '</li>';
+            // var li = '<li id="'+realScheduleName+'">'+realScheduleName+'</li>';
             return li;
+        }
+        function createHref(schedule_name){
+            var realScheduleName = schedule_name;
+            var url = "<c:url value='/schedule/load?schedule_name=" + realScheduleName + "' />";
+            var input = '<input id="'+realScheduleName+'" readonly=readonly>'+realScheduleName+'</input>'
         }
         function createCredit(sum){
             var credit = sum;
@@ -794,7 +828,13 @@
                 }
             });
         }
+        function schedule_load(){
 
+        }
+        function resetScheduleCells() {
+            $('td[id^="mon-"], td[id^="tue-"], td[id^="wed-"], td[id^="tur-"], td[id^="fri-"]').html('').removeAttr('style').show();
+            $('td[id^="mon-"][rowspan], td[id^="tue-"][rowspan], td[id^="wed-"][rowspan], td[id^="tur-"][rowspan], td[id^="fri-"][rowspan]').removeAttr('rowspan');
+        }
     </script>
     </body>
     </html>

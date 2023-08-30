@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class Schedule_InfoService {
@@ -18,6 +19,9 @@ public class Schedule_InfoService {
     public List<String> initial(String sid){
         return schedule_infoDao.initial(sid);
     }
+    public String initialSecond(Map map){
+        return schedule_infoDao.initialSecond(map);
+    }
     public Integer first(String schedule_name){
         return schedule_infoDao.first(schedule_name);
     }
@@ -26,5 +30,8 @@ public class Schedule_InfoService {
     }
     public int addNewSchedule(Schedule_InfoDto schedule_infoDto){
         return schedule_infoDao.addNewSchedule(schedule_infoDto);
+    }
+    public int second(Map map){
+        return schedule_infoDao.second(map);
     }
 }

@@ -11,7 +11,7 @@ public interface ScheduleDao {
     List<ScheduleDto> selectOneSchedule(String sid);
 
     int insert(ScheduleDto scheduleDto);
-
+    List<ScheduleDto> loadSchedule(Map map);
     int deleteAll(Integer sno);
     int selectSno(ScheduleDto scheduleDto);
     int delete(Map map);

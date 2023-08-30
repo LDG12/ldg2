@@ -3,6 +3,7 @@ package com.person456.ldg.controller;
 import com.person456.ldg.domain.*;
 import com.person456.ldg.service.Color_InfoService;
 import com.person456.ldg.service.ScheduleService;
+import com.person456.ldg.service.ScheduleServiceImpl;
 import com.person456.ldg.service.Schedule_InfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.security.auth.Subject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +30,7 @@ public class ScheduleController {
     Color_InfoService color_infoService;
     @Autowired
     Schedule_InfoService schedule_infoService;
+
     @RequestMapping("/test")
     public String scheduleMain(HttpServletRequest request){
         if(!loginCheck(request)){
@@ -52,7 +57,10 @@ public class ScheduleController {
     @ResponseBody
     public Integer getSchedule_set(HttpSession session, String subject_name){
         String sid = (String)session.getAttribute("id");
-        Integer getSchedule_set = schedule_infoService.first(subject_name);
+        Map<String, String> map = new HashMap<>();
+        map.put("schedule_name", subject_name);
+        map.put("sid", sid);
+        Integer getSchedule_set = schedule_infoService.second(map);
         System.out.println("subject_name = " + subject_name);
         System.out.println("getSchedule_set = " + getSchedule_set);
         return getSchedule_set;
@@ -75,13 +83,49 @@ public class ScheduleController {
         map.put("credit", creditList);
         return map;
     }
+    @GetMapping("/load")
+    public String schedule_load(String schedule_name, HttpSession session){
+        String sid = (String)session.getAttribute("id");
+        String name = schedule_name;
+        Map<String, String>map = new HashMap<>();
+        map.put("sid", sid);
+        map.put("schedule_name", name);
+        System.out.println("Load map = " + map+"\n");
+        String loadName = schedule_infoService.initialSecond(map);
+        System.out.println("Load Name = " + loadName+"\n");
+        try {
+            String encodeLoadName = URLEncoder.encode(loadName, "utf-8");
+            System.out.println("encodeLoadName = " + encodeLoadName+"\n");
+            return "redirect:/schedule/read?schedule_name="+encodeLoadName;
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return "redirect:/";
+        }
+    }
     @GetMapping("/read")
     @ResponseBody
-    public ScheduleWithColor scheduleRead(HttpSession session, Model m){
+    public ScheduleWithColor scheduleRead(HttpSession session, Model m, String schedule_name){
         String sid = (String)session.getAttribute("id");
-        List<Color_InfoDto> color_infoDtoList = color_infoService.select(sid);
+        String loadname = null;
+        try {
+            loadname = URLDecoder.decode(schedule_name, "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            loadname = "";
+        }
+        Map<String, String> map = new HashMap<>();
+        map.put("sid", sid);
+        map.put("schedule_name", loadname);
+        Integer schedule_set = schedule_infoService.second(map);
+        map.remove("schedule_name");
+        map.put("schedule_set", String.valueOf(schedule_set));
+        System.out.println("Readmap = " + map+"\n");
+        System.out.println("loadname = " + loadname+"\n");
+        List<ScheduleDto> list = scheduleService.loadSchedule(map);
+        System.out.println("list = " + list);
+        List<Color_InfoDto> color_infoDtoList = color_infoService.select2(list);
         List<ScheduleDto> scheduleDtoList= scheduleService.selectOneSchedule(sid);
-        ScheduleWithColor scheduleWithColor = new ScheduleWithColor(scheduleDtoList, color_infoDtoList);
+        ScheduleWithColor scheduleWithColor = new ScheduleWithColor(list, color_infoDtoList);
         return scheduleWithColor;
     }
     @PostMapping("/add")
