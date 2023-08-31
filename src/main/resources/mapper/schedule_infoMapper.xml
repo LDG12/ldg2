@@ -29,4 +29,8 @@
         insert into schedule_info(schedule_set, schedule_name, sid)
         values(#{schedule_set}, #{schedule_name}, #{sid})
     </insert>
+    <update id="update" parameterType="map">
+        update schedule_info set schedule_name = #{schedule_name}
+        where sid=#{sid} and schedule_name=#{old_schedule_name}
+    </update>
 </mapper>

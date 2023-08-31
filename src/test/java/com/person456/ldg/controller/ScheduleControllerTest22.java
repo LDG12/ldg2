@@ -40,4 +40,16 @@ public class ScheduleControllerTest22 {
         System.out.println("list = " + list);
         System.out.println("list2 = " + list2);
     }
+    @Test
+    public void test2(){
+        String sid = "ehdrlf0815";
+        String schedule_name = "testtest";
+        String old_schedule_name = "시간표 3";
+        Map<String,String>map = new HashMap<>();
+        map.put("sid", sid);
+        map.put("schedule_name", schedule_name);
+        map.put("old_schedule_name", old_schedule_name);
+        int rowCnt = schedule_infoService.update(map);
+        assertTrue(rowCnt == 1);
+    }
 }

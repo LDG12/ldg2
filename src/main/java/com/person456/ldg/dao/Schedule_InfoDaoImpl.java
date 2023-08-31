@@ -43,4 +43,8 @@ public class Schedule_InfoDaoImpl implements Schedule_InfoDao {
     public int addNewSchedule(Schedule_InfoDto schedule_infoDto){
         return session.insert(namespace+"addNewSchedule", schedule_infoDto);
     }
+    @Override
+    public int update(Map map){
+        return session.update(namespace+"update", map);
+    }
 }

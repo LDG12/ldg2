@@ -114,15 +114,19 @@ public class ScheduleController {
             loadname = "";
         }
         Map<String, String> map = new HashMap<>();
+        if(map.containsKey("schedule_name")){
+            map.replace("schedule_name", loadname);
+        }
+        else{
+            map.put("schedule_name", loadname);
+        }
         map.put("sid", sid);
-        map.put("schedule_name", loadname);
+        System.out.println("Prevmap = " + map);
         Integer schedule_set = schedule_infoService.second(map);
-        map.remove("schedule_name");
         map.put("schedule_set", String.valueOf(schedule_set));
         System.out.println("Readmap = " + map+"\n");
         System.out.println("loadname = " + loadname+"\n");
         List<ScheduleDto> list = scheduleService.loadSchedule(map);
-        System.out.println("list = " + list);
         List<Color_InfoDto> color_infoDtoList = color_infoService.select2(list);
         List<ScheduleDto> scheduleDtoList= scheduleService.selectOneSchedule(sid);
         ScheduleWithColor scheduleWithColor = new ScheduleWithColor(list, color_infoDtoList);
@@ -158,6 +162,23 @@ public class ScheduleController {
         }
         else if(rowCnt == 0){
             return ResponseEntity.ok("impossible");
+        }
+        else{
+            return ResponseEntity.ok("impossible");
+        }
+    }
+    @PostMapping("/update")
+    public ResponseEntity<String> scheduleUpdate(String schedule_name, String old_schedule_name, HttpSession session){
+        String sid = (String)session.getAttribute("id");
+        Map<String, String> map = new HashMap<>();
+        map.put("sid", sid);
+        map.put("schedule_name", schedule_name);
+        map.put("old_schedule_name", old_schedule_name);
+        System.out.println("schedule_name = " + schedule_name);
+        System.out.println("old_schedule_name = " + old_schedule_name);
+        int rowCnt = schedule_infoService.update(map);
+        if(rowCnt == 1){
+            return ResponseEntity.ok("possible");
         }
         else{
             return ResponseEntity.ok("impossible");

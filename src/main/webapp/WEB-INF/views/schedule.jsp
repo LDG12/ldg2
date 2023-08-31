@@ -140,6 +140,49 @@
                 background-color:lightgray;
                 cursor:pointer;
             }
+            #closeSetting_schedule:hover{
+                cursor:pointer;
+            }
+            #setting_schedule {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 10cm;
+                height: 10cm;
+                background-color: white;
+                padding: 20px;
+                display: none;
+                z-index: 1001;
+            }
+
+            #delete_Schedule {
+                position: absolute;
+                bottom: 0.7cm;
+                left: 0.7cm;
+            }
+
+            #saveSetting_schedule {
+                position: absolute;
+                bottom: 0.7cm;
+                right: 0.7cm;
+            }
+
+            #closeSetting_schedule {
+                position: absolute;
+                top: 0.7cm;
+                right: 0.7cm;
+            }
+            #overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.7);
+                display: none;
+                z-index: 1000;
+            }
         </style>
         <script>
             $(function(){
@@ -270,10 +313,20 @@
             </table>
         </div>
     </div>
+    <div id="overlay" style="display: none;"></div>
+    <div id="setting_schedule" style="display: none">
+        <a id="closeSetting_schedule">X</a>
+        <h3>시간표 설정</h3>
+        <p>
+            <label>이름</label>
+            <input type="text" id="now_name" value="">
+        </p>
+        <button id="delete_Schedule">삭제</button><button id="saveSetting_schedule">설정 저장</button>
+    </div>
+
+    </div>
     <div id="button-container">
-        <form action="<c:url value='/subject/read'/>" method="get">
             <button id="searchSubject" class="shared-btn">수업 목록 찾기</button>
-        </form>
     </div>
     <div id="subjects" style="display:${not empty List ? 'block' : 'none'}">
         <div id="filter"><button id="closeSearchSubject" class="shared-btn">닫기</button></div>
@@ -289,36 +342,36 @@
             <th><div>정원</div></th>
             <th><div>비고</div></th>
             </thead>
-            <tbody>
-            <c:if test="${not empty List}">
-                <c:forEach var="subjectDto" items="${List}">
-                    <tr class="row" id="subjectAdd${subjectDto.course_num}">
-                    <form id="addSubject${subjectDto.course_num}" action="" method="">
-                    <td><div>${subjectDto.course_num}</div></td>
-                    <td><input type="hidden" name="subject_name" value="${subjectDto.subject_name}">${subjectDto.subject_name}</td>
-                    <td><input type="hidden" name="major" value="${subjectDto.major}">${subjectDto.major}</td>
-                    <td><input type="hidden" name="credit" value="${subjectDto.credit}">${subjectDto.credit}</td>
-                    <td><input type="hidden" name="professor" value="${subjectDto.professor}">${subjectDto.professor}</td>
-                    <td>
-                        <input type="hidden" name="subject_first_day" value="${subjectDto.subject_first_day}">
-                        <input type="hidden" name="subject_first_hour" value="${subjectDto.subject_first_hour}">
-                        <input type="hidden" name="subject_second_day" value="${subjectDto.subject_second_day}">
-                        <input type="hidden" name="subject_second_hour" value="${subjectDto.subject_second_hour}">
-                        <input type="hidden" name="subject_third_day" value="${subjectDto.subject_third_day}">
-                        <input type="hidden" name="subject_third_hour" value="${subjectDto.subject_third_hour}">
-                        <input type="hidden" name="subject_fourth_day" value="${subjectDto.subject_fourth_day}">
-                        <input type="hidden" name="subject_fourth_hour" value="${subjectDto.subject_fourth_hour}">
-                        <div>
-                            ${subjectDto.subject_first_day}${subjectDto.subject_first_hour} ${subjectDto.subject_second_day}${subjectDto.subject_second_hour} ${subjectDto.subject_third_day}${subjectDto.subject_third_hour} ${subjectDto.subject_fourth_day}${subjectDto.subject_fourth_hour}
-                        </div>
-                    </td>
-                    <td><input type="hidden" name="place" value="${subjectDto.place}">${subjectDto.place}</td>
-                    <td><div>${subjectDto.nop}</div></td>
-                    <td><div>${subjectDto.etc}</div></td>
-                    </form>
-                    </tr>
-                </c:forEach>
-            </c:if>
+            <tbody id="subject_list">
+<%--            <c:if test="${not empty List}">--%>
+<%--                <c:forEach var="subjectDto" items="${List}">--%>
+<%--                    <tr class="row" id="subjectAdd${subjectDto.course_num}">--%>
+<%--                    <form id="addSubject${subjectDto.course_num}" action="" method="">--%>
+<%--                    <td><div>${subjectDto.course_num}</div></td>--%>
+<%--                    <td><input type="hidden" name="subject_name" value="${subjectDto.subject_name}">${subjectDto.subject_name}</td>--%>
+<%--                    <td><input type="hidden" name="major" value="${subjectDto.major}">${subjectDto.major}</td>--%>
+<%--                    <td><input type="hidden" name="credit" value="${subjectDto.credit}">${subjectDto.credit}</td>--%>
+<%--                    <td><input type="hidden" name="professor" value="${subjectDto.professor}">${subjectDto.professor}</td>--%>
+<%--                    <td>--%>
+<%--                        <input type="hidden" name="subject_first_day" value="${subjectDto.subject_first_day}">--%>
+<%--                        <input type="hidden" name="subject_first_hour" value="${subjectDto.subject_first_hour}">--%>
+<%--                        <input type="hidden" name="subject_second_day" value="${subjectDto.subject_second_day}">--%>
+<%--                        <input type="hidden" name="subject_second_hour" value="${subjectDto.subject_second_hour}">--%>
+<%--                        <input type="hidden" name="subject_third_day" value="${subjectDto.subject_third_day}">--%>
+<%--                        <input type="hidden" name="subject_third_hour" value="${subjectDto.subject_third_hour}">--%>
+<%--                        <input type="hidden" name="subject_fourth_day" value="${subjectDto.subject_fourth_day}">--%>
+<%--                        <input type="hidden" name="subject_fourth_hour" value="${subjectDto.subject_fourth_hour}">--%>
+<%--                        <div>--%>
+<%--                            ${subjectDto.subject_first_day}${subjectDto.subject_first_hour} ${subjectDto.subject_second_day}${subjectDto.subject_second_hour} ${subjectDto.subject_third_day}${subjectDto.subject_third_hour} ${subjectDto.subject_fourth_day}${subjectDto.subject_fourth_hour}--%>
+<%--                        </div>--%>
+<%--                    </td>--%>
+<%--                    <td><input type="hidden" name="place" value="${subjectDto.place}">${subjectDto.place}</td>--%>
+<%--                    <td><div>${subjectDto.nop}</div></td>--%>
+<%--                    <td><div>${subjectDto.etc}</div></td>--%>
+<%--                    </form>--%>
+<%--                    </tr>--%>
+<%--                </c:forEach>--%>
+<%--            </c:if>--%>
             </tbody>
         </table>
     </div>
@@ -331,11 +384,11 @@
                     var clickedLi = $(this).attr("id");
                     resetScheduleCells();
                     updateCellRe(clickedLi);
-                    $('#now_Schedule').html(clickedLi);
+                    $('#now_Schedule').html(clickedLi + '<hr><button id="option_Schedule" class="option_Schedule">설정</button>');
                     readMajorAndCredit();
 
                 })
-                $('tr.row').on('click', function (){
+                $('#subject_list').on('click', 'tr.row', function (){
                     var clickedRow = $(this);
                     getSchedule_set(function(schedule_set){
                         var third_day = clickedRow.find('input[name="subject_third_day"]').val();
@@ -343,6 +396,10 @@
                         var fourth_day = clickedRow.find('input[name="subject_fourth_day"]').val();
                         var fourth_hour=clickedRow.find('input[name="subject_fourth_hour"]').val();
                         console.log(schedule_set);
+                        console.log(clickedRow.find('input[name="subject_first_day"]').val(),
+                            clickedRow.find('input[name="subject_first_hour"]').val(),
+                            clickedRow.find('input[name="subject_second_day"]').val(),
+                            clickedRow.find('input[name="subject_second_hour"]').val())
                         var formData = {
                             subject_name: clickedRow.find('input[name="subject_name"]').val(),
                             major: clickedRow.find('input[name="major"]').val(),
@@ -377,6 +434,7 @@
                             cell_color: getRandomLightColor(hexColors),
                             schedule_set : schedule_set
                         }
+
                         if(third_day==="" && third_hour==="" && fourth_day==="" && fourth_hour===""){
                             $.ajax({
                                 url : "<c:url value='/schedule/add'/>",
@@ -384,7 +442,7 @@
                                 data : formDataV2,
                                 success : function(response){
                                     if(response=='possible'){
-                                        updateCellRe();
+                                        updateCellRe($('#now_Schedule').html());
                                         readMajorAndCredit();
                                     }
                                     else{
@@ -403,7 +461,7 @@
                                 data : formData,
                                 success : function(response){
                                     if(response=='possible'){
-                                        updateCellRe();
+                                        updateCellRe($('#now_Schedule').html());
                                     }
                                     else{
                                         alert("같은 시간대에 이미 수업이 있습니다.");
@@ -420,6 +478,7 @@
                 var now_schedule = $('#now_Schedule').html();
                 addNewSchedule(now_schedule);
             })
+
             function addNewSchedule(now_schedule){
                 $.ajax({
                     url:"<c:url value='/schedule/AddNewSchedule'/>",
@@ -438,7 +497,49 @@
                     }
                 })
             }
+                $('#now_Schedule').on('click', '#option_Schedule' ,function(){
+                    var scheduleHtml = $('#now_Schedule').html();
+                    var schedule_name = scheduleHtml.split('<')[0];
+                    $('#overlay').show();
+                    $('#setting_schedule').css('display', 'block');
+                    $('#now_name').attr('value', schedule_name);
+                })
+                $('#closeSetting_schedule').on('click', function(){
+                    $('#setting_schedule').css('display', 'none');
+                    $('#overlay').hide();
+                })
+                $('#saveSetting_schedule').on('click', function(){
+                    var schedule_name =$('#now_name').val();
+                    var scheduleHtml = $('#now_Schedule').html();
+                    var old_schedule_name = scheduleHtml.split('<')[0];
+                    $.ajax({
+                        url:"<c:url value='/schedule/update'/>",
+                        type:"post",
+                        data:{schedule_name : schedule_name,
+                              old_schedule_name : old_schedule_name},
+                        success:function(response){
+                            if(response=="possible"){
+                                alert("시간표 설정 변경에 성공하였습니다.");
+                                $('#setting_schedule').css('display', 'none');
+                                $('#overlay').hide();
+                                $('#now_Schedule').html(schedule_name+'<hr>')
+                                $('#now_Schedule').append('<button id="option_Schedule">설정</button>');
+                                updateCellRe(schedule_name);
+                                readMajorAndCredit();
+                            }
+                            else{
+                                alert("시간표 설정 변경 실패");
+                            }
+                        },
+                        error:function(error){
+                            alert("에러");
+                        }
+                    })
 
+                })
+                $('#delete_Schedule').on('click', function(){
+
+                })
             $(document).on('click','.subject_del', function(){
                 var arr =$(this).attr('id').split(',');
                 var subject_name = arr[0];
@@ -468,13 +569,35 @@
 <%--            수업 목록 보기 를 누르면 리스트가 나오고, 버튼은 사라지게 만들기--%>
             $('#searchSubject').on('click', function() {
                 var schedule_name = $('#now_Schedule').html();
-                console.log(schedule_name);
                 $('#subjects').css('display', 'block');
                 $(this).css('display', 'none');
-                <%--$.ajax({--%>
-                <%--    url:"<c:url value='/subject/read?schedule_name="+schedule_name+"'/>",--%>
-                <%--    type:"get",--%>
-                <%--})--%>
+                $.ajax({
+                    url:"<c:url value='/subject/read?schedule_name="+schedule_name+"'/>",
+                    type:"get",
+                    success:function(data){
+                        var subject_list = data;
+                        for(var i=0; i<subject_list.length; i++){
+                            var course_num = subject_list[i].course_num;
+                            var subject_name = subject_list[i].subject_name;
+                            var major = subject_list[i].major;
+                            var credit = subject_list[i].credit;
+                            var professor = subject_list[i].professor;
+                            var subject_first_day = subject_list[i].subject_first_day;
+                            var subject_first_hour = subject_list[i].subject_first_hour;
+                            var subject_second_day = subject_list[i].subject_second_day;
+                            var subject_second_hour = subject_list[i].subject_second_hour
+                            var place = subject_list[i].place;
+                            var nop = subject_list[i].nop;
+                            var etc = subject_list[i].etc;
+                            var subject_third_day =subject_list[i].subject_third_day;
+                            var subject_third_hour = subject_list[i].subject_third_hour;
+                            var subject_fourth_day = subject_list[i].subject_fourth_day;
+                            var subject_fourth_hour = subject_list[i].subject_fourth_hour;
+                            createSubjectTR(course_num, subject_name, major, credit, professor, subject_first_day, subject_first_hour,
+                            subject_second_day, subject_second_hour, place, nop, etc, subject_third_day, subject_third_hour, subject_fourth_day, subject_fourth_hour);
+                        }
+                    }
+                })
             });
 
             $('#closeSearchSubject').on('click', function(){
@@ -487,6 +610,57 @@
                 // $(this).find('td').not(':last-child').on('click', function(){
 
             })
+            function createSubjectTR(course_num, subject_name, major, credit, professor, subject_first_day, subject_first_hour,
+            subject_second_day, subject_second_hour, place, nop, etc, subject_third_day, subject_third_hour, subject_fourth_day, subject_fourth_hour){
+                if(subject_third_day==null && subject_third_hour==null){
+                    subject_third_day = "";
+                    subject_third_hour="";
+                }
+                if(subject_fourth_day==null && subject_fourth_hour==null){
+                    subject_fourth_day="";
+                    subject_fourth_hour="";
+                }
+                var tbody = $('#subject_list');
+                var tr = $('<tr id="subjectAdd'+course_num+'" class="row">');
+                var inputCourse_num = $('<input>').attr("type", "hidden").attr("name", "course_num").val(course_num);
+                var tdCourse_num = $('<td>').text(course_num).append(inputCourse_num);
+                var inputSubject_name = $('<input>').attr("type", "hidden").attr("name", "subject_name").val(subject_name);
+                var tdSubject_name = $('<td>').text(subject_name).append(inputSubject_name);
+                var inputMajor = $('<input>').attr("type", "hidden").attr("name", "major").val(major);
+                var tdMajor = $('<td>').text(major).append(inputMajor);
+                var inputCredit = $('<input>').attr("type", "hidden").attr("name", "credit").val(credit);
+                var tdCredit = $('<td>').text(credit).append(inputCredit);
+                var inputProfessor = $('<input>').attr("type", "hidden").attr("name", "professor").val(professor);
+                var tdProfessor =$('<td>').text(professor).append(inputProfessor);
+                var inputSubject_first_day = $('<input>').attr("type", "hidden").attr("name", "subject_first_day").val(subject_first_day);
+                var inputSubject_first_hour = $('<input>').attr("type", "hidden").attr("name", "subject_first_hour").val(subject_first_hour);
+                var inputSubject_second_day = $('<input>').attr("type", "hidden").attr("name", "subject_second_day").val(subject_second_day);
+                var inputSubject_second_hour = $('<input>').attr("type", "hidden").attr("name", "subject_second_hour").val(subject_second_hour);
+                var inputSubject_third_day = $('<input>').attr("type", "hidden").attr("name", "subject_third_day").val(subject_third_day);
+                var inputSubject_third_hour = $('<input>').attr("type", "hidden").attr("name", "subject_third_hour").val(subject_third_hour);
+                var inputSubject_fourth_day = $('<input>').attr("type", "hidden").attr("name", "subject_fourth_day").val(subject_fourth_day);
+                var inputSubject_fourth_hour = $('<input>').attr("type", "hidden").attr("name", "subject_fourth_hour").val(subject_fourth_hour);
+                var div = $('<div>')
+                    .append(inputSubject_first_day)
+                    .append(inputSubject_first_hour)
+                    .append(inputSubject_second_day)
+                    .append(inputSubject_second_hour)
+                    .append(inputSubject_third_day)
+                    .append(inputSubject_third_hour)
+                    .append(inputSubject_fourth_day)
+                    .append(inputSubject_fourth_hour);
+
+                var tdSubject = $('<td>').text(subject_first_day+subject_first_hour+" "+subject_second_day+subject_second_hour+" "+subject_third_day+subject_third_hour+" "+subject_fourth_day+subject_fourth_hour).append(div);
+                var inputPlace = $('<input>').attr("type", "hidden").attr("name", "place").val(place);
+                var tdPlace =$('<td>').text(place).append(inputPlace);
+                var inputNop = $('<input>').attr("type", "hidden").attr("name", "nop").val(nop);
+                var tdNop = $('<td>').text(nop).append(inputNop);
+                var inputEtc = $('<input>').attr("type", "hidden").attr("name", "etc").val(etc);
+                var tdEtc = $('<td>').text(etc).append(inputEtc);
+                tr.append(tdCourse_num, tdSubject_name, tdMajor, tdCredit, tdProfessor);
+                tr.append(tdSubject, tdPlace, tdNop, tdEtc);
+                tbody.append(tr);
+            }
             function getSchedule_set(callback){
                 var subject_name = $('#now_Schedule').html();
                 console.log(subject_name);
@@ -727,11 +901,12 @@
                 type:"get",
                 dataType :"json",
                 success:function(data){
-                    $('#now_Schedule').html(data[0]);
+                    $('#now_Schedule').html(data[0]+'<hr>');
                     for(var i=0; i<data.length; i++){
                         var tmp = data[i];
                         $('#list_Schedule2').append(createSchedule(data[i]));
                     }
+                    $('#now_Schedule').append('<button id="option_Schedule">설정</button>')
                     if(typeof callback=='function'){
                         callback();
                     }
@@ -761,7 +936,10 @@
             return li;
         }
         function readMajorAndCredit(){
-            var schedule_name = $('#now_Schedule').html();
+            // var schedule_name = $('#now_Schedule').html();
+            var scheduleHtml = $('#now_Schedule').html();
+            var schedule_name = scheduleHtml.split('<')[0];
+            console.log(schedule_name);
             console.log(schedule_name);
             $.ajax({
                 url:"<c:url value='/schedule/readMC'/>",
@@ -817,7 +995,7 @@
                 success: function(response) {
                     if (response == "possible") {
                         alert("수업 삭제에 성공했습니다.");
-                        updateCellRe();
+                        updateCellRe($('#now_Schedule').html());
                         readMajorAndCredit();
                     } else {
                         alert("수업 삭제에 실패했습니다.");
