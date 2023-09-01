@@ -33,4 +33,8 @@
         update schedule_info set schedule_name = #{schedule_name}
         where sid=#{sid} and schedule_name=#{old_schedule_name}
     </update>
+    <delete id="delete" parameterType="map">
+        delete from schedule_info
+        where sid=#{sid} and schedule_name=#{schedule_name}
+    </delete>
 </mapper>

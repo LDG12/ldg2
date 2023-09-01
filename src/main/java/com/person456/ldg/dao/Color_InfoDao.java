@@ -10,4 +10,5 @@ public interface Color_InfoDao {
     List<Color_InfoDto> select2(List<Integer> list);
     int delete(Integer sno);
     int insert(Color_InfoDto color_infoDto);
+    int deleteAll(List<Integer> list);
 }

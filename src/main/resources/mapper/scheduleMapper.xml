@@ -20,6 +20,10 @@
         and subject_second_hour=#{subject_second_hour} and place=#{place} and subject_third_day=#{subject_third_day} and subject_third_hour=#{subject_third_hour}
         and subject_fourth_day=#{subject_fourth_day} and subject_fourth_hour = #{subject_fourth_hour} and schedule_set = #{schedule_set}
     </select>
+    <select id="selectDeleteSno" parameterType="map" resultType="int">
+        select sno from schedule
+        where sid = #{sid} and schedule_set = #{schedule_set}
+    </select>
     <select id="selectMajor" resultType="String">
         select major from schedule
         where schedule_set = #{schedule_set} order by sno asc
@@ -37,5 +41,12 @@
     </delete>
     <delete id="delete" parameterType="map">
         delete from schedule where sno=#{sno} and sid=#{sid}
+    </delete>
+    <delete id="deleteSchedule" parameterType="list">
+        delete from schedule
+        where sno in
+        <foreach item="sno" collection="list" open="(" separator="," close=")">
+            #{sno}
+        </foreach>
     </delete>
 </mapper>

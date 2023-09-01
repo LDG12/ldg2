@@ -37,4 +37,7 @@ public class Schedule_InfoService {
     public int update(Map map){
         return schedule_infoDao.update(map);
     }
+    public int delete(Map map){
+        return schedule_infoDao.delete(map);
+    }
 }

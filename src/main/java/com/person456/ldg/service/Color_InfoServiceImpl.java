@@ -16,6 +16,10 @@ public class Color_InfoServiceImpl implements Color_InfoService {
     Color_InfoDao color_infoDao;
 
     @Override
+    public  int deleteAll(List<Integer> list){
+        return color_infoDao.deleteAll(list);
+    }
+    @Override
     public int count(){
         return color_infoDao.count();
     }

@@ -52,4 +52,15 @@ public class ScheduleControllerTest22 {
         int rowCnt = schedule_infoService.update(map);
         assertTrue(rowCnt == 1);
     }
+
+//    @Test
+//    public void test3(){
+//        String sid="ehdrlf0815";
+//        Integer schedule_set = 2;
+//        Map<String, String> map = new HashMap<>();
+//        map.put("sid", sid);
+//        map.put("schedule_set", String.valueOf(schedule_set));
+//        List<Integer> list = scheduleService.selectDeleteSno(map);
+//        System.out.println("list = " + list);
+//    }
 }

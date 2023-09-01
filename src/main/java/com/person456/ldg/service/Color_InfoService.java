@@ -12,4 +12,6 @@ public interface Color_InfoService {
     List<Color_InfoDto> select2(List<ScheduleDto> ScheduleDto);
     int insert(Color_InfoDto color_infoDto, String sid, Integer sno);
     int delete(Integer sno);
+    int deleteAll(List<Integer> list);
 }
+

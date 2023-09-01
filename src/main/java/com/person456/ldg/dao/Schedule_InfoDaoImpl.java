@@ -47,4 +47,8 @@ public class Schedule_InfoDaoImpl implements Schedule_InfoDao {
     public int update(Map map){
         return session.update(namespace+"update", map);
     }
+    @Override
+    public int delete(Map map){
+        return session.delete(namespace+"delete", map);
+    }
 }

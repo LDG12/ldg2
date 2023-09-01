@@ -22,4 +22,11 @@
     <delete id="delete" parameterType="int">
         delete from color_info where sno=#{sno}
     </delete>
+    <delete id="deleteAll" parameterType="list">
+        delete from color_info
+        where sno in
+        <foreach item ="sno" collection="list" open="(" separator="," close=")">
+            #{sno}
+        </foreach>
+    </delete>
 </mapper>

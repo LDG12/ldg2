@@ -4,6 +4,7 @@ import com.person456.ldg.dao.ScheduleDao;
 import com.person456.ldg.domain.ScheduleDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -13,7 +14,31 @@ public class ScheduleServiceImpl implements ScheduleService {
     ScheduleDao scheduleDao;
     @Autowired
     Schedule_InfoService schedule_infoService;
+    @Autowired
+    Color_InfoService color_infoService;
 
+    @Override
+    @Transactional
+    public int selectDeleteSno(Map map){
+        Integer schedule_set = schedule_infoService.second(map);
+        int rowCnt = schedule_infoService.delete(map);
+        if(rowCnt == 1){
+            map.remove("schedule_name");
+            map.put("schedule_set", schedule_set);
+            List<Integer> list = scheduleDao.selectDeleteSno(map);
+            if(list.isEmpty()){
+                return -1; // 비어있는 schedule이었으면 그냥 끝. 삭제 진행 할거도없이 이미 schedule 테이블에 비어있음.
+            }
+            else{ // 안비어있으니까 color_info랑 schedule_set을 가진 schedule 튜플 지워야함
+                int colorCnt = color_infoService.deleteAll(list);
+                int schduleCnt = scheduleDao.deleteSchedule(list);
+                return 1;
+            }
+        }
+        else{
+            return 0;
+        }
+    }
     @Override
     public List<String> readMajor(Integer set_num){
         return scheduleDao.readMajor(set_num);
@@ -153,6 +178,10 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Override
     public int deleteAll(Integer sno){
         return scheduleDao.deleteAll(sno);
+    }
+    @Override
+    public int deleteSchedule(List<Integer> list){
+        return scheduleDao.deleteSchedule(list);
     }
     @Override
     public int delete(Map map){

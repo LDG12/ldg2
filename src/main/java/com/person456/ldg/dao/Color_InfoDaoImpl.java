@@ -33,4 +33,8 @@ public class Color_InfoDaoImpl implements Color_InfoDao {
     public int delete(Integer sno){
         return session.delete(namespace+"delete", sno);
     }
+    @Override
+    public int deleteAll(List<Integer> list){
+        return session.delete(namespace+"deleteAll", list);
+    }
 }

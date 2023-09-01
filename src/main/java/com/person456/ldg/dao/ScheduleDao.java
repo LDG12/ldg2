@@ -17,4 +17,7 @@ public interface ScheduleDao {
     int delete(Map map);
     List<String> readMajor(Integer set_num);
     List<Integer> readCredit(Integer set_num);
+    int deleteSchedule(List<Integer> list);
+    List<Integer> selectDeleteSno(Map map);
+
 }

@@ -51,4 +51,12 @@ public class ScheduleDaoImpl implements ScheduleDao {
     public int delete(Map map){
         return session.delete(namespace+"delete", map);
     }
+    @Override
+    public int deleteSchedule(List<Integer> list){
+        return session.delete(namespace+"deleteSchedule", list);
+    }
+    @Override
+    public List<Integer> selectDeleteSno(Map map){
+        return session.selectList(namespace+"selectDeleteSno", map);
+    }
 }

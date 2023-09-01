@@ -8,6 +8,7 @@ import com.person456.ldg.service.Schedule_InfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -162,6 +163,21 @@ public class ScheduleController {
         }
         else if(rowCnt == 0){
             return ResponseEntity.ok("impossible");
+        }
+        else{
+            return ResponseEntity.ok("impossible");
+        }
+    }
+    @PostMapping("/deleteSchedule")
+    @Transactional
+    public ResponseEntity<String> scheduleDelete(String schedule_name,HttpSession session, Model m){
+        String sid = (String)session.getAttribute("id");
+        Map<String,String>map = new HashMap<>();
+        map.put("sid", sid);
+        map.put("schedule_name", schedule_name);
+        int result = scheduleService.selectDeleteSno(map);
+        if(result == 1 || result==-1){
+            return ResponseEntity.ok("possible");
         }
         else{
             return ResponseEntity.ok("impossible");

@@ -537,7 +537,28 @@
                     })
 
                 })
-                $('#delete_Schedule').on('click', function(){
+                $('#setting_schedule').on('click', '#delete_Schedule',function(){
+                    var scheduleHtml = $('#now_Schedule').html();
+                    var schedule_name = scheduleHtml.split('<')[0];
+                    if(confirm("시간표를 삭제하시겠습니까?")){
+                        $.ajax({
+                            url : "<c:url value='/schedule/deleteSchedule'/>",
+                            type:"post",
+                            data:{schedule_name : schedule_name},
+                            success:function(response){
+                                if(response=="possible"){
+                                    alert("시간표 삭제에 성공했습니다.");
+                                    location.reload();
+                                }
+                                else{
+                                    alert("실패");
+                                }
+                            },
+                            error:function (error){
+                                alert("시간표 삭제 에러");
+                            }
+                        })
+                    }
 
                 })
             $(document).on('click','.subject_del', function(){
