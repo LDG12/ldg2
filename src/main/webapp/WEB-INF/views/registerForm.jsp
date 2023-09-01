@@ -89,7 +89,7 @@
     <div>
         <input type="text" name="inputCultiNum" placeholder="인증번호를 입력해주세요."><button id="cultiNumCheck" type="submit">인증 확인</button>
     </div>
-    <input type="text" name="birth" placeholder="생년월일 8자리를 입력해주세요.">
+    <input type="text" name="birth" placeholder="생년월일 8자리를 입력해주세요. ex)yyyy-mm-dd">
     <input type="text" name="name" placeholder="이름을 입력해주세요.">
     <label style="display: inline-block; white-space: nowrap;">
         <input type="radio" name="status" value="professor"> 교수

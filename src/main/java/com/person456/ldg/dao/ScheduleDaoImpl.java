@@ -15,12 +15,12 @@ public class ScheduleDaoImpl implements ScheduleDao {
     private static String namespace = "com.person456.ldg.dao.ScheduleMapper.";
 
     @Override
-    public List<String> readMajor(Integer set_num){
-        return session.selectList(namespace+"selectMajor", set_num);
+    public List<String> readMajor(Map map){
+        return session.selectList(namespace+"selectMajor", map);
     }
     @Override
-    public List<Integer> readCredit(Integer set_num){
-        return session.selectList(namespace+"selectCredit", set_num);
+    public List<Integer> readCredit(Map map){
+        return session.selectList(namespace+"selectCredit", map);
     }
     @Override
     public int count(String sid){

@@ -40,12 +40,12 @@ public class ScheduleServiceImpl implements ScheduleService {
         }
     }
     @Override
-    public List<String> readMajor(Integer set_num){
-        return scheduleDao.readMajor(set_num);
+    public List<String> readMajor(Map map){
+        return scheduleDao.readMajor(map);
     }
     @Override
-    public List<Integer> readCredit(Integer set_num){
-        return scheduleDao.readCredit(set_num);
+    public List<Integer> readCredit(Map map){
+        return scheduleDao.readCredit(map);
     }
     @Override
     public List<ScheduleDto> loadSchedule(Map map){

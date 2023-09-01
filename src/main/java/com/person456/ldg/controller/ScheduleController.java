@@ -75,10 +75,16 @@ public class ScheduleController {
     }
     @PostMapping("/readMC")
     @ResponseBody
-    public Map<String, List> schedule_readMC(String schedule_name){
-        Integer schedule_set = schedule_infoService.first(schedule_name);
-        List<String> majorList = scheduleService.readMajor(schedule_set);
-        List<Integer> creditList = scheduleService.readCredit(schedule_set);
+    public Map<String, List> schedule_readMC(String schedule_name, HttpSession session){
+        String sid = (String)session.getAttribute("id");
+        Map<String, String> map2 = new HashMap<>();
+        map2.put("sid", sid);
+        map2.put("schedule_name", schedule_name);
+        Integer schedule_set = schedule_infoService.second(map2);
+        map2.remove("schedule_name");
+        map2.put("schedule_set", String.valueOf(schedule_set));
+        List<String> majorList = scheduleService.readMajor(map2);
+        List<Integer> creditList = scheduleService.readCredit(map2);
         Map<String, List> map = new HashMap<>();
         map.put("major", majorList);
         map.put("credit", creditList);

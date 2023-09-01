@@ -389,6 +389,8 @@
 
                 })
                 $('#subject_list').on('click', 'tr.row', function (){
+                    var scheduleHtml = $('#now_Schedule').html();
+                    var schedule_name = scheduleHtml.split('<')[0];
                     var clickedRow = $(this);
                     getSchedule_set(function(schedule_set){
                         var third_day = clickedRow.find('input[name="subject_third_day"]').val();
@@ -442,7 +444,7 @@
                                 data : formDataV2,
                                 success : function(response){
                                     if(response=='possible'){
-                                        updateCellRe($('#now_Schedule').html());
+                                        updateCellRe(schedule_name);
                                         readMajorAndCredit();
                                     }
                                     else{
@@ -589,7 +591,8 @@
 
 <%--            수업 목록 보기 를 누르면 리스트가 나오고, 버튼은 사라지게 만들기--%>
             $('#searchSubject').on('click', function() {
-                var schedule_name = $('#now_Schedule').html();
+                var scheduleHtml = $('#now_Schedule').html();
+                var schedule_name = scheduleHtml.split('<')[0];
                 $('#subjects').css('display', 'block');
                 $(this).css('display', 'none');
                 $.ajax({
@@ -683,12 +686,13 @@
                 tbody.append(tr);
             }
             function getSchedule_set(callback){
-                var subject_name = $('#now_Schedule').html();
-                console.log(subject_name);
+                var scheduleHtml = $('#now_Schedule').html();
+                var schedule_name = scheduleHtml.split('<')[0];
+                console.log(schedule_name);
                 $.ajax({
                     url : "<c:url value='/schedule/getSchedule_set'/>",
                     type : "get",
-                    data : {subject_name : subject_name},
+                    data : {subject_name : schedule_name},
                     success:function(schedule_set){
                         console.log(schedule_set);
                         callback(schedule_set);
@@ -1006,6 +1010,8 @@
             }
         }
         function deleteSubject(subject_name, sno) {
+            var scheduleHtml = $('#now_Schedule').html();
+            var schedule_name = scheduleHtml.split('<')[0];
             $.ajax({
                 url: "<c:url value='/schedule/delete'/>",
                 type: "post",
@@ -1016,7 +1022,7 @@
                 success: function(response) {
                     if (response == "possible") {
                         alert("수업 삭제에 성공했습니다.");
-                        updateCellRe($('#now_Schedule').html());
+                        updateCellRe(schedule_name);
                         readMajorAndCredit();
                     } else {
                         alert("수업 삭제에 실패했습니다.");
