@@ -63,12 +63,13 @@
 <body>
 <div id="menu">
     <ul>
-        <li id="logo">person456</li>
+        <li id="logo">ldg2</li>
         <li><a href="<c:url value='/'/>">Home</a></li>
+        <li><a href="<c:url value='/schedule/test'/>">Schedule</a></li>
         <li><a href="<c:url value='/board/list'/>">Board</a></li>
         <li><a href="<c:url value='${loginOutLink}'/>">${loginOut}</a></li>
         <li><a href="<c:url value='/register/add'/>">Sign in</a></li>
-        <li><a href=""><i class="fas fa-search small"></i></a></li>
+        <li><a href=""><i class="fa fa-search"></i></a></li>
     </ul>
 </div>
 <form action="<c:url value='/login/login'/>" method="post" onsubmit="return formCheck(this);">
@@ -78,8 +79,8 @@
             ${param.msg}
         </c:if>
     </div>
-    <input type="text" name="id" value="${cookie.id.value}" placeholder="이메일 입력" autofocus>
-    <input type="password" name="pwd" placeholder="비밀번호">
+    <input type="text" name="id" value="${cookie.id.value}" placeholder="아이디 입력" autofocus>
+    <input type="password" name="pwd" placeholder="비밀번호 입력">
     <input type="hidden" name="toURL" value="${param.toURL}">
     <button>로그인</button>
     <div>

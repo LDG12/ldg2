@@ -391,6 +391,7 @@
                 $('#subject_list').on('click', 'tr.row', function (){
                     var scheduleHtml = $('#now_Schedule').html();
                     var schedule_name = scheduleHtml.split('<')[0];
+                    console.log(schedule_name);
                     var clickedRow = $(this);
                     getSchedule_set(function(schedule_set){
                         var third_day = clickedRow.find('input[name="subject_third_day"]').val();
@@ -463,7 +464,8 @@
                                 data : formData,
                                 success : function(response){
                                     if(response=='possible'){
-                                        updateCellRe($('#now_Schedule').html());
+                                        updateCellRe(schedule_name);
+                                        readMajorAndCredit();
                                     }
                                     else{
                                         alert("같은 시간대에 이미 수업이 있습니다.");
@@ -477,8 +479,9 @@
                     })
             });
             $('#scheduleAdd').on('click', function(){
-                var now_schedule = $('#now_Schedule').html();
-                addNewSchedule(now_schedule);
+                var scheduleHtml = $('#now_Schedule').html();
+                var schedule_name = scheduleHtml.split('<')[0];
+                addNewSchedule(schedule_name);
             })
 
             function addNewSchedule(now_schedule){
@@ -489,6 +492,7 @@
                     success:function(response){
                         if(response=="possible"){
                             alert("시간표 생성 성공");
+                            updateSchedule_name();
                         }
                         else{
                             alert("시간표 생성 실패");
@@ -528,6 +532,7 @@
                                 $('#now_Schedule').append('<button id="option_Schedule">설정</button>');
                                 updateCellRe(schedule_name);
                                 readMajorAndCredit();
+                                location.reload();
                             }
                             else{
                                 alert("시간표 설정 변경 실패");
@@ -593,6 +598,7 @@
             $('#searchSubject').on('click', function() {
                 var scheduleHtml = $('#now_Schedule').html();
                 var schedule_name = scheduleHtml.split('<')[0];
+                console.log(schedule_name);
                 $('#subjects').css('display', 'block');
                 $(this).css('display', 'none');
                 $.ajax({
@@ -926,6 +932,10 @@
                 type:"get",
                 dataType :"json",
                 success:function(data){
+                    var listSchedule2 = document.getElementById("list_Schedule2");
+                    while(listSchedule2.firstChild){
+                        listSchedule2.removeChild(listSchedule2.firstChild);
+                    }
                     $('#now_Schedule').html(data[0]+'<hr>');
                     for(var i=0; i<data.length; i++){
                         var tmp = data[i];

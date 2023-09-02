@@ -80,15 +80,17 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
     @Override
     public String addNewSchedule(String sid){
-        List<String> list = schedule_infoService.initial(sid);
-        List<String> valiList = new ArrayList<>();
-        Integer[] intSpace = new Integer[list.size()];
+        List<String> list = schedule_infoService.initial(sid); // 해당 id로된 시간표 이름을 다 가져와
+        System.out.println("list = " + list);
+        List<String> valiList = new ArrayList<>(); // 검증용이고
+         // 시간표 +"정수" 에 쓸 array
+        int maxNum =0;
         for(String tmp : list){
-            if(tmp.startsWith("시간표 ")){
+            if(tmp.startsWith("시간표 ")){ // 만약 시간표의 이름이 "시간표 " 로 시작한다면
                 String[] tmp2 = tmp.split(" ");
                 if(tmp2.length ==2){
                     try{
-                        Integer.parseInt(tmp2[1]);
+                        Integer.parseInt(tmp2[1]); // 시간표 1, 시간표 3, 시간표 5 등이 있으면 1,3,5를 저장하는 것
                         valiList.add(tmp);
                     }
                     catch(NumberFormatException e){
@@ -96,13 +98,21 @@ public class ScheduleServiceImpl implements ScheduleService {
                     }
                 }
             }
+            else{
+                continue;
+            }
         }
+        System.out.println("valiList = " + valiList);
+        Integer[] intSpace = new Integer[valiList.size()];
         for(int i=0; i<valiList.size(); i++){
             String tmp = valiList.get(i);
             String[] tmp2 = tmp.split(" ");
+            System.out.println("tmp2[0] = " + tmp2[0]);
+            System.out.println("tmp2[1] = " + tmp2[1]);
             intSpace[i] = Integer.parseInt(tmp2[1]);
         }
         Arrays.sort(intSpace);
+        System.out.println("intSpace = " + intSpace);
         int next=0;
         if(intSpace.length == 1){
             int tmp = intSpace[0];

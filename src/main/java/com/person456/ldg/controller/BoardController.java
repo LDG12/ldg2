@@ -31,6 +31,7 @@ public class BoardController {
     BoardService boardService;
     @Autowired
     CommentService commentService;
+
     @GetMapping("/list")
     public String boardList(SearchPage sp, Model m, HttpServletRequest request)throws Exception{
         if(!loginCheck(request)){

@@ -22,9 +22,13 @@
             font-family: "Noto Sans KR", sans-serif;
         }
 
-        .container {
+        .container, .form-container {
             width : 50%;
             margin : auto;
+        }
+        .form-container, .comment{
+            border : 1px solid #ccc;
+            padding: 20px;
         }
         .comment-container{
             width : 50%;
@@ -74,6 +78,19 @@
         .btn:hover {
             text-decoration: underline;
         }
+        .comment{
+            position: relative;
+        }
+        .commentRemoveBtn{
+            position: absolute;
+            top: 0.3cm;
+            right : 0.3cm;
+        }
+        .commentModifyBtn{
+            position: absolute;
+            top : 0.3cm;
+            right : 1cm;
+        }
     </style>
 </head>
 <body>
@@ -115,7 +132,7 @@
 </div>
 
 <br>
-<form id="commentForm" class="form-container" action="" method="">
+<form id="commentForm" action="" method="">
     <input type="hidden" name="bno" value="${param.bno}"/>
     <input type="hidden" name="page" value="${param.page}"/>
     <input type="hidden" name="pageSize" value="${param.pageSize}"/>
@@ -137,15 +154,14 @@
                         <div>${commentDto.commenter} / <fmt:formatDate value="${commentDto.reg_date}" pattern="yyyy-MM-dd" type="date"/></div>
                     </c:otherwise>
                 </c:choose>
-
+                <c:if test="${sessionScope.id eq commentDto.commenter}">
+                    <button type=button id="commentRemoveBtn" class="commentRemoveBtn" data-cno="${commentDto.cno}">[x]</button>
+                    <button type=button id="commentModifyBtn" class="commentModifyBtn" data-cno="${commentDto.cno}">[수정]</button>
+                    <input type="hidden" name="cno" value="${commentDto.cno}">
+                </c:if>
+                <br>
                 <input type="text" value=" ${commentDto.comment}" readonly="readonly" data-cno="${commentDto.cno}"/>
             </div>
-           <c:if test="${sessionScope.id eq commentDto.commenter}">
-                 <button type=button id="commentRemoveBtn" class="btn commentRemoveBtn" data-cno="${commentDto.cno}">[x]</button>
-                <button type=button id="commentModifyBtn" class="btn commentModifyBtn" data-cno="${commentDto.cno}">[수정]</button>
-                 <input type="hidden" name="cno" value="${commentDto.cno}">
-            </c:if>
-            <br>
         </c:forEach>
         <div>
     </c:if>

@@ -62,6 +62,11 @@
         }
     </style>
     <script src="http://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        var emailVali = false;
+        var cultiNumVali = false;
+        var idCheck = false;
+    </script>
 </head>
 <body>
 <div id="menu">
@@ -75,7 +80,7 @@
     </ul>
 </div>
 <%--action="/ldg/login/login" method="post" onsubmit="return formCheck(this);--%>
-<form class="form" action="<c:url value='/register/add'/>" method="post" onsubmit="return formCheck(this)">
+<form id="formCheck" class="form" action="<c:url value='/register/add'/>" method="post" onsubmit="return formCheck(this)">
     <h3 id="title">Register</h3>
     <div class="inputGroup">
         <input type="text" name="id" class="form-control" placeholder="사용하실 ID를 입력해주세요."><button id="idCheck" type="submit" class="btnPrimary">중복 확인</button>
@@ -102,37 +107,60 @@
         <p>이미 계정이 있으신가요?? <a href="<c:url value="/login/login"/>">로그인</a>.</p>
     </div>
     <script>
-        var emailVali = false;
-        var cultiNumVali = false;
-        if(${not empty param.regMsg}){
-            alert(${param.regMsg});
-        }
-        function formCheck(frm){
-            if ($('input[name="id"]').val() === "" || $('input[name="pwd"]').val() === "" || $('input[name="pwdRepeat"]').val() === "" ||
-                $('input[name="email"]').val() === "" || $('input[name="birth"]').val() === "" || $('input[name="name"]').val() === "") {
-                alert("모든 필수 필드를 입력하세요.");
-                return false;
-            }
-            if($('input[name="birth"]').val === ""){
-                alert("생년월일을 입력하세요.");
-                return false;
-            }
-            if($('input[name="id"]').val().length < 5){
-                alert("아이디는 최소 5글자여야합니다.");
-                return false;
-            }
-            if($('input[name="pwd"]').val().length <5){
-                alert("비밀번호는 최소 5글자여야합니다.");
-                return false;
-            }
-            if($('input[name="pwd"]').val() != $('input[name="pwdRepeat"]').val()){
-                alert("비밀번호가 일치하지 않습니다.")
-                return false;
-            }
-            if (!$('input[name="status"]').is(':checked')) {
-                alert("교수 또는 학생 중 하나를 선택하세요.");
-                return false;
-            }
+        var cultinum = "";
+        var cultiEmail = "";
+
+        $(document).ready(function(){
+            $('#formCheck').on("click", '#emailCheck', function(event) {
+                event.preventDefault();
+                const email = $('input[name="email"]').val(); // 이메일 주소값 얻어오기!
+                if(email===""){
+                    alert("이메일을 입력하세요.")
+                    return
+                }
+                console.log('완성된 이메일 : ' + email); // 이메일 오는지 확인
+                const checkInput = $('input[name="cultiNum"]') // 인증번호 입력하는곳
+                var emailCheckUrl = '<%= request.getContextPath() %>/register/emailCheck';
+                $.ajax({
+                    type : 'get',
+                    url : emailCheckUrl+"?email="+ email, // GET방식이라 Url 뒤에 email을 뭍힐수있다.
+                    success : function (data) {
+                        console.log("data : " +  data);
+                        checkInput.attr('disabled',false);
+                        emailVali = true;
+                        cultinum= data;
+                        cultiEmail = email;
+                        alert('인증번호가 전송되었습니다.')
+                    },
+                    error:function(error){
+                        alert("에러 발생");
+                    }
+                });
+            });
+
+            $('#cultiNumCheck').click(function(event) {
+                event.preventDefault();
+                const inputCultiNum = $('input[name="inputCultiNum"]').val();
+                var emailCheckUrl = '<%= request.getContextPath() %>/register/checkCultiNum';
+
+                $.ajax({
+                    type: 'get',
+                    url: emailCheckUrl,
+                    data: { inputCultiNum: inputCultiNum },
+                    success: function(response) {
+                        if (response === "possible") {
+                            cultiNumVali = true;
+                            alert("인증번호가 일치합니다. 회원가입이 가능합니다.");
+
+                        } else {
+                            alert("인증번호가 일치하지 않습니다. 다시 확인해주세요.");
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        alert("에러가 발생했습니다: " + error);
+                    }
+                });
+            });
             $(function(){ // id 중복을 확인했을 때, db에 해당 id로 유저가 있으면 중복된다고 알려주고, 아니면 사용 가능하다고 알려주기
                 $('#idCheck').click(function(event){
                     event.preventDefault(); // 폼 제출 막기
@@ -144,6 +172,7 @@
                         success:function(response){
                             if(response=="possible"){
                                 alert("사용 가능한 ID입니다.");
+                                idCheck=true;
                             }else{
                                 alert("이미 사용중인 ID입니다.");
                             }
@@ -154,6 +183,66 @@
                     });
                 });
             });
+        })
+        if(${not empty param.regMsg}){
+            alert(${param.regMsg});
+        }
+        function formCheck(frm){
+            if ($('input[name="id"]').val() === "" || $('input[name="pwd"]').val() === "" || $('input[name="pwdRepeat"]').val() === "" ||
+                $('input[name="email"]').val() === "" || $('input[name="birth"]').val() === "" || $('input[name="name"]').val() === "") {
+                alert("모든 필수 필드를 입력하세요.");
+                return false;
+            }
+            if($('input[name="id"]').val().length < 5){
+                alert("아이디는 최소 5글자여야합니다.");
+                return false;
+            }
+            if($('input[name="pwd"]').val().length <5){
+                alert("비밀번호는 최소 5글자여야합니다.");
+                return false;
+            }
+            if($('input[name="email').val()===""){
+                alert("이메일을 입력하세요.");
+                return false;
+            }
+            if($('input[name="inputCultiNum"]').val()===""){
+                alert("이메일 인증번호를 입력하세요.");
+                return false;
+            }
+            if($('input[name="birth"]').val() === ""){
+                alert("생년월일을 입력하세요.");
+                return false;
+            }
+            if (!$('input[name="status"]').is(':checked')) {
+                alert("교수 또는 학생 중 하나를 선택하세요.");
+                return false;
+            }
+            if(idCheck==false){
+                alert("아이디 중복 확인을 다시 해주세요.");
+                return false;
+            }
+            if(emailVali == false){
+                alert("이메일 인증 버튼을 눌러 인증을 해주세요.");
+                return false;
+            }
+            if(cultiNumVali == false){
+                alert("인증 확인 버튼을 눌러 인증을 해주세요.");
+                return false;
+            }
+            if($('input[name="pwd"]').val() != $('input[name="pwdRepeat"]').val()){
+                alert("비밀번호가 일치하지 않습니다.")
+                return false;
+            }
+            if($('input[name="email"]').val() != cultiEmail){
+                console.log(cultiEmail);
+                alert("인증번호를 보낸 이메일이 아닙니다.");
+                return false;
+            }
+            if($('input[name="inputCultiNum"]').val() != cultinum){
+                alert("인증번호가 일치하지 않습니다.");
+                return false;
+            }
+
             if(!validate){
                 return false;
             }
@@ -179,80 +268,33 @@
 
             });
         });
-        $(function(){ // id 중복을 확인했을 때, db에 해당 id로 유저가 있으면 중복된다고 알려주고, 아니면 사용 가능하다고 알려주기
-            $('#idCheck').click(function(event){
-                event.preventDefault(); // 폼 제출 막기
-                var id = $('input[name="id"]').val();
-                if(id.length<5){
-                    alert("아이디의 길이는 5글자 이상이어야 합니다.");
-                    return;
-                }
-                $.ajax({
+        <%--$(function(){ // id 중복을 확인했을 때, db에 해당 id로 유저가 있으면 중복된다고 알려주고, 아니면 사용 가능하다고 알려주기--%>
+        <%--    $('#idCheck').click(function(event){--%>
+        <%--        event.preventDefault(); // 폼 제출 막기--%>
+        <%--        var id = $('input[name="id"]').val();--%>
+        <%--        if(id.length<5){--%>
+        <%--            alert("아이디의 길이는 5글자 이상이어야 합니다.");--%>
+        <%--            return;--%>
+        <%--        }--%>
+        <%--        $.ajax({--%>
 
-                    url : "<c:url value='/register/check'/>",
-                    method : "POST",
-                    data : {id:id},
-                    success:function(response){
-                        if(response=="possible"){
-                            alert("사용 가능한 ID입니다.");
-                        }else{
-                            validate=false;
-                            alert("이미 사용중인 ID입니다.");
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        alert("에러가 발생했습니다: " + error);
-                    }
-                });
-            });
-        });
-        $('#emailCheck').click(function(event) {
-            event.preventDefault();
-            const email = $('input[name="email"]').val(); // 이메일 주소값 얻어오기!
-            if(email===""){
-                alert("이메일을 입력하세요.")
-                return
-            }
-            console.log('완성된 이메일 : ' + email); // 이메일 오는지 확인
-            const checkInput = $('input[name="cultiNum"]') // 인증번호 입력하는곳
-            var emailCheckUrl = '<%= request.getContextPath() %>/register/emailCheck';
-            $.ajax({
-                type : 'get',
-                url : emailCheckUrl+"?email="+ email, // GET방식이라 Url 뒤에 email을 뭍힐수있다.
-                success : function (data) {
-                    console.log("data : " +  data);
-                    checkInput.attr('disabled',false);
-                    emailVali = true;
-                    code =data;
-                    alert('인증번호가 전송되었습니다.')
-                }
-            }); // end ajax
-        }); // end send eamil
-
-        $('#cultiNumCheck').click(function(event) {
-            event.preventDefault();
-            const inputCultiNum = $('input[name="inputCultiNum"]').val();
-            var emailCheckUrl = '<%= request.getContextPath() %>/register/checkCultiNum';
-
-            $.ajax({
-                type: 'get',
-                url: emailCheckUrl,
-                data: { inputCultiNum: inputCultiNum },
-                success: function(response) {
-                    if (response === "possible") {
-                        cultiNumVali = true;
-                        alert("인증번호가 일치합니다. 회원가입이 가능합니다.");
-
-                    } else {
-                        alert("인증번호가 일치하지 않습니다. 다시 확인해주세요.");
-                    }
-                },
-                error: function(xhr, status, error) {
-                    alert("에러가 발생했습니다: " + error);
-                }
-            });
-        });
-
+        <%--            url : "<c:url value='/register/check'/>",--%>
+        <%--            method : "POST",--%>
+        <%--            data : {id:id},--%>
+        <%--            success:function(response){--%>
+        <%--                if(response=="possible"){--%>
+        <%--                    alert("사용 가능한 ID입니다.");--%>
+        <%--                }else{--%>
+        <%--                    validate=false;--%>
+        <%--                    alert("이미 사용중인 ID입니다.");--%>
+        <%--                }--%>
+        <%--            },--%>
+        <%--            error: function(xhr, status, error) {--%>
+        <%--                alert("에러가 발생했습니다: " + error);--%>
+        <%--            }--%>
+        <%--        });--%>
+        <%--    });--%>
+        <%--});--%>
     </script>
 </form>
 </body>

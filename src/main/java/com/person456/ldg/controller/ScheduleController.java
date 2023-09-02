@@ -41,10 +41,13 @@ public class ScheduleController {
     }
 
     @GetMapping("/AddNewSchedule")
-    public ResponseEntity<String> AddNewSchedule(HttpSession session,String subject_name, Model m){
+    public ResponseEntity<String> AddNewSchedule(HttpSession session, Model m){
         String sid = (String)session.getAttribute("id");
+        System.out.println("sid = " + sid);
         String newName = scheduleService.addNewSchedule(sid);
+        System.out.println("newName = " + newName);
         Integer newScheduleSet = scheduleService.addNewSchedule_set(sid);
+        System.out.println("newScheduleSet = " + newScheduleSet);
         Schedule_InfoDto schedule_infoDto = new Schedule_InfoDto(newScheduleSet, newName, sid);
         int rowCnt = schedule_infoService.addNewSchedule(schedule_infoDto);
         if(rowCnt==1){
@@ -128,11 +131,8 @@ public class ScheduleController {
             map.put("schedule_name", loadname);
         }
         map.put("sid", sid);
-        System.out.println("Prevmap = " + map);
         Integer schedule_set = schedule_infoService.second(map);
         map.put("schedule_set", String.valueOf(schedule_set));
-        System.out.println("Readmap = " + map+"\n");
-        System.out.println("loadname = " + loadname+"\n");
         List<ScheduleDto> list = scheduleService.loadSchedule(map);
         List<Color_InfoDto> color_infoDtoList = color_infoService.select2(list);
         List<ScheduleDto> scheduleDtoList= scheduleService.selectOneSchedule(sid);
