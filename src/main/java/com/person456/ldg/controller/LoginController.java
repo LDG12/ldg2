@@ -79,11 +79,12 @@ public class LoginController {
 
     @PostMapping("/login")
     public String login(String id, String pwd, String toURL, boolean rememberId, HttpServletResponse response,
-                        HttpServletRequest request) throws Exception {
+                        HttpServletRequest request, Model m) throws Exception {
         // 1. id와 pwd를 확인
         if(!loginCheck(id, pwd)) {
             // 2-1   일치하지 않으면, loginForm으로 이동
             String msg = URLEncoder.encode("id 또는 pwd가 일치하지 않습니다.", "utf-8");
+            m.addAttribute("wrongID", id);
             return "redirect:/login/login?msg="+msg;
         }
 

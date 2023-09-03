@@ -69,10 +69,25 @@ public class ScheduleController {
         System.out.println("getSchedule_set = " + getSchedule_set);
         return getSchedule_set;
     }
+//    @GetMapping("/readSchedule_name")
+//    @ResponseBody
+//    public List<String>  schedule_nameRead(HttpSession session, String selectOp){
+//        String sid = (String)session.getAttribute("id");
+//        System.out.println("selectOp = " + selectOp);
+//        Map<String, String> map = new HashMap<>();
+//        map.put("sid", sid);
+//        map.put("schedule_semester", selectOp);
+//        List<String> schedule_infoDtoList = schedule_infoService.selectScheduleName(map);
+//        return schedule_infoDtoList;
+//    }
     @GetMapping("/readSchedule_name")
     @ResponseBody
-    public List<String>  schedule_nameRead(HttpSession session){
+    public List<String>  schedule_nameRead(HttpSession session, String selectOp){
         String sid = (String)session.getAttribute("id");
+        System.out.println("selectOp = " + selectOp);
+        Map<String, String> map = new HashMap<>();
+        map.put("sid", sid);
+        map.put("schedule_semester", selectOp);
         List<String> schedule_infoDtoList = schedule_infoService.initial(sid);
         return schedule_infoDtoList;
     }

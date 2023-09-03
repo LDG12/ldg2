@@ -79,6 +79,8 @@
             ${param.msg}
         </c:if>
     </div>
+<%--    ${empty wrongID}? ${not empty cookie.id.value}? ${cookie.id.value}:"" :${wrongID}
+${cookie.id.value}--%>
     <input type="text" name="id" value="${cookie.id.value}" placeholder="아이디 입력" autofocus>
     <input type="password" name="pwd" placeholder="비밀번호 입력">
     <input type="hidden" name="toURL" value="${param.toURL}">

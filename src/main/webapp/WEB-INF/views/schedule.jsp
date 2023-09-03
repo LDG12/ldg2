@@ -191,6 +191,9 @@
                     $('#searchSubject').css('display', 'none');
                 }
             })
+            var semesterInteger = [2023,2022,2021,2020,2019,2018,2017,2016,2015,2014,2013,2012,2011,2010];
+            var semesterString =['겨울학기', '2학기', '여름학기', '1학기'];
+
         </script>
     </head>
     <body>
@@ -207,6 +210,10 @@
     </div>
     <div id="container">
         <aside>
+            <form id="select_Semester">
+                <select id="semesters">
+                </select>
+            </form>
                 <div id="now_Schedule">
                 </div>
                 <oi id="credit_view">
@@ -377,6 +384,7 @@
     </div>
     <script>
         $(document).ready(function(){
+            LoadSemester();
             updateSchedule_name(function(){
                 readMajorAndCredit();
                 updateCellRe();
@@ -927,9 +935,15 @@
             }
         }
         function updateSchedule_name(callback){
+            var selectOp = $('#select_Semester option:selected').text();
+            if (!selectOp) {
+                selectOp = $('#select_Semester option:first-child').text();
+            }
+            console.log(selectOp);
             $.ajax({
                 url:"<c:url value='/schedule/readSchedule_name'/>",
                 type:"get",
+                data : {selectOp : selectOp},
                 dataType :"json",
                 success:function(data){
                     var listSchedule2 = document.getElementById("list_Schedule2");
@@ -1049,6 +1063,19 @@
         function resetScheduleCells() {
             $('td[id^="mon-"], td[id^="tue-"], td[id^="wed-"], td[id^="tur-"], td[id^="fri-"]').html('').removeAttr('style').show();
             $('td[id^="mon-"][rowspan], td[id^="tue-"][rowspan], td[id^="wed-"][rowspan], td[id^="tur-"][rowspan], td[id^="fri-"][rowspan]').removeAttr('rowspan');
+        }
+        function LoadSemester(){
+            var semester = $('#semesters');
+            for(var i=0; i<semesterInteger.length; i++){
+                for(var j=0; j<semesterString.length; j++){
+                    semester.append(createSemester(semesterInteger[i], semesterString[j]));
+                }
+            }
+        }
+        function createSemester(semesterInteger, semesterString){
+            var semesters = semesterInteger + " " + semesterString;
+            var semester = '<option>'+semesters+'</option>'
+            return semester;
         }
     </script>
     </body>

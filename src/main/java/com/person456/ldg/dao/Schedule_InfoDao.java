@@ -12,7 +12,9 @@ public interface Schedule_InfoDao {
     Integer first(String schedule_name);
     List<Integer> schedule_set(String sid);
     int addNewSchedule(Schedule_InfoDto schedule_infoDto);
+    int addNewSchedule2(Schedule_InfoDto schedule_infoDto);
     int second(Map map);
     int delete(Map map);
+    List<String> selectScheduleName(Map map);
     int update(Map map);
 }

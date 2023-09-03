@@ -1,13 +1,17 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.person456.ldg.dao.Schedule_InfoMapper">
-    <select id="count" parameterType="String">
+    <select id="count" parameterType="String" resultType="int">
         select count(*) from schedule_info
         where sid=#{sid}
     </select>
     <select id="initial" resultType="String">
         select schedule_name from schedule_info
         where sid=#{sid}
+    </select>
+    <select id="selectScheduleName" parameterType="map" resultType="String">
+        select schedule_name from schedule_info
+        where sid=#{sid} and schedule_semester = #{schedule_semester}
     </select>
     <select id="initialSecond" parameterType="map" resultType="String">
         select schedule_name from schedule_info
@@ -28,6 +32,10 @@
     <insert id="addNewSchedule" parameterType="Schedule_InfoDto">
         insert into schedule_info(schedule_set, schedule_name, sid)
         values(#{schedule_set}, #{schedule_name}, #{sid})
+    </insert>
+    <insert id="addNewSchedule2" parameterType="Schedule_InfoDto">
+        insert into schedule_info(schedule_set, schedule_name, sid, schedule_semester)
+        values(#{schedule_set}, #{schedule_name}, #{sid}, #{schedule_semester})
     </insert>
     <update id="update" parameterType="map">
         update schedule_info set schedule_name = #{schedule_name}

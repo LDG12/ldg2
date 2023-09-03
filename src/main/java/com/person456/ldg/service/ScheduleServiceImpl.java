@@ -2,6 +2,7 @@ package com.person456.ldg.service;
 
 import com.person456.ldg.dao.ScheduleDao;
 import com.person456.ldg.domain.ScheduleDto;
+import com.person456.ldg.domain.Schedule_InfoDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,19 +21,46 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Override
     @Transactional
     public int selectDeleteSno(Map map){
-        Integer schedule_set = schedule_infoService.second(map);
-        int rowCnt = schedule_infoService.delete(map);
+        Integer schedule_set = schedule_infoService.second(map); // schedule_set을 가져오는 이유는 시간표의 수업도 지워야해서
+        int rowCnt = schedule_infoService.delete(map); // 지우는데 성공 한다면
         if(rowCnt == 1){
             map.remove("schedule_name");
             map.put("schedule_set", schedule_set);
-            List<Integer> list = scheduleDao.selectDeleteSno(map);
-            if(list.isEmpty()){
-                return -1; // 비어있는 schedule이었으면 그냥 끝. 삭제 진행 할거도없이 이미 schedule 테이블에 비어있음.
+            List<Integer> list2 = scheduleDao.selectDeleteSno(map);
+            int count = schedule_infoService.count((String)map.get("sid"));
+            if(count==0){
+                if(list2.isEmpty()){ // 해당 schedule_set에 대한 수업이 튜플로 있지 않다면 바로 시간표 초기화
+                    Schedule_InfoDto schedule_infoDto = new Schedule_InfoDto(1, "시간표 1", (String)map.get("sid"));
+                    int insertCnt = schedule_infoService.addNewSchedule(schedule_infoDto);
+                    if(insertCnt==1){
+                        return 1;
+                    }
+                    else{
+                        return 0;
+                    }
+                }
+                else{ // schedule_set에 대한 수업이 시간표에 있다면?
+                    int colorCnt = color_infoService.deleteAll(list2);
+                    int schduleCnt = scheduleDao.deleteSchedule(list2);
+                    Schedule_InfoDto schedule_infoDto = new Schedule_InfoDto(1, "시간표 1", (String)map.get("sid"));
+                    int insertCnt = schedule_infoService.addNewSchedule(schedule_infoDto);
+                    if(insertCnt==1){
+                        return 1;
+                    }
+                    else{
+                        return 0;
+                    }
+                }
             }
-            else{ // 안비어있으니까 color_info랑 schedule_set을 가진 schedule 튜플 지워야함
-                int colorCnt = color_infoService.deleteAll(list);
-                int schduleCnt = scheduleDao.deleteSchedule(list);
-                return 1;
+            else{
+                if(list2.isEmpty()){
+                    return -1; // 비어있는 schedule이었으면 그냥 끝. 삭제 진행 할거도없이 이미 schedule 테이블에 비어있음.
+                }
+                else{ // 안비어있으니까 color_info랑 schedule_set을 가진 schedule 튜플 지워야함
+                    int colorCnt = color_infoService.deleteAll(list2);
+                    int schduleCnt = scheduleDao.deleteSchedule(list2);
+                    return 1;
+                }
             }
         }
         else{
