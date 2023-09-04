@@ -111,3 +111,9 @@
 1. 시간표 1개일때 삭제시, "시간표 1"과 schedule_set 1로 초기화 하는 로직 구현
 2. select 태그의 option으로 "1학기", "2학기" 등등 semester를 넣음
 3. semester별 스케쥴 구현중중
+
+9/4
+1. schedule_semester( "학기" )에 의한 내용을 추가하여 전반적인 수정 진행
+2. UpdateCell, UpdateSchedule_list, UpdateMajorAndCredit 등 <select> 태그의 <option>으로 각 학기를 선택할 경우에 대한 기능을 추가하고 수정
+3. 시간표 이름 변경, 시간표 삭제시 학기별 기능 구현
+4. 학점 계산기(Credit Calculator) 구현중, 현재 전반적인 html이랑 css 진행중(에브리타임 카피)
