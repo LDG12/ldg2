@@ -15,8 +15,8 @@ public interface ScheduleService {
     List<String> readMajor(Map map);
     List<ScheduleDto> loadSchedule(Map map);
     List<Integer> readCredit(Map map);
-    String addNewSchedule(String sid);
-    Integer addNewSchedule_set(String sid);
+    String addNewSchedule(String sid, String schedule_semester);
+    Integer addNewSchedule_set(String sid, String schedule_semester);
     int deleteSchedule(List<Integer> list);
     int selectDeleteSno(Map map);
 }

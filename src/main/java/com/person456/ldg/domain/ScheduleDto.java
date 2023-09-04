@@ -19,6 +19,7 @@ public class ScheduleDto {
     private String subject_fourth_day;
     private Integer subject_fourth_hour;
     private Integer schedule_set;
+    private String schedule_semester;
 
     public ScheduleDto(){}
     public ScheduleDto(Integer sno, String sid, String subject_name, String major, Integer credit, String subject_first_day, Integer subject_first_hour, String subject_second_day, Integer subject_second_hour, String place, String subject_third_day, Integer subject_third_hour, String subject_fourth_day, Integer subject_fourth_hour, Integer schedule_set) {
@@ -38,18 +39,35 @@ public class ScheduleDto {
         this.subject_fourth_hour = subject_fourth_hour;
         this.schedule_set = schedule_set;
     }
-
+    public ScheduleDto(Integer sno, String sid, String subject_name, String major, Integer credit, String subject_first_day, Integer subject_first_hour, String subject_second_day, Integer subject_second_hour, String place, String subject_third_day, Integer subject_third_hour, String subject_fourth_day, Integer subject_fourth_hour, Integer schedule_set, String schedule_semester) {
+        this.sno = sno;
+        this.sid = sid;
+        this.subject_name = subject_name;
+        this.major = major;
+        this.credit = credit;
+        this.subject_first_day = subject_first_day;
+        this.subject_first_hour = subject_first_hour;
+        this.subject_second_day = subject_second_day;
+        this.subject_second_hour = subject_second_hour;
+        this.place = place;
+        this.subject_third_day = subject_third_day;
+        this.subject_third_hour = subject_third_hour;
+        this.subject_fourth_day = subject_fourth_day;
+        this.subject_fourth_hour = subject_fourth_hour;
+        this.schedule_set = schedule_set;
+        this.schedule_semester = schedule_semester;
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ScheduleDto that = (ScheduleDto) o;
-        return Objects.equals(sno, that.sno) && Objects.equals(sid, that.sid) && Objects.equals(subject_name, that.subject_name) && Objects.equals(major, that.major) && Objects.equals(credit, that.credit) && Objects.equals(subject_first_day, that.subject_first_day) && Objects.equals(subject_first_hour, that.subject_first_hour) && Objects.equals(subject_second_day, that.subject_second_day) && Objects.equals(subject_second_hour, that.subject_second_hour) && Objects.equals(place, that.place) && Objects.equals(subject_third_day, that.subject_third_day) && Objects.equals(subject_third_hour, that.subject_third_hour) && Objects.equals(subject_fourth_day, that.subject_fourth_day) && Objects.equals(subject_fourth_hour, that.subject_fourth_hour) && Objects.equals(schedule_set, that.schedule_set);
+        return Objects.equals(sno, that.sno) && Objects.equals(sid, that.sid) && Objects.equals(subject_name, that.subject_name) && Objects.equals(major, that.major) && Objects.equals(credit, that.credit) && Objects.equals(subject_first_day, that.subject_first_day) && Objects.equals(subject_first_hour, that.subject_first_hour) && Objects.equals(subject_second_day, that.subject_second_day) && Objects.equals(subject_second_hour, that.subject_second_hour) && Objects.equals(place, that.place) && Objects.equals(subject_third_day, that.subject_third_day) && Objects.equals(subject_third_hour, that.subject_third_hour) && Objects.equals(subject_fourth_day, that.subject_fourth_day) && Objects.equals(subject_fourth_hour, that.subject_fourth_hour) && Objects.equals(schedule_set, that.schedule_set) && Objects.equals(schedule_semester, that.schedule_semester);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(sno, sid, subject_name, major, credit, subject_first_day, subject_first_hour, subject_second_day, subject_second_hour, place, subject_third_day, subject_third_hour, subject_fourth_day, subject_fourth_hour, schedule_set);
+        return Objects.hash(sno, sid, subject_name, major, credit, subject_first_day, subject_first_hour, subject_second_day, subject_second_hour, place, subject_third_day, subject_third_hour, subject_fourth_day, subject_fourth_hour, schedule_set, schedule_semester);
     }
 
     @Override
@@ -70,7 +88,24 @@ public class ScheduleDto {
                 ", subject_fourth_day='" + subject_fourth_day + '\'' +
                 ", subject_fourth_hour=" + subject_fourth_hour +
                 ", schedule_set=" + schedule_set +
+                ", schedule_semester='" + schedule_semester + '\'' +
                 '}';
+    }
+
+    public Integer getSchedule_set() {
+        return schedule_set;
+    }
+
+    public void setSchedule_set(Integer schedule_set) {
+        this.schedule_set = schedule_set;
+    }
+
+    public String getSchedule_semester() {
+        return schedule_semester;
+    }
+
+    public void setSchedule_semester(String schedule_semester) {
+        this.schedule_semester = schedule_semester;
     }
 
     public Integer getSno() {
@@ -185,11 +220,4 @@ public class ScheduleDto {
         this.subject_fourth_hour = subject_fourth_hour;
     }
 
-    public Integer getschedule_set() {
-        return schedule_set;
-    }
-
-    public void setschedule_set(Integer schedule_set) {
-        this.schedule_set = schedule_set;
-    }
 }

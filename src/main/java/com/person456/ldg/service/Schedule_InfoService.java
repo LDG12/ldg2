@@ -16,8 +16,8 @@ public class Schedule_InfoService {
     public int count(String sid){
         return schedule_infoDao.count(sid);
     }
-    public List<String> initial(String sid){
-        return schedule_infoDao.initial(sid);
+    public List<String> initial(Map map){
+        return schedule_infoDao.initial(map);
     }
     public List<String> selectScheduleName(Map map){
         List<String> test = schedule_infoDao.selectScheduleName(map);
@@ -41,8 +41,11 @@ public class Schedule_InfoService {
     public Integer first(String schedule_name){
         return schedule_infoDao.first(schedule_name);
     }
-    public List<Integer> schedule_set(String sid){
-        return schedule_infoDao.schedule_set(sid);
+    public int secondSemester(Map map){
+        return schedule_infoDao.secondSemester(map);
+    }
+    public List<Integer> schedule_set(Map map){
+        return schedule_infoDao.schedule_set(map);
     }
     public int addNewSchedule(Schedule_InfoDto schedule_infoDto){
         return schedule_infoDao.addNewSchedule(schedule_infoDto);

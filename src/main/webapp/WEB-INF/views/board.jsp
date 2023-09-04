@@ -96,8 +96,10 @@
 <body>
 <div id="menu">
     <ul>
-        <li id="logo">fastcampus</li>
+        <li id="logo">ldg2</li>
         <li><a href="<c:url value='/'/>">Home</a></li>
+        <li><a href="<c:url value='/schedule/test'/>">Schedule</a></li>
+        <li><a href="<c:url value='/calculator'/>">Calculator</a></li>
         <li><a href="<c:url value='/board/list'/>">Board</a></li>
         <li><a href="<c:url value='${loginOutLink}'/>">${loginOut}</a></li>
         <li><a href="<c:url value='/register/add'/>">Sign in</a></li>

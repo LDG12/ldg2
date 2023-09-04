@@ -20,12 +20,15 @@ public class Schedule_InfoDaoImpl implements Schedule_InfoDao {
         return session.selectOne(namespace+"count", sid);
     }
     @Override
+    public int secondSemester(Map map){
+        return session.selectOne(namespace+"secondSemester", map);
+    }
     public List<String> selectScheduleName(Map map){
         return session.selectList(namespace+"selectScheduleName", map);
     }
     @Override
-    public List<String> initial(String sid){
-        return session.selectList(namespace+"initial", sid);
+    public List<String> initial(Map map){
+        return session.selectList(namespace+"initial", map);
     }
     @Override
     public String initialSecond(Map map){
@@ -36,8 +39,8 @@ public class Schedule_InfoDaoImpl implements Schedule_InfoDao {
         return session.selectOne(namespace+"first", schedule_name);
     }
     @Override
-    public List<Integer> schedule_set(String sid){
-        return session.selectList(namespace+"schedule_setArr", sid);
+    public List<Integer> schedule_set(Map map){
+        return session.selectList(namespace+"schedule_setArr", map);
     }
     @Override
     public int second(Map map){

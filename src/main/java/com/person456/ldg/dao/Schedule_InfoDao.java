@@ -7,10 +7,11 @@ import java.util.Map;
 
 public interface Schedule_InfoDao {
     int count(String sid);
-    List<String> initial(String sid);
+    List<String> initial(Map map);
     String initialSecond(Map map);
     Integer first(String schedule_name);
-    List<Integer> schedule_set(String sid);
+    List<Integer> schedule_set(Map map);
+    int secondSemester(Map map);
     int addNewSchedule(Schedule_InfoDto schedule_infoDto);
     int addNewSchedule2(Schedule_InfoDto schedule_infoDto);
     int second(Map map);

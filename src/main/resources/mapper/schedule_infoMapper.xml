@@ -5,9 +5,9 @@
         select count(*) from schedule_info
         where sid=#{sid}
     </select>
-    <select id="initial" resultType="String">
+    <select id="initial" parameterType="map" resultType="String">
         select schedule_name from schedule_info
-        where sid=#{sid}
+        where sid=#{sid} and schedule_semester = #{schedule_semester}
     </select>
     <select id="selectScheduleName" parameterType="map" resultType="String">
         select schedule_name from schedule_info
@@ -25,13 +25,17 @@
         select schedule_set from schedule_info
         where schedule_name = #{schedule_name} and sid=#{sid}
     </select>
-    <select id="schedule_setArr" resultType="int">
+    <select id="secondSemester" parameterType="map" resultType="int">
         select schedule_set from schedule_info
-        where sid=#{sid}
+        where schedule_name =#{schedule_name} and sid=#{sid} and schedule_semester = #{schedule_semester}
+    </select>
+    <select id="schedule_setArr" parameterType="map" resultType="int">
+        select schedule_set from schedule_info
+        where sid=#{sid} and schedule_semester = #{schedule_semester}
     </select>
     <insert id="addNewSchedule" parameterType="Schedule_InfoDto">
-        insert into schedule_info(schedule_set, schedule_name, sid)
-        values(#{schedule_set}, #{schedule_name}, #{sid})
+        insert into schedule_info(schedule_set, schedule_name, sid, schedule_semester)
+        values(#{schedule_set}, #{schedule_name}, #{sid}, #{schedule_semester})
     </insert>
     <insert id="addNewSchedule2" parameterType="Schedule_InfoDto">
         insert into schedule_info(schedule_set, schedule_name, sid, schedule_semester)
@@ -39,7 +43,7 @@
     </insert>
     <update id="update" parameterType="map">
         update schedule_info set schedule_name = #{schedule_name}
-        where sid=#{sid} and schedule_name=#{old_schedule_name}
+        where sid=#{sid} and schedule_name=#{old_schedule_name} and schedule_semester=#{schedule_semester}
     </update>
     <delete id="delete" parameterType="map">
         delete from schedule_info

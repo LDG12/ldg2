@@ -80,11 +80,14 @@ public class ScheduleServiceImpl implements ScheduleService {
         return scheduleDao.loadSchedule(map);
     }
     @Override
-    public Integer addNewSchedule_set(String sid){
-        List<Integer> list = schedule_infoService.schedule_set(sid);
+    public Integer addNewSchedule_set(String sid, String schedule_semester){
+        Map<String, String> map = new HashMap<>();
+        map.put("sid", sid);
+        map.put("schedule_semester", schedule_semester);
+        List<Integer> list = schedule_infoService.schedule_set(map); // id를 통해 schedule_set을 다 들고온다. -> id와 semester를 통해.
         Collections.sort(list);
         Integer newSchedule_set =0;
-        if(list.size()==1){
+        if(list.size()==1){ // 만약 하나밖에 없다면.
             Integer tmp = list.get(0);
             if(tmp == 1){
                 newSchedule_set = 2;
@@ -107,8 +110,11 @@ public class ScheduleServiceImpl implements ScheduleService {
         return newSchedule_set;
     }
     @Override
-    public String addNewSchedule(String sid){
-        List<String> list = schedule_infoService.initial(sid); // 해당 id로된 시간표 이름을 다 가져와
+    public String addNewSchedule(String sid, String schedule_semester){
+        Map<String, String> map = new HashMap<>();
+        map.put("sid", sid);
+        map.put("schedule_semester", schedule_semester);
+        List<String> list = schedule_infoService.initial(map); // 해당 id로된 시간표 이름을 다 가져와 +(09/04) 학기 추가
         System.out.println("list = " + list);
         List<String> valiList = new ArrayList<>(); // 검증용이고
          // 시간표 +"정수" 에 쓸 array
@@ -186,14 +192,16 @@ public class ScheduleServiceImpl implements ScheduleService {
         Integer first_hour = scheduleDto.getSubject_first_hour();
         String second_day = scheduleDto.getSubject_second_day();
         Integer second_hour = scheduleDto.getSubject_second_hour();
-        Integer schedule_set = scheduleDto.getschedule_set();
+        Integer schedule_set = scheduleDto.getSchedule_set();
         String third_day = scheduleDto.getSubject_third_day();
         Integer third_hour = scheduleDto.getSubject_third_hour();
         String fourth_day = scheduleDto.getSubject_fourth_day();
         Integer fourth_hour = scheduleDto.getSubject_fourth_hour();
+        String schedule_semester = scheduleDto.getSchedule_semester();
         Map<String, String> map = new HashMap<>();
         map.put("sid", scheduleDto.getSid());
         map.put("schedule_set", String.valueOf(schedule_set));
+        map.put("schedule_semester", schedule_semester);
         List<ScheduleDto> list2 = scheduleDao.loadSchedule(map);
         if(third_day.equals("") && fourth_day.equals("")){
             for(ScheduleDto list : list2){

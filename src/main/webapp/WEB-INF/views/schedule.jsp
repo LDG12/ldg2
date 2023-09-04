@@ -202,6 +202,7 @@
             <li id="logo">ldg2</li>
             <li><a href="<c:url value='/'/>">Home</a></li>
             <li><a href="<c:url value='/schedule/test'/>">Schedule</a></li>
+            <li><a href="<c:url value='/calculator'/>">Calculator</a></li>
             <li><a href="<c:url value='/board/list'/>">Board</a></li>
             <li><a href="<c:url value='${loginOutLink}'/>">${loginOut}</a></li>
             <li><a href="<c:url value='/register/add'/>">Sign in</a></li>
@@ -388,7 +389,7 @@
             updateSchedule_name(function(){
                 readMajorAndCredit();
                 updateCellRe();
-                $('.LoadSchedule').on('click', function(){
+                $('#list_Schedule2').on('click', '.LoadSchedule', function(){
                     var clickedLi = $(this).attr("id");
                     resetScheduleCells();
                     updateCellRe(clickedLi);
@@ -396,9 +397,19 @@
                     readMajorAndCredit();
 
                 })
+                $('#select_Semester').on("change", function(){
+                    var selecteOption = $(this).find("option:selected");
+                    var selecteOPtext = selecteOption.text();
+                    console.log(selecteOPtext);
+                    resetScheduleCells();
+                    updateSchedule_name();
+                    updateCellRe();
+                    readMajorAndCredit();
+                })
                 $('#subject_list').on('click', 'tr.row', function (){
                     var scheduleHtml = $('#now_Schedule').html();
                     var schedule_name = scheduleHtml.split('<')[0];
+                    var schedule_semester = $('#select_Semester option:selected').text();
                     console.log(schedule_name);
                     var clickedRow = $(this);
                     getSchedule_set(function(schedule_set){
@@ -426,7 +437,8 @@
                             subject_fourth_day:clickedRow.find('input[name="subject_fourth_day"]').val(),
                             subject_fourth_hour:clickedRow.find('input[name="subject_fourth_hour"]').val(),
                             cell_color : getRandomLightColor(hexColors),
-                            schedule_set : schedule_set
+                            schedule_set : schedule_set,
+                            schedule_semester : schedule_semester
                         };
                         var formDataV2={
                             subject_name: clickedRow.find('input[name="subject_name"]').val(),
@@ -443,7 +455,8 @@
                             subject_fourth_hour:"",
                             place: clickedRow.find('input[name="place"]').val(),
                             cell_color: getRandomLightColor(hexColors),
-                            schedule_set : schedule_set
+                            schedule_set : schedule_set,
+                            schedule_semester : schedule_semester
                         }
 
                         if(third_day==="" && third_hour==="" && fourth_day==="" && fourth_hour===""){
@@ -493,10 +506,11 @@
             })
 
             function addNewSchedule(now_schedule){
+                var schedule_semester = $('#select_Semester option:selected').text();
                 $.ajax({
                     url:"<c:url value='/schedule/AddNewSchedule'/>",
                     type : "get",
-                    data :{now_schedule : now_schedule},
+                    data :{now_schedule : now_schedule, schedule_semester : schedule_semester},
                     success:function(response){
                         if(response=="possible"){
                             alert("시간표 생성 성공");
@@ -526,11 +540,13 @@
                     var schedule_name =$('#now_name').val();
                     var scheduleHtml = $('#now_Schedule').html();
                     var old_schedule_name = scheduleHtml.split('<')[0];
+                    var schedule_semester = $('#select_Semester option:selected').text();
                     $.ajax({
                         url:"<c:url value='/schedule/update'/>",
                         type:"post",
                         data:{schedule_name : schedule_name,
-                              old_schedule_name : old_schedule_name},
+                              old_schedule_name : old_schedule_name,
+                        schedule_semester : schedule_semester},
                         success:function(response){
                             if(response=="possible"){
                                 alert("시간표 설정 변경에 성공하였습니다.");
@@ -554,12 +570,14 @@
                 })
                 $('#setting_schedule').on('click', '#delete_Schedule',function(){
                     var scheduleHtml = $('#now_Schedule').html();
-                    var schedule_name = scheduleHtml.split('<')[0];
+                    var schedule_name = scheduleHtml.split('<')[0]
+                    var schedule_semester = $('#select_Semester option:selected').text();
                     if(confirm("시간표를 삭제하시겠습니까?")){
                         $.ajax({
                             url : "<c:url value='/schedule/deleteSchedule'/>",
                             type:"post",
-                            data:{schedule_name : schedule_name},
+                            data:{schedule_name : schedule_name,
+                            schedule_semester : schedule_semester},
                             success:function(response){
                                 if(response=="possible"){
                                     alert("시간표 삭제에 성공했습니다.");
@@ -702,11 +720,13 @@
             function getSchedule_set(callback){
                 var scheduleHtml = $('#now_Schedule').html();
                 var schedule_name = scheduleHtml.split('<')[0];
+                var schedule_semester = $('#select_Semester option:selected').text();
                 console.log(schedule_name);
                 $.ajax({
                     url : "<c:url value='/schedule/getSchedule_set'/>",
                     type : "get",
-                    data : {subject_name : schedule_name},
+                    data : {subject_name : schedule_name,
+                    schedule_semester : schedule_semester},
                     success:function(schedule_set){
                         console.log(schedule_set);
                         callback(schedule_set);
@@ -722,13 +742,17 @@
             if(li=="undefined" || li=="" || li==null){
                 li= document.querySelector("#list_Schedule2 li:first-child").getAttribute("id");
             }
+            var schedule_semester = $('#select_Semester option:selected').text();
             // var firstLi = document.querySelector("#list_Schedule2 li:first-child");
             // var firstLiId = firstLi.getAttribute("id");
             $.ajax({
-                url : "<c:url value='/schedule/read?schedule_name=" + li + "' />",
+                <%--url : "<c:url value='/schedule/read?schedule_name=" + li + "' />",--%>
                 <%--url : "<c:url value='/schedule/read?'/>",--%>
+                url : "<c:url value='/schedule/read'/>",
                 type : "get",
                 dataType:"json",
+                data:{schedule_name : li,
+                schedule_semester : schedule_semester},
                 cache : false,
                 success:function(data){
                     console.log(data);
@@ -988,12 +1012,14 @@
             // var schedule_name = $('#now_Schedule').html();
             var scheduleHtml = $('#now_Schedule').html();
             var schedule_name = scheduleHtml.split('<')[0];
+            var schedule_semester = $('#select_Semester option:selected').text();
             console.log(schedule_name);
-            console.log(schedule_name);
+            console.log(schedule_semester);
             $.ajax({
                 url:"<c:url value='/schedule/readMC'/>",
                 type:'post',
-                data:{schedule_name : schedule_name},
+                data:{schedule_name : schedule_name,
+                schedule_semester:schedule_semester},
                 success:function(data){
                     var majorList = data.major;
                     var creditList = data.credit;
@@ -1036,12 +1062,14 @@
         function deleteSubject(subject_name, sno) {
             var scheduleHtml = $('#now_Schedule').html();
             var schedule_name = scheduleHtml.split('<')[0];
+            var schedule_semester = $('#select_Semester option:selected').text();
             $.ajax({
                 url: "<c:url value='/schedule/delete'/>",
                 type: "post",
                 data: {
                     subject_name: subject_name,
-                    sno: sno
+                    sno: sno,
+                    schedule_semester : schedule_semester
                 },
                 success: function(response) {
                     if (response == "possible") {
@@ -1077,6 +1105,7 @@
             var semester = '<option>'+semesters+'</option>'
             return semester;
         }
+
     </script>
     </body>
     </html>

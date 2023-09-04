@@ -21,8 +21,7 @@ public class Schedule_InfoDto {
         this.schedule_name = schedule_name;
         this.sid = sid;
     }
-    public Schedule_InfoDto(Integer pno, Integer schedule_set, String schedule_name, String sid, String schedule_semester){
-        this.pno = pno;
+    public Schedule_InfoDto(Integer schedule_set, String schedule_name, String sid, String schedule_semester){
         this.schedule_set = schedule_set;
         this.schedule_name = schedule_name;
         this.sid = sid;

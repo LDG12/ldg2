@@ -41,14 +41,15 @@ public class ScheduleController {
     }
 
     @GetMapping("/AddNewSchedule")
-    public ResponseEntity<String> AddNewSchedule(HttpSession session, Model m){
+    public ResponseEntity<String> AddNewSchedule(HttpSession session, String schedule_semester, Model m){
         String sid = (String)session.getAttribute("id");
         System.out.println("sid = " + sid);
-        String newName = scheduleService.addNewSchedule(sid);
+        System.out.println("schedule_semester = " + schedule_semester);
+        String newName = scheduleService.addNewSchedule(sid, schedule_semester);
         System.out.println("newName = " + newName);
-        Integer newScheduleSet = scheduleService.addNewSchedule_set(sid);
+        Integer newScheduleSet = scheduleService.addNewSchedule_set(sid, schedule_semester); // id로만 찾아오던걸 학기로 추가함.
         System.out.println("newScheduleSet = " + newScheduleSet);
-        Schedule_InfoDto schedule_infoDto = new Schedule_InfoDto(newScheduleSet, newName, sid);
+        Schedule_InfoDto schedule_infoDto = new Schedule_InfoDto(newScheduleSet, newName, sid, schedule_semester);
         int rowCnt = schedule_infoService.addNewSchedule(schedule_infoDto);
         if(rowCnt==1){
             return ResponseEntity.ok("possible");
@@ -59,15 +60,27 @@ public class ScheduleController {
     }
     @GetMapping("/getSchedule_set")
     @ResponseBody
-    public Integer getSchedule_set(HttpSession session, String subject_name){
+    public Integer getSchedule_set(HttpSession session, String schedule_semester, String subject_name){
         String sid = (String)session.getAttribute("id");
         Map<String, String> map = new HashMap<>();
         map.put("schedule_name", subject_name);
         map.put("sid", sid);
-        Integer getSchedule_set = schedule_infoService.second(map);
+        map.put("schedule_semester", schedule_semester);
+        Integer getSchedule_set = schedule_infoService.secondSemester(map);
         System.out.println("subject_name = " + subject_name);
         System.out.println("getSchedule_set = " + getSchedule_set);
         return getSchedule_set;
+    }
+    @GetMapping("/readSchedule_name")
+    @ResponseBody
+    public List<String>  schedule_nameRead2(HttpSession session, String selectOp){
+        String sid = (String)session.getAttribute("id");
+        System.out.println("selectOp = " + selectOp);
+        Map<String, String> map = new HashMap<>();
+        map.put("sid", sid);
+        map.put("schedule_semester", selectOp);
+        List<String> schedule_infoDtoList = schedule_infoService.selectScheduleName(map);
+        return schedule_infoDtoList;
     }
 //    @GetMapping("/readSchedule_name")
 //    @ResponseBody
@@ -77,28 +90,19 @@ public class ScheduleController {
 //        Map<String, String> map = new HashMap<>();
 //        map.put("sid", sid);
 //        map.put("schedule_semester", selectOp);
-//        List<String> schedule_infoDtoList = schedule_infoService.selectScheduleName(map);
+//        List<String> schedule_infoDtoList = schedule_infoService.initial(sid);
 //        return schedule_infoDtoList;
 //    }
-    @GetMapping("/readSchedule_name")
-    @ResponseBody
-    public List<String>  schedule_nameRead(HttpSession session, String selectOp){
-        String sid = (String)session.getAttribute("id");
-        System.out.println("selectOp = " + selectOp);
-        Map<String, String> map = new HashMap<>();
-        map.put("sid", sid);
-        map.put("schedule_semester", selectOp);
-        List<String> schedule_infoDtoList = schedule_infoService.initial(sid);
-        return schedule_infoDtoList;
-    }
     @PostMapping("/readMC")
     @ResponseBody
-    public Map<String, List> schedule_readMC(String schedule_name, HttpSession session){
+    public Map<String, List> schedule_readMC(String schedule_name, String schedule_semester, HttpSession session){
         String sid = (String)session.getAttribute("id");
         Map<String, String> map2 = new HashMap<>();
         map2.put("sid", sid);
         map2.put("schedule_name", schedule_name);
-        Integer schedule_set = schedule_infoService.second(map2);
+        map2.put("schedule_semester", schedule_semester); // id와 schedule이름, 어떤학기인지를 받아와서
+        Integer schedule_set = schedule_infoService.secondSemester(map2); // 해당 schedule_set을 얻어오고
+        // 문제는 (2023 2학기, ehdrlf0815, 1)(2023 겨울학기, ehdrlf0815, 1) 학기를 안넣으면 겹친다...
         map2.remove("schedule_name");
         map2.put("schedule_set", String.valueOf(schedule_set));
         List<String> majorList = scheduleService.readMajor(map2);
@@ -129,7 +133,7 @@ public class ScheduleController {
     }
     @GetMapping("/read")
     @ResponseBody
-    public ScheduleWithColor scheduleRead(HttpSession session, Model m, String schedule_name){
+    public ScheduleWithColor scheduleRead(HttpSession session, String schedule_semester, Model m, String schedule_name){
         String sid = (String)session.getAttribute("id");
         String loadname = null;
         try {
@@ -146,9 +150,11 @@ public class ScheduleController {
             map.put("schedule_name", loadname);
         }
         map.put("sid", sid);
-        Integer schedule_set = schedule_infoService.second(map);
+        map.put("schedule_semester", schedule_semester); // 추가
+//        Integer schedule_set = schedule_infoService.second(map);
+        Integer schedule_set = schedule_infoService.secondSemester(map); // 추가
         map.put("schedule_set", String.valueOf(schedule_set));
-        List<ScheduleDto> list = scheduleService.loadSchedule(map);
+        List<ScheduleDto> list = scheduleService.loadSchedule(map); // loadSchedule 변경 (09/04) -> schedule_semester 추가
         List<Color_InfoDto> color_infoDtoList = color_infoService.select2(list);
         List<ScheduleDto> scheduleDtoList= scheduleService.selectOneSchedule(sid);
         ScheduleWithColor scheduleWithColor = new ScheduleWithColor(list, color_infoDtoList);
@@ -191,11 +197,12 @@ public class ScheduleController {
     }
     @PostMapping("/deleteSchedule")
     @Transactional
-    public ResponseEntity<String> scheduleDelete(String schedule_name,HttpSession session, Model m){
+    public ResponseEntity<String> scheduleDelete(String schedule_name, String schedule_semester, HttpSession session, Model m){
         String sid = (String)session.getAttribute("id");
         Map<String,String>map = new HashMap<>();
         map.put("sid", sid);
         map.put("schedule_name", schedule_name);
+        map.put("schedule_semester", schedule_semester);
         int result = scheduleService.selectDeleteSno(map);
         if(result == 1 || result==-1){
             return ResponseEntity.ok("possible");
@@ -205,12 +212,13 @@ public class ScheduleController {
         }
     }
     @PostMapping("/update")
-    public ResponseEntity<String> scheduleUpdate(String schedule_name, String old_schedule_name, HttpSession session){
+    public ResponseEntity<String> scheduleUpdate(String schedule_name, String old_schedule_name,String schedule_semester,HttpSession session){
         String sid = (String)session.getAttribute("id");
         Map<String, String> map = new HashMap<>();
         map.put("sid", sid);
         map.put("schedule_name", schedule_name);
         map.put("old_schedule_name", old_schedule_name);
+        map.put("schedule_semester", schedule_semester);
         System.out.println("schedule_name = " + schedule_name);
         System.out.println("old_schedule_name = " + old_schedule_name);
         int rowCnt = schedule_infoService.update(map);
@@ -222,7 +230,7 @@ public class ScheduleController {
         }
     }
     @PostMapping("/delete")
-    public ResponseEntity<String> subjectDelete(String subject_name, Integer sno){
+    public ResponseEntity<String> subjectDelete(String subject_name, String schedule_semester, Integer sno){
         int colorRow = color_infoService.delete(sno);
         if(colorRow==1){
             int scheduleRow = scheduleService.deleteAll(sno);
