@@ -29,6 +29,8 @@
         .chart, .semester{
             border: 1px solid #ededed;
             border-radius: 12px;
+            resize:none;
+            overflow:auto;
         }
         .overView{
             display: flex;
@@ -123,9 +125,44 @@
         .subjects dd{
             color: #c62917;
         }
+
+        th.thName{
+            width : 80%;
+            text-align: left;
+            padding-left: 1cm;
+            border-bottom: 1px solid #ededed;
+            border-right: 1px solid #ededed;
+            border-radius: 12px 0 0 0;
+        }
+        th.thCredit, th.thGrade{
+            width : 6.67%;
+            text-align: center;
+            border-bottom: 1px solid #ededed;
+            border-right:1px solid #ededed;
+        }
+        th.thMajor{
+            width : 6.67%;
+            text-align: center;
+            border-bottom: 2px solid #ededed;
+        }
+        td input, td select, td input[type="checkbox"]{
+            width:100%;
+        }
+        .no-padding-margin {
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+        th, tr{
+            height : 40px;
+        }
+        input:focus{
+            outline: none;
+        }
+        .new:hover{
+            cursor:pointer;
+        }
     </style>
-    <script>
-    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
 </head>
 <body>
 <div id="menu">
@@ -160,17 +197,27 @@
                     <p class="total">/ 120</p>
                 </div>
             </article>
+            <article class="graph">
+                <div class="series"></div>
+                <div class="plot">
+                    <canvas class="flot-base" style="direction: ltr; position: absolute; left: 0px; top: 0px; width: 365px; height: 129px;" width="410" height="145">
+                        <div> test </div>
+                    <canvas class="flot-overlay" style="direction: ltr; position: absolute; left: 0px; top: 0px; width: 365px; height: 129px;" width="410" height="145">
+                    </canvas>
+                    </canvas>
+                </div>
+            </article>
         </div>
         <div class="semester">
             <ol>
-                <li class="active">1학년 1학기</li>
-                <li>1학년 2학기</li>
-                <li>2학년 1학기</li>
-                <li>2학년 2학기</li>
-                <li>3학년 1학기</li>
-                <li>3학년 2학기</li>
-                <li>4학년 1학기</li>
-                <li>4학년 2학기</li>
+                <li class="the_semester">1학년 1학기</li>
+                <li class="the_semester">1학년 2학기</li>
+                <li class="the_semester">2학년 1학기</li>
+                <li class="the_semester">2학년 2학기</li>
+                <li class="the_semester">3학년 1학기</li>
+                <li class="the_semester">3학년 2학기</li>
+                <li class="the_semester">4학년 1학기</li>
+                <li class="the_semester">4학년 2학기</li>
             </ol>
         </div>
         <table class="subjects">
@@ -178,53 +225,176 @@
                 <h3> 4학년 2학기</h3>
                 <dl>
                     <dt>평점</dt>
-                    <dd>4</dd>
+                    <dd class="subject_GPA">0</dd>
                     <dt>전공</dt>
-                    <dd>4</dd>
+                    <dd class="subject_Major">0</dd>
                     <dt>취득</dt>
-                    <dd>4</dd>
+                    <dd class="subject_Acquisition">0</dd>
                 </dl>
             </caption>
             <thead>
-                <th class="name">과목명</th>
-                <th class="credit">학점</th>
-                <th class="grade">성적</th>
-                <th class="major">전공</th>
+                <th class="thName">과목명</th>
+                <th class="thCredit">학점</th>
+                <th class="thGrade">성적</th>
+                <th class="thMajor">전공</th>
             </thead>
-            <tbody>
-                <tr>
-                    <td>
-                        <input class="subject_name" maxlength="50">
-                    </td>
-                    <td>
-                        <input class="subject_credit" type="number" maxlength="4" min="0">
-                    </td>
-                    <td>
-                        <select class="subject_grade">
-                            <option value="A+">A+</option>
-                        </select>
-                    </td>
-                    <td>
-                        <label>
-                            <input class="subject_major" type="checkbox">
-                        </label>
-                    </td>
-                </tr>
-                <tr></tr>
-                <tr></tr>
-                <tr></tr>
-                <tr></tr>
-                <tr></tr>
-                <tr></tr>
-                <tr></tr>
-                <tr></tr>
-                <tr></tr>
+            <tbody id="tableBody">
+
             </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="4"><a class="new">더 입력하기</a></td>
+                </tr>
+            </tfoot>
         </table>
 
     </div>
 </div>
-
-
 </body>
+<script>
+    $(document).ready(function(){
+        for(var i=0; i<6; i++){
+            test();
+        }
+        $('.new').on('click', function(){
+            var body = $('#tableBody');
+            body.append(createTr());
+        })
+        $('.the_semester').on('click', function(){
+            var allSemester = $('.semester .the_semester');
+            allSemester.remove('data-info');
+            allSemester.css('text-decoration', 'none');
+            allSemester.css('color', '#a6a6a6');
+            console.log($(this).text());
+            var semester = $(this);
+            semester.attr('data-info', 'active');
+            semester.css('text-decoration', 'underline');
+            semester.css('color', '#000');
+        })
+
+
+        $('.tdMajor').on('click', function(){ // major 버튼을 누르면
+            var tdMajor = $(this).prop('checked');
+            if(tdMajor){
+                $(this).attr('selected' , 'selected');
+            }
+            else{
+                $(this).removeAttr('selected');
+            }
+            var acquisition = parseInt(0); // 총 취득
+            var majorAcquisition = parseInt(0); // 전공 총 취득
+            var sum=parseInt(0); // 총 학점
+            var gpa = parseInt(0); // 총 평균
+            var major = parseInt(0);
+            var majorSum = parseInt(0); // 전공 취득
+            // 전공버튼을 싹 다 돌아서, 눌려져있는 것들의 합을 체크
+            $(this).closest('tbody').find('tr').find('.tdMajor').each(function(){
+                var checked = $(this).prop("checked");
+                var inputValue = $(this).closest('tr').find('.tdCredit').val(); // 해당 tr의 학점
+                var tdGrade = $(this).closest('tr').find('.tdGrade option:selected'); // 해당 tr의 등급
+                if(checked){ // 전공버튼에 체크가 되어있다면.
+                    majorSum+= CreditCal(parseInt(inputValue), tdGrade.text());
+                    majorAcquisition+=parseInt(inputValue);
+                }
+                console.log(majorSum);
+                major = (majorSum / majorAcquisition).toFixed(2);
+                $('.subject_Major').text(major);
+            })
+            $(this).closest('tbody').find('tr').find('.tdCredit').each(function(){
+                var inputValue = $(this).val();
+                acquisition += parseInt(inputValue);
+                var tdGrade = $(this).closest('tr').find('.tdGrade option:selected');
+                console.log(tdGrade.text());
+                sum+=CreditCal(parseInt(inputValue), tdGrade.text());
+                console.log(sum);
+            });
+            gpa = (sum / acquisition).toFixed(2);
+            $('.subject_Acquisition').text(acquisition);
+            $('.subject_GPA').text(gpa);
+        })
+
+
+        $('.tdGrade').on('change', function(){
+            var acquisition = parseInt(0);
+            var sum=parseInt(0);
+            var gpa = parseInt(0);
+            $(this).closest('tbody').find('tr').find('.tdCredit').each(function(){
+                var inputValue = $(this).val();
+                acquisition += parseInt(inputValue);
+                var tdGrade = $(this).closest('tr').find('.tdGrade option:selected');
+                console.log(tdGrade.text());
+                sum+=CreditCal(parseInt(inputValue), tdGrade.text());
+                console.log(sum);
+            });
+            gpa = (sum / acquisition).toFixed(2);
+            $('.subject_Acquisition').text(acquisition);
+            $('.subject_GPA').text(gpa);
+        })
+
+
+        $('.tdCredit').on('blur', function(){
+            var acquisition = parseInt(0);
+            var sum=parseInt(0);
+            var gpa = parseInt(0);
+            $(this).closest('tbody').find('tr').find('.tdCredit').each(function(){
+                var inputValue = $(this).val();
+                acquisition += parseInt(inputValue);
+                var tdGrade = $(this).closest('tr').find('.tdGrade option:selected');
+                console.log(tdGrade.text());
+                sum+=CreditCal(parseInt(inputValue), tdGrade.text());
+                console.log(sum);
+            });
+            gpa = (sum / acquisition).toFixed(2);
+            $('.subject_Acquisition').text(acquisition);
+            $('.subject_GPA').text(gpa);
+        })
+    })
+
+
+
+
+    function test(){
+        var body = $('#tableBody');
+        body.append(createTr());
+    }
+    function createTr(){
+        var test = '<tr class="no-padding-margin" style="background-color:#F9F9F9;padding:0;margin:0;">'+ createTd() +'</tr>';
+        return test;
+    }
+    function createTd(){
+        var test = '<td style="background-color:#F9F9F9;border:0.5px solid #999999;"><input name="" class="tdName"maxlength="50" style="border:none;background-color:#F9F9F9;padding-left:10px;"></td>'
+        var credit = '<td style="background-color:#F9F9F9;border:0.5px solid #999999"><input name="" value="0" class="tdCredit"type="number" maxlength="4" min="0" style="border:none;background-color:#F9F9F9;padding-left:5px;"></td>'
+        var grade = '<td style="background-color:#ffffff;border:0.5px solid #999999"><select name="" class="tdGrade">'+ createOption() +'</select></td>'
+        var major = '<td style="background-color:#ffffff;border:0.5px solid #999999"><label><input name="" type="checkbox" class="tdMajor"></label></td>'
+        return test+credit+grade+major;
+    }
+    function createOption(){
+        var repository = ["A+","A","B+","B","C+","C","D+","D","F","P","NP"];
+        var array = "";
+        for(var i=0; i<repository.length; i++){
+            if(i==0){
+                array += '<option value="'+repository[i]+'" selected="selected">'+repository[i]+'</option>'
+            }
+            else{
+                array += '<option value="'+repository[i]+'">'+repository[i]+'</option>'
+            }
+        }
+        return array;
+    }
+    function CreditCal(value, grade){
+        var aver =0;
+        if(grade=='A+'){aver = parseInt(value)*4.5;}
+        else if(grade=='A'){aver = parseInt(value)*4;}
+        else if(grade=='B+'){aver = parseInt(value)*3.5}
+        else if(grade=='B'){aver = parseInt(value)*3}
+        else if(grade=='C+'){aver = parseInt(value)*2.5}
+        else if(grade=='C'){aver = parseInt(value)*2}
+        else if(grade=='D+'){aver = parseInt(value)*1.5}
+        else if(grade=='D'){aver = parseInt(value)*1}
+        else if(grade=='F'){aver=0}
+        else if(grade=='P'){}
+        else if(grade=='NP'){}
+        return aver;
+    }
+</script>
 </html>
