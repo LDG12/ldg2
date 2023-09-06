@@ -113,6 +113,11 @@
 3. semester별 스케쥴 구현중중
 
 9/4
+1. jsp view에서 jquery와 javascript 구현중
+2. 현재 학점계산기 테이블과 학점 계산기능 구현 완료
+3. 이제 db부터 시작해서 dto, dao, service, controller 진행 예정
+
+9/4
 1. schedule_semester( "학기" )에 의한 내용을 추가하여 전반적인 수정 진행
 2. UpdateCell, UpdateSchedule_list, UpdateMajorAndCredit 등 <select> 태그의 <option>으로 각 학기를 선택할 경우에 대한 기능을 추가하고 수정
 3. 시간표 이름 변경, 시간표 삭제시 학기별 기능 구현
