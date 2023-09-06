@@ -1,8 +1,11 @@
 package com.person456.ldg.controller;
 
+import com.person456.ldg.dao.CalculatorDao;
 import com.person456.ldg.dao.UserDao;
+import com.person456.ldg.domain.CalculatorDto;
 import com.person456.ldg.domain.Schedule_InfoDto;
 import com.person456.ldg.domain.UserDto;
+import com.person456.ldg.service.CalculatorService;
 import com.person456.ldg.service.MailSendService;
 import com.person456.ldg.service.Schedule_InfoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +34,8 @@ public class RegisterController {
     MailSendService mailSendService;
     @Autowired
     Schedule_InfoService schedule_infoService;
+    @Autowired
+    CalculatorService calculatorService;
 
     @GetMapping("/add")
     public String registerForm(){
@@ -48,6 +53,7 @@ public class RegisterController {
             String regMsg = URLEncoder.encode("회원가입이 완료되었습니다.", "utf-8");
             Schedule_InfoDto schedule_infoDto = new Schedule_InfoDto(1, "시간표 1", id);
             int rowCnt= schedule_infoService.addNewSchedule(schedule_infoDto);
+            int Cnt = calculatorService.insertNewRegister(id);
             return "redirect:/?regMsg="+regMsg;
         }
         else{

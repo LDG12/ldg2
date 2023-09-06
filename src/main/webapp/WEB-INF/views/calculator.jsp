@@ -63,15 +63,14 @@
         .semester {
             position: relative;
             margin-top: 8px;
-            overflow-x: hidden; /* 가로 스크롤 바 숨김 */
-            overflow-y: hidden;
+            overflow-x : scroll;
+            white-space: nowrap;
         }
 
         .semester ol {
             display: flex; /* 요소들을 수평으로 정렬 */
             list-style: none; /* 리스트 마커 숨김 */
             padding: 0;
-            margin: 0;
         }
 
         .semester li {
@@ -209,8 +208,8 @@
             </article>
         </div>
         <div class="semester">
-            <ol>
-                <li class="the_semester">1학년 1학기</li>
+            <ol class="the_semesters">
+                <li class="the_semester" data-info="active">1학년 1학기</li>
                 <li class="the_semester">1학년 2학기</li>
                 <li class="the_semester">2학년 1학기</li>
                 <li class="the_semester">2학년 2학기</li>
@@ -218,6 +217,10 @@
                 <li class="the_semester">3학년 2학기</li>
                 <li class="the_semester">4학년 1학기</li>
                 <li class="the_semester">4학년 2학기</li>
+                <li class="the_semester">5학년 1학기</li>
+                <li class="the_semester">5학년 2학기</li>
+                <li class="the_semester">6학년 1학기</li>
+                <li class="the_semester">6학년 2학기</li>
             </ol>
         </div>
         <table class="subjects">
@@ -253,23 +256,36 @@
 </body>
 <script>
     $(document).ready(function(){
-        for(var i=0; i<6; i++){
-            test();
+        for(var i=0; i<10; i++){
+            test(i);
         }
+        $('.the_semester').first().css('text-decoration', 'underline').css('color', '#000');
+        console.log($('.the_semester[data-info="active"]').text());
+        selectSemester();
         $('.new').on('click', function(){
             var body = $('#tableBody');
             body.append(createTr());
         })
         $('.the_semester').on('click', function(){
-            var allSemester = $('.semester .the_semester');
-            allSemester.remove('data-info');
-            allSemester.css('text-decoration', 'none');
-            allSemester.css('color', '#a6a6a6');
-            console.log($(this).text());
-            var semester = $(this);
-            semester.attr('data-info', 'active');
-            semester.css('text-decoration', 'underline');
-            semester.css('color', '#000');
+            var now_semester="싯팔";
+            $('.the_semester').closest('.the_semesters').find('.the_semester').each(function(){
+                if($(this).attr('data-info') == "active"){
+                    now_semester = $(this).text();
+                }
+            })
+            var select_semester = $(this);
+            console.log(now_semester);
+            insertSemester(now_semester, function(){
+                var allSemester = $('.semester .the_semester');
+                allSemester.removeAttr('data-info');
+                allSemester.css('text-decoration', 'none');
+                allSemester.css('color', '#a6a6a6');
+                console.log(select_semester.text());
+                select_semester.attr('data-info', 'active');
+                select_semester.css('text-decoration', 'underline');
+                select_semester.css('color', '#000');
+                selectSemester();
+            })
         })
 
 
@@ -298,6 +314,7 @@
                 }
                 console.log(majorSum);
                 major = (majorSum / majorAcquisition).toFixed(2);
+                if(major=="NaN"){major=0;}
                 $('.subject_Major').text(major);
             })
             $(this).closest('tbody').find('tr').find('.tdCredit').each(function(){
@@ -309,15 +326,42 @@
                 console.log(sum);
             });
             gpa = (sum / acquisition).toFixed(2);
+            if(gpa=="NaN"){gpa=0;}
+            if(major="NaN"){major=0;}
+            if(acquisition=="NaN"){acquisition=0;}
             $('.subject_Acquisition').text(acquisition);
             $('.subject_GPA').text(gpa);
         })
 
 
         $('.tdGrade').on('change', function(){
-            var acquisition = parseInt(0);
-            var sum=parseInt(0);
-            var gpa = parseInt(0);
+            var tdMajor = $(this).prop('checked');
+            if(tdMajor){
+                $(this).attr('selected' , 'selected');
+            }
+            else{
+                $(this).removeAttr('selected');
+            }
+            var acquisition = parseInt(0); // 총 취득
+            var majorAcquisition = parseInt(0); // 전공 총 취득
+            var sum=parseInt(0); // 총 학점
+            var gpa = parseInt(0); // 총 평균
+            var major = parseInt(0);
+            var majorSum = parseInt(0); // 전공 취득
+            // 전공버튼을 싹 다 돌아서, 눌려져있는 것들의 합을 체크
+            $(this).closest('tbody').find('tr').find('.tdMajor').each(function(){
+                var checked = $(this).prop("checked");
+                var inputValue = $(this).closest('tr').find('.tdCredit').val(); // 해당 tr의 학점
+                var tdGrade = $(this).closest('tr').find('.tdGrade option:selected'); // 해당 tr의 등급
+                if(checked){ // 전공버튼에 체크가 되어있다면.
+                    majorSum+= CreditCal(parseInt(inputValue), tdGrade.text());
+                    majorAcquisition+=parseInt(inputValue);
+                }
+                console.log(majorSum);
+                major = (majorSum / majorAcquisition).toFixed(2);
+                if(major=="NaN"){major=0;}
+                $('.subject_Major').text(major);
+            })
             $(this).closest('tbody').find('tr').find('.tdCredit').each(function(){
                 var inputValue = $(this).val();
                 acquisition += parseInt(inputValue);
@@ -327,15 +371,42 @@
                 console.log(sum);
             });
             gpa = (sum / acquisition).toFixed(2);
+            if(gpa=="NaN"){gpa=0;}
+            if(major="NaN"){major=0;}
+            if(acquisition=="NaN"){acquisition=0;}
             $('.subject_Acquisition').text(acquisition);
             $('.subject_GPA').text(gpa);
         })
 
 
         $('.tdCredit').on('blur', function(){
-            var acquisition = parseInt(0);
-            var sum=parseInt(0);
-            var gpa = parseInt(0);
+            var tdMajor = $(this).prop('checked');
+            if(tdMajor){
+                $(this).attr('selected' , 'selected');
+            }
+            else{
+                $(this).removeAttr('selected');
+            }
+            var acquisition = parseInt(0); // 총 취득
+            var majorAcquisition = parseInt(0); // 전공 총 취득
+            var sum=parseInt(0); // 총 학점
+            var gpa = parseInt(0); // 총 평균
+            var major = parseInt(0);
+            var majorSum = parseInt(0); // 전공 취득
+            // 전공버튼을 싹 다 돌아서, 눌려져있는 것들의 합을 체크
+            $(this).closest('tbody').find('tr').find('.tdMajor').each(function(){
+                var checked = $(this).prop("checked");
+                var inputValue = $(this).closest('tr').find('.tdCredit').val(); // 해당 tr의 학점
+                var tdGrade = $(this).closest('tr').find('.tdGrade option:selected'); // 해당 tr의 등급
+                if(checked){ // 전공버튼에 체크가 되어있다면.
+                    majorSum+= CreditCal(parseInt(inputValue), tdGrade.text());
+                    majorAcquisition+=parseInt(inputValue);
+                }
+                console.log(majorSum);
+                major = (majorSum / majorAcquisition).toFixed(2);
+                if(major=="NaN"){major=0;}
+                $('.subject_Major').text(major);
+            })
             $(this).closest('tbody').find('tr').find('.tdCredit').each(function(){
                 var inputValue = $(this).val();
                 acquisition += parseInt(inputValue);
@@ -345,6 +416,9 @@
                 console.log(sum);
             });
             gpa = (sum / acquisition).toFixed(2);
+            if(gpa=="NaN"){gpa=0;}
+            if(major="NaN"){major=0;}
+            if(acquisition=="NaN"){acquisition=0;}
             $('.subject_Acquisition').text(acquisition);
             $('.subject_GPA').text(gpa);
         })
@@ -353,19 +427,19 @@
 
 
 
-    function test(){
+    function test(int){
         var body = $('#tableBody');
-        body.append(createTr());
+        body.append(createTr(int));
     }
-    function createTr(){
-        var test = '<tr class="no-padding-margin" style="background-color:#F9F9F9;padding:0;margin:0;">'+ createTd() +'</tr>';
+    function createTr(int){
+        var test = '<tr class="no-padding-margin" style="background-color:#F9F9F9;padding:0;margin:0;">'+ createTd(int) +'</tr>';
         return test;
     }
-    function createTd(){
-        var test = '<td style="background-color:#F9F9F9;border:0.5px solid #999999;"><input name="" class="tdName"maxlength="50" style="border:none;background-color:#F9F9F9;padding-left:10px;"></td>'
-        var credit = '<td style="background-color:#F9F9F9;border:0.5px solid #999999"><input name="" value="0" class="tdCredit"type="number" maxlength="4" min="0" style="border:none;background-color:#F9F9F9;padding-left:5px;"></td>'
-        var grade = '<td style="background-color:#ffffff;border:0.5px solid #999999"><select name="" class="tdGrade">'+ createOption() +'</select></td>'
-        var major = '<td style="background-color:#ffffff;border:0.5px solid #999999"><label><input name="" type="checkbox" class="tdMajor"></label></td>'
+    function createTd(int){
+        var test = '<td style="background-color:#F9F9F9;border:0.5px solid #999999;"><input id="name'+int+'" class="tdName"maxlength="50" style="border:none;background-color:#F9F9F9;padding-left:10px;"></td>'
+        var credit = '<td style="background-color:#F9F9F9;border:0.5px solid #999999"><input id="credit'+int+'" value="0" class="tdCredit"type="number" maxlength="4" min="0" style="border:none;background-color:#F9F9F9;padding-left:5px;"></td>'
+        var grade = '<td style="background-color:#ffffff;border:0.5px solid #999999"><select id="grade'+int+'" class="tdGrade">'+ createOption() +'</select></td>'
+        var major = '<td style="background-color:#ffffff;border:0.5px solid #999999"><label><input id="major'+int+'" type="checkbox" class="tdMajor"></label></td>'
         return test+credit+grade+major;
     }
     function createOption(){
@@ -381,6 +455,14 @@
         }
         return array;
     }
+    function ClearCell(int){
+        for(var i=int; i<10; i++){
+            $('#name'+i).val("");
+            $('#credit'+i).val(0);
+            $('#grade'+i).val('A+').attr('selected', 'selected');
+            $('#major'+i).attr("checked", false);
+        }
+    }
     function CreditCal(value, grade){
         var aver =0;
         if(grade=='A+'){aver = parseInt(value)*4.5;}
@@ -395,6 +477,85 @@
         else if(grade=='P'){}
         else if(grade=='NP'){}
         return aver;
+    }
+
+    function selectSemester(){
+        var now_semester = $('.the_semester[data-info="active"]').text();
+        $.ajax({
+            url : "<c:url value='/calculator/select'/>",
+            type:"get",
+            data : {semester : now_semester},
+            success:function(data){
+                var semesterData = data;
+                console.log(semesterData);
+                if(semesterData.length != 0){
+                    var length = semesterData.length;
+                    for(var i=0; i<semesterData.length; i++){
+                        var inputName = $('#name'+i);
+                        var inputCredit = $('#credit'+i);
+                        var inputGrade = $('#grade'+i);
+                        var inputMajor=$('#major'+i);
+                        inputName.val(semesterData[i].subject_name);
+                        inputCredit.val(semesterData[i].credit);
+                        inputGrade.find('option[value="'+semesterData[i].grade+'"]').prop('selected', true);
+                        if(semesterData[i].major=="yes"){
+                            inputMajor.prop('checked', true);
+                            inputMajor.attr("selected", "selected");
+                        }
+                        else{
+                            inputMajor.prop('checked', false);
+                        }
+                        $('.subjects').find('caption').find('h3').text(now_semester);
+                    }
+                    ClearCell(length);
+                }
+            }
+        })
+    }
+    function insertSemester(now_semester, callback){
+        console.log(now_semester);
+        var inputName =[];
+        var inputCredit = [];
+        var inputGrade = [];
+        var inputMajor =[];
+        var inputCell_place =[];
+        $('#tableBody').find('tr').each(function(index, row) {
+            var splitID = $(row).find('.tdName').attr('id');
+            var number = splitID.substring(4);
+            console.log(number);
+            inputName.push($(row).find('.tdName').val());
+            inputCredit.push($(row).find('.tdCredit').val());
+            inputGrade.push($(row).find('.tdGrade option:selected').val());
+            inputCell_place.push(number);
+            var isChecked = $(row).find('.tdMajor');
+            console.log(isChecked.prop("checked"));
+            if (isChecked.attr("selected") == "selected") {
+                inputMajor.push('yes');
+            } else {
+                inputMajor.push('no');
+            }
+        });
+        var jsonName = JSON.stringify(inputName);
+        var jsonCredit = JSON.stringify(inputCredit);
+        var jsonGrade = JSON.stringify(inputGrade);
+        var jsonMajor = JSON.stringify(inputMajor);
+        var jsonCell_place = JSON.stringify(inputCell_place);
+        console.log(jsonCell_place);
+        $.ajax({
+            url : "<c:url value='/calculator/insert'/>",
+            type : "post",
+            data : {jsonName : jsonName,
+            jsonCredit : jsonCredit,
+            jsonGrade : jsonGrade,
+            jsonMajor : jsonMajor,
+            semester : now_semester,
+            jsonCell_place : jsonCell_place},
+            success:function(data){
+                if(typeof callback=='function'){
+                    callback();
+                }
+            }
+        })
     }
 </script>
 </html>

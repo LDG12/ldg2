@@ -1,0 +1,40 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.person456.ldg.dao.CalculatorMapper">
+    <select id="count">
+        select count(*) from calculator
+    </select>
+    <select id="selectSemester" parameterType="map" resultType="CalculatorDto">
+        select * from calculator
+        where sid=#{sid} and semester = #{semester}
+    </select>
+    <select id="selectCell_Place" parameterType="map" resultType="CalculatorDto">
+        select * from calculator
+        where sid=#{sid} and semester=#{semester} and cell_place = #{cell_place}
+    </select>
+    <insert id="insertSemester" parameterType="list">
+        insert into calculator(sid, semester, subject_name, credit, grade, major)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.sid}, #{item.semester}, #{item.subject_name}, #{item.credit}, #{item.grade}, #{item.major})
+        </foreach>
+    </insert>
+    <insert id="insertOne" parameterType="CalculatorDto">
+        insert into calculator(sid, semester, subject_name, credit, grade, major, cell_place)
+        values(#{sid}, #{semester}, #{subject_name}, #{credit}, #{grade}, #{major}, #{cell_place})
+    </insert>
+    <insert id="insertNewRegister" parameterType="list">
+        insert into calculator(sid, subject_name, credit, grade, major)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.sid}, #{item.subjectName}, #{item.credit}, #{item.grade}, #{item.major})
+        </foreach>
+    </insert>
+    <update id="updateSemester" parameterType="CalculatorDto">
+        update from calculator set subject_name = #{subject_name} and credit=#{credit} and grade=#{grade} and major=#{major}
+    </update>
+    <delete id="deleteSemester" parameterType="map">
+        delete from calculator
+        where sid=#{sid} and semester=#{semester}
+    </delete>
+</mapper>
