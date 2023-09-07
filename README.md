@@ -122,3 +122,8 @@
 2. UpdateCell, UpdateSchedule_list, UpdateMajorAndCredit 등 <select> 태그의 <option>으로 각 학기를 선택할 경우에 대한 기능을 추가하고 수정
 3. 시간표 이름 변경, 시간표 삭제시 학기별 기능 구현
 4. 학점 계산기(Credit Calculator) 구현중, 현재 전반적인 html이랑 css 진행중(에브리타임 카피)
+
+9/5
+1. calculator table, dto, dao, service 생성
+2. view로부터 subject_name, credit, grade, major, cell_place를 controller에 보내고, 이를 통해 service에서 작업중
+3. 만약 해당 cell_place에 이미 등록이 되어있다면 update를 진행, 등록된게 없다면 insert진행으로 구현중중
