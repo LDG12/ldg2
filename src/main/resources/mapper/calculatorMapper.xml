@@ -8,15 +8,19 @@
         select * from calculator
         where sid=#{sid} and semester = #{semester}
     </select>
-    <select id="selectCell_Place" parameterType="map" resultType="CalculatorDto">
-        select * from calculator
+    <select id="selectCell_Place" parameterType="map" resultType="int">
+        select cno from calculator
         where sid=#{sid} and semester=#{semester} and cell_place = #{cell_place}
     </select>
+    <select id="selectAll" parameterType="String" resultType="CalculatorDto">
+        select credit, grade, major from calculator
+        where sid=#{sid}
+    </select>
     <insert id="insertSemester" parameterType="list">
-        insert into calculator(sid, semester, subject_name, credit, grade, major)
+        insert into calculator(sid, semester, subject_name, credit, grade, major, cell_place)
         values
         <foreach collection="list" item="item" separator=",">
-            (#{item.sid}, #{item.semester}, #{item.subject_name}, #{item.credit}, #{item.grade}, #{item.major})
+            (#{item.sid}, #{item.semester}, #{item.subject_name}, #{item.credit}, #{item.grade}, #{item.major}, #{cell_place})
         </foreach>
     </insert>
     <insert id="insertOne" parameterType="CalculatorDto">
@@ -24,14 +28,15 @@
         values(#{sid}, #{semester}, #{subject_name}, #{credit}, #{grade}, #{major}, #{cell_place})
     </insert>
     <insert id="insertNewRegister" parameterType="list">
-        insert into calculator(sid, subject_name, credit, grade, major)
+        insert into calculator(sid, subject_name, credit, grade, major, cell_place)
         values
         <foreach collection="list" item="item" separator=",">
-            (#{item.sid}, #{item.subjectName}, #{item.credit}, #{item.grade}, #{item.major})
+            (#{item.sid}, #{item.subjectName}, #{item.credit}, #{item.grade}, #{item.major}, #{item.cell_place})
         </foreach>
     </insert>
     <update id="updateSemester" parameterType="CalculatorDto">
-        update from calculator set subject_name = #{subject_name} and credit=#{credit} and grade=#{grade} and major=#{major}
+        update calculator set subject_name = #{subject_name}, credit=#{credit}, grade=#{grade}, major=#{major}
+        where sid=#{sid} and semester=#{semester} and cno=#{cno}
     </update>
     <delete id="deleteSemester" parameterType="map">
         delete from calculator

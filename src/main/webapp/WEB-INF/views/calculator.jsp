@@ -29,15 +29,34 @@
         .chart, .semester{
             border: 1px solid #ededed;
             border-radius: 12px;
-            resize:none;
+            resize: block;
             overflow:auto;
         }
         .overView{
+            text-align: center;
+            display:flex;
+            align-items: center;
+            justify-content: center;
+            flex-display: column;
+        }
+        .gradeAll, .acquisition, .major{
+            padding:20px;
+        }
+        .graph{
             display: flex;
             justify-content: space-between;
-            min-height: 52px;
-            margin-bottom: 32px;
+            align-items: center;
         }
+        .xplot{
+            background-color: #f0f0f0;
+            width:5px;
+        }
+        /*.overView{*/
+        /*    display: flex;*/
+        /*    justify-content: space-between;*/
+        /*    min-height: 52px;*/
+        /*    margin-bottom: 32px;*/
+        /*}*/
         .overView p{
             display: inline-block;
         }
@@ -124,7 +143,25 @@
         .subjects dd{
             color: #c62917;
         }
+        .subject_save{
+            position: absolute;
+            top:7cm;
+            right:8.5cm;
+            border: 1px solid #ededed;
+            border-radius: 12px;
+            background-color: #c62917;
+            color:#f0f0f0;
+            width:100px;
+            height:25px;
+            text-align: center;
+            line-height:23px;
+            font-family: "맑은 고딕", sans-serif;
+            font-size:15px;
+        }
 
+        .subject_save:hover{
+            cursor: pointer;
+        }
         th.thName{
             width : 80%;
             text-align: left;
@@ -161,7 +198,7 @@
             cursor:pointer;
         }
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 <div id="menu">
@@ -197,14 +234,12 @@
                 </div>
             </article>
             <article class="graph">
-                <div class="series"></div>
                 <div class="plot">
-                    <canvas class="flot-base" style="direction: ltr; position: absolute; left: 0px; top: 0px; width: 365px; height: 129px;" width="410" height="145">
-                        <div> test </div>
-                    <canvas class="flot-overlay" style="direction: ltr; position: absolute; left: 0px; top: 0px; width: 365px; height: 129px;" width="410" height="145">
-                    </canvas>
-                    </canvas>
+                    <canvas id="the_chart" style="height:300px; width:500px"></canvas>
                 </div>
+                <ul class="xplot">
+                    <li>test</li>
+                </ul>
             </article>
         </div>
         <div class="semester">
@@ -233,6 +268,7 @@
                     <dd class="subject_Major">0</dd>
                     <dt>취득</dt>
                     <dd class="subject_Acquisition">0</dd>
+                    <dd><a class="subject_save">성적 반영</a></dd>
                 </dl>
             </caption>
             <thead>
@@ -260,8 +296,10 @@
             test(i);
         }
         $('.the_semester').first().css('text-decoration', 'underline').css('color', '#000');
-        console.log($('.the_semester[data-info="active"]').text());
         selectSemester();
+        updateCalculation2();
+        selectGpa();
+        tttest();
         $('.new').on('click', function(){
             var body = $('#tableBody');
             body.append(createTr());
@@ -287,144 +325,181 @@
                 selectSemester();
             })
         })
-
-
-        $('.tdMajor').on('click', function(){ // major 버튼을 누르면
-            var tdMajor = $(this).prop('checked');
-            if(tdMajor){
-                $(this).attr('selected' , 'selected');
-            }
-            else{
-                $(this).removeAttr('selected');
-            }
-            var acquisition = parseInt(0); // 총 취득
-            var majorAcquisition = parseInt(0); // 전공 총 취득
-            var sum=parseInt(0); // 총 학점
-            var gpa = parseInt(0); // 총 평균
-            var major = parseInt(0);
-            var majorSum = parseInt(0); // 전공 취득
-            // 전공버튼을 싹 다 돌아서, 눌려져있는 것들의 합을 체크
-            $(this).closest('tbody').find('tr').find('.tdMajor').each(function(){
-                var checked = $(this).prop("checked");
-                var inputValue = $(this).closest('tr').find('.tdCredit').val(); // 해당 tr의 학점
-                var tdGrade = $(this).closest('tr').find('.tdGrade option:selected'); // 해당 tr의 등급
-                if(checked){ // 전공버튼에 체크가 되어있다면.
-                    majorSum+= CreditCal(parseInt(inputValue), tdGrade.text());
-                    majorAcquisition+=parseInt(inputValue);
-                }
-                console.log(majorSum);
-                major = (majorSum / majorAcquisition).toFixed(2);
-                if(major=="NaN"){major=0;}
-                $('.subject_Major').text(major);
-            })
-            $(this).closest('tbody').find('tr').find('.tdCredit').each(function(){
-                var inputValue = $(this).val();
-                acquisition += parseInt(inputValue);
-                var tdGrade = $(this).closest('tr').find('.tdGrade option:selected');
-                console.log(tdGrade.text());
-                sum+=CreditCal(parseInt(inputValue), tdGrade.text());
-                console.log(sum);
-            });
-            gpa = (sum / acquisition).toFixed(2);
-            if(gpa=="NaN"){gpa=0;}
-            if(major="NaN"){major=0;}
-            if(acquisition=="NaN"){acquisition=0;}
-            $('.subject_Acquisition').text(acquisition);
-            $('.subject_GPA').text(gpa);
+        $(".subject_save").on("click", function (){
+            var now_semester = $('.the_semester[data-info="active"]').text();
+            insertSemester(now_semester);
         })
 
+        $('.tdMajor').on('click', updateCalculation2);
+        // $('.tdMajor').on('click', function(){ // major 버튼을 누르면
+        //     var tdMajor = $(this).prop('checked');
+        //     if(tdMajor){
+        //         $(this).attr('selected' , 'selected');
+        //     }
+        //     else{
+        //         $(this).removeAttr('selected');
+        //     }
+        //     var acquisition = parseInt(0); // 총 취득
+        //     var majorAcquisition = parseInt(0); // 전공 총 취득
+        //     var sum=parseInt(0); // 총 학점
+        //     var gpa = parseInt(0); // 총 평균
+        //     var major = parseInt(0);
+        //     var majorSum = parseInt(0); // 전공 취득
+        //     // 전공버튼을 싹 다 돌아서, 눌려져있는 것들의 합을 체크
+        //     $(this).closest('tbody').find('tr').find('.tdMajor').each(function(){
+        //         var checked = $(this).prop("checked");
+        //         var inputValue = $(this).closest('tr').find('.tdCredit').val(); // 해당 tr의 학점
+        //         var tdGrade = $(this).closest('tr').find('.tdGrade option:selected'); // 해당 tr의 등급
+        //         if(checked){ // 전공버튼에 체크가 되어있다면.
+        //             majorSum+= CreditCal(parseInt(inputValue), tdGrade.text());
+        //             majorAcquisition+=parseInt(inputValue);
+        //         }
+        //         console.log(majorSum);
+        //         major = (majorSum / majorAcquisition).toFixed(2);
+        //         if(major=="NaN"){major=0;}
+        //         $('.subject_Major').text(major);
+        //     })
+        //     $(this).closest('tbody').find('tr').find('.tdCredit').each(function(){
+        //         var inputValue = $(this).val();
+        //         acquisition += parseInt(inputValue);
+        //         var tdGrade = $(this).closest('tr').find('.tdGrade option:selected');
+        //         console.log(tdGrade.text());
+        //         sum+=CreditCal(parseInt(inputValue), tdGrade.text());
+        //         console.log(sum);
+        //     });
+        //     gpa = (sum / acquisition).toFixed(2);
+        //     if(gpa=="NaN"){gpa=0;}
+        //     if(major="NaN"){major=0;}
+        //     if(acquisition=="NaN"){acquisition=0;}
+        //     $('.subject_Acquisition').text(acquisition);
+        //     $('.subject_GPA').text(gpa);
+        // })
 
-        $('.tdGrade').on('change', function(){
-            var tdMajor = $(this).prop('checked');
-            if(tdMajor){
-                $(this).attr('selected' , 'selected');
-            }
-            else{
-                $(this).removeAttr('selected');
-            }
-            var acquisition = parseInt(0); // 총 취득
-            var majorAcquisition = parseInt(0); // 전공 총 취득
-            var sum=parseInt(0); // 총 학점
-            var gpa = parseInt(0); // 총 평균
-            var major = parseInt(0);
-            var majorSum = parseInt(0); // 전공 취득
-            // 전공버튼을 싹 다 돌아서, 눌려져있는 것들의 합을 체크
-            $(this).closest('tbody').find('tr').find('.tdMajor').each(function(){
-                var checked = $(this).prop("checked");
-                var inputValue = $(this).closest('tr').find('.tdCredit').val(); // 해당 tr의 학점
-                var tdGrade = $(this).closest('tr').find('.tdGrade option:selected'); // 해당 tr의 등급
-                if(checked){ // 전공버튼에 체크가 되어있다면.
-                    majorSum+= CreditCal(parseInt(inputValue), tdGrade.text());
-                    majorAcquisition+=parseInt(inputValue);
-                }
-                console.log(majorSum);
-                major = (majorSum / majorAcquisition).toFixed(2);
-                if(major=="NaN"){major=0;}
-                $('.subject_Major').text(major);
-            })
-            $(this).closest('tbody').find('tr').find('.tdCredit').each(function(){
-                var inputValue = $(this).val();
-                acquisition += parseInt(inputValue);
-                var tdGrade = $(this).closest('tr').find('.tdGrade option:selected');
-                console.log(tdGrade.text());
-                sum+=CreditCal(parseInt(inputValue), tdGrade.text());
-                console.log(sum);
-            });
-            gpa = (sum / acquisition).toFixed(2);
-            if(gpa=="NaN"){gpa=0;}
-            if(major="NaN"){major=0;}
-            if(acquisition=="NaN"){acquisition=0;}
-            $('.subject_Acquisition').text(acquisition);
-            $('.subject_GPA').text(gpa);
-        })
 
+        $('.tdGrade').on('change', updateCalculation2);
+        // $('.tdGrade').on('change', function(){
+        //     var tdMajor = $(this).prop('checked');
+        //     if(tdMajor){
+        //         $(this).attr('selected' , 'selected');
+        //     }
+        //     else{
+        //         $(this).removeAttr('selected');
+        //     }
+        //     var acquisition = parseInt(0); // 총 취득
+        //     var majorAcquisition = parseInt(0); // 전공 총 취득
+        //     var sum=parseInt(0); // 총 학점
+        //     var gpa = parseInt(0); // 총 평균
+        //     var major = parseInt(0);
+        //     var majorSum = parseInt(0); // 전공 취득
+        //     // 전공버튼을 싹 다 돌아서, 눌려져있는 것들의 합을 체크
+        //     $(this).closest('tbody').find('tr').find('.tdMajor').each(function(){
+        //         var checked = $(this).prop("checked");
+        //         var inputValue = $(this).closest('tr').find('.tdCredit').val(); // 해당 tr의 학점
+        //         var tdGrade = $(this).closest('tr').find('.tdGrade option:selected'); // 해당 tr의 등급
+        //         if(checked){ // 전공버튼에 체크가 되어있다면.
+        //             majorSum+= CreditCal(parseInt(inputValue), tdGrade.text());
+        //             majorAcquisition+=parseInt(inputValue);
+        //         }
+        //         console.log(majorSum);
+        //         major = (majorSum / majorAcquisition).toFixed(2);
+        //         if(major=="NaN"){major=0;}
+        //         $('.subject_Major').text(major);
+        //     })
+        //     $(this).closest('tbody').find('tr').find('.tdCredit').each(function(){
+        //         var inputValue = $(this).val();
+        //         acquisition += parseInt(inputValue);
+        //         var tdGrade = $(this).closest('tr').find('.tdGrade option:selected');
+        //         console.log(tdGrade.text());
+        //         sum+=CreditCal(parseInt(inputValue), tdGrade.text());
+        //         console.log(sum);
+        //     });
+        //     gpa = (sum / acquisition).toFixed(2);
+        //     if(gpa=="NaN"){gpa=0;}
+        //     if(major="NaN"){major=0;}
+        //     if(acquisition=="NaN"){acquisition=0;}
+        //     $('.subject_Acquisition').text(acquisition);
+        //     $('.subject_GPA').text(gpa);
+        // })
 
-        $('.tdCredit').on('blur', function(){
-            var tdMajor = $(this).prop('checked');
-            if(tdMajor){
-                $(this).attr('selected' , 'selected');
-            }
-            else{
-                $(this).removeAttr('selected');
-            }
-            var acquisition = parseInt(0); // 총 취득
-            var majorAcquisition = parseInt(0); // 전공 총 취득
-            var sum=parseInt(0); // 총 학점
-            var gpa = parseInt(0); // 총 평균
-            var major = parseInt(0);
-            var majorSum = parseInt(0); // 전공 취득
-            // 전공버튼을 싹 다 돌아서, 눌려져있는 것들의 합을 체크
-            $(this).closest('tbody').find('tr').find('.tdMajor').each(function(){
-                var checked = $(this).prop("checked");
-                var inputValue = $(this).closest('tr').find('.tdCredit').val(); // 해당 tr의 학점
-                var tdGrade = $(this).closest('tr').find('.tdGrade option:selected'); // 해당 tr의 등급
-                if(checked){ // 전공버튼에 체크가 되어있다면.
-                    majorSum+= CreditCal(parseInt(inputValue), tdGrade.text());
-                    majorAcquisition+=parseInt(inputValue);
-                }
-                console.log(majorSum);
-                major = (majorSum / majorAcquisition).toFixed(2);
-                if(major=="NaN"){major=0;}
-                $('.subject_Major').text(major);
-            })
-            $(this).closest('tbody').find('tr').find('.tdCredit').each(function(){
-                var inputValue = $(this).val();
-                acquisition += parseInt(inputValue);
-                var tdGrade = $(this).closest('tr').find('.tdGrade option:selected');
-                console.log(tdGrade.text());
-                sum+=CreditCal(parseInt(inputValue), tdGrade.text());
-                console.log(sum);
-            });
-            gpa = (sum / acquisition).toFixed(2);
-            if(gpa=="NaN"){gpa=0;}
-            if(major="NaN"){major=0;}
-            if(acquisition=="NaN"){acquisition=0;}
-            $('.subject_Acquisition').text(acquisition);
-            $('.subject_GPA').text(gpa);
-        })
+        $('.tdCredit').on('blur', updateCalculation2);
+        // $('.tdCredit').on('blur', function(){
+        //     var tdMajor = $(this).prop('checked');
+        //     if(tdMajor){
+        //         $(this).attr('selected' , 'selected');
+        //     }
+        //     else{
+        //         $(this).removeAttr('selected');
+        //     }
+        //     var acquisition = parseInt(0); // 총 취득
+        //     var majorAcquisition = parseInt(0); // 전공 총 취득
+        //     var sum=parseInt(0); // 총 학점
+        //     var gpa = parseInt(0); // 총 평균
+        //     var major = parseInt(0);
+        //     var majorSum = parseInt(0); // 전공 취득
+        //     // 전공버튼을 싹 다 돌아서, 눌려져있는 것들의 합을 체크
+        //     $(this).closest('tbody').find('tr').find('.tdMajor').each(function(){
+        //         var checked = $(this).prop("checked");
+        //         var inputValue = $(this).closest('tr').find('.tdCredit').val(); // 해당 tr의 학점
+        //         var tdGrade = $(this).closest('tr').find('.tdGrade option:selected'); // 해당 tr의 등급
+        //         if(checked){ // 전공버튼에 체크가 되어있다면.
+        //             majorSum+= CreditCal(parseInt(inputValue), tdGrade.text());
+        //             majorAcquisition+=parseInt(inputValue);
+        //         }
+        //         console.log(majorSum);
+        //         major = (majorSum / majorAcquisition).toFixed(2);
+        //         if(major=="NaN"){major=0;}
+        //         $('.subject_Major').text(major);
+        //     })
+        //     $(this).closest('tbody').find('tr').find('.tdCredit').each(function(){
+        //         var inputValue = $(this).val();
+        //         acquisition += parseInt(inputValue);
+        //         var tdGrade = $(this).closest('tr').find('.tdGrade option:selected');
+        //         console.log(tdGrade.text());
+        //         sum+=CreditCal(parseInt(inputValue), tdGrade.text());
+        //         console.log(sum);
+        //     });
+        //     gpa = (sum / acquisition).toFixed(2);
+        //     if(gpa=="NaN"){gpa=0;}
+        //     if(major="NaN"){major=0;}
+        //     if(acquisition=="NaN"){acquisition=0;}
+        //     $('.subject_Acquisition').text(acquisition);
+        //     $('.subject_GPA').text(gpa);
+        // })
     })
 
+    function updateCalculation2(){
+        var acquisition = parseInt(0); // 총 취득
+        var majorAcquisition = parseInt(0); // 전공 총 취득
+        var sum = parseInt(0); // 총 학점
+        var gpa = parseInt(0); // 총 평균
+        var major = parseInt(0);
+        var majorSum = parseInt(0); // 전공 취득
 
+        $('#tableBody').find('tr').each(function(){
+            var inputCredit = $(this).find('.tdCredit').val();
+            var inputGrade = $(this).find('.tdGrade option:selected').text();
+            var inputMajor = $(this).find('.tdMajor').prop("checked");
+            sum+=CreditCal(inputCredit, inputGrade);
+            if(inputMajor){
+                var num = CreditCal(inputCredit, inputGrade);
+                console.log(num);
+                majorSum += num;
+                majorAcquisition+=parseInt(inputCredit);
+            }
+            else{
+
+            }
+            acquisition += parseInt(inputCredit);
+        })
+        gpa = (sum/acquisition).toFixed(2);
+        major = (majorSum / majorAcquisition).toFixed(2);
+        if(isNaN(gpa)){gpa=0;}
+        if(isNaN(major)){major=0;}
+        $('.subject_GPA').text(gpa);
+        $('.subject_Major').text(major);
+        $('.subject_Acquisition').text(acquisition);
+        selectGpa();
+    }
 
 
     function test(int){
@@ -465,20 +540,41 @@
     }
     function CreditCal(value, grade){
         var aver =0;
-        if(grade=='A+'){aver = parseInt(value)*4.5;}
-        else if(grade=='A'){aver = parseInt(value)*4;}
-        else if(grade=='B+'){aver = parseInt(value)*3.5}
-        else if(grade=='B'){aver = parseInt(value)*3}
-        else if(grade=='C+'){aver = parseInt(value)*2.5}
-        else if(grade=='C'){aver = parseInt(value)*2}
-        else if(grade=='D+'){aver = parseInt(value)*1.5}
-        else if(grade=='D'){aver = parseInt(value)*1}
+        if(grade=='A+'){aver = parseFloat(value)*4.5;}
+        else if(grade=='A'){aver = parseFloat(value)*4;}
+        else if(grade=='B+'){aver = parseFloat(value)*3.5}
+        else if(grade=='B'){aver = parseFloat(value)*3}
+        else if(grade=='C+'){aver = parseFloat(value)*2.5}
+        else if(grade=='C'){aver = parseFloat(value)*2}
+        else if(grade=='D+'){aver = parseFloat(value)*1.5}
+        else if(grade=='D'){aver = parseFloat(value)*1}
         else if(grade=='F'){aver=0}
         else if(grade=='P'){}
         else if(grade=='NP'){}
         return aver;
     }
-
+    function selectGpa(){
+        var gpa="";
+        var majorGpa="";
+        var acquisition="";
+        $.ajax({
+            url:"<c:url value='/calculator/selectAll'/>",
+            type:"get",
+            success:function(data){
+                var gpaArr = data;
+                console.log(gpaArr);
+                gpa=gpaArr[0];
+                majorGpa=gpaArr[1];
+                acquisition=gpaArr[2];
+                $('.gradeAll').find('.value').text(gpa);
+                $('.major').find('.value').text(majorGpa);
+                $('.acquisition').find('.value').text(acquisition);
+            }
+            ,error:function(error){
+                alert("오류 발생");
+            }
+        })
+    }
     function selectSemester(){
         var now_semester = $('.the_semester[data-info="active"]').text();
         $.ajax({
@@ -487,7 +583,6 @@
             data : {semester : now_semester},
             success:function(data){
                 var semesterData = data;
-                console.log(semesterData);
                 if(semesterData.length != 0){
                     var length = semesterData.length;
                     for(var i=0; i<semesterData.length; i++){
@@ -509,11 +604,15 @@
                     }
                     ClearCell(length);
                 }
+                selectGpa();
+                updateCalculation2();
+            },
+            error:function(error){
+                alert("에러 발생");
             }
         })
     }
     function insertSemester(now_semester, callback){
-        console.log(now_semester);
         var inputName =[];
         var inputCredit = [];
         var inputGrade = [];
@@ -522,14 +621,12 @@
         $('#tableBody').find('tr').each(function(index, row) {
             var splitID = $(row).find('.tdName').attr('id');
             var number = splitID.substring(4);
-            console.log(number);
             inputName.push($(row).find('.tdName').val());
             inputCredit.push($(row).find('.tdCredit').val());
             inputGrade.push($(row).find('.tdGrade option:selected').val());
             inputCell_place.push(number);
-            var isChecked = $(row).find('.tdMajor');
-            console.log(isChecked.prop("checked"));
-            if (isChecked.attr("selected") == "selected") {
+            var isChecked = $(row).find('.tdMajor').prop("checked");
+            if (isChecked) {
                 inputMajor.push('yes');
             } else {
                 inputMajor.push('no');
@@ -540,7 +637,6 @@
         var jsonGrade = JSON.stringify(inputGrade);
         var jsonMajor = JSON.stringify(inputMajor);
         var jsonCell_place = JSON.stringify(inputCell_place);
-        console.log(jsonCell_place);
         $.ajax({
             url : "<c:url value='/calculator/insert'/>",
             type : "post",
@@ -551,11 +647,71 @@
             semester : now_semester,
             jsonCell_place : jsonCell_place},
             success:function(data){
+                selectGpa();
                 if(typeof callback=='function'){
                     callback();
                 }
             }
         })
+    }
+    function tttest(){
+        const grades = ["1학년 1학기", "1학년 2학기", "2학년 1학기", "2학년 2학기", "3학년 1학기", "3학년 2학기"];
+        const data = [4.0, 3.0, 2.0, 3.5, 3.7, 4.2]; // 학점에 따른 데이터 (예시)
+        const canvas = document.getElementById("the_chart");
+        // 그래프를 그릴 캔버스 요소 가져오기
+        const ctx = document.getElementById("the_chart").getContext("2d");
+        // 데이터셋 생성
+        const dataset = {
+            labels: grades,
+            datasets: [{
+                label: "학점 점수",
+                data: data,
+                borderColor: "rgba(75, 192, 192, 1)",
+                borderWidth: 1,
+                fill: false,
+                lineTension: 0, // 직선으로 그리기
+            }]
+        };
+
+        // 그래프 옵션 설정
+        const options = {
+            responsive: true,
+            scales: {
+                x: {
+                    display: true,
+                    title: {
+                        display: true,
+                    }
+                },
+                y: {
+                    display: true,
+                    title: {
+                        display: true,
+                    },
+                    min: 1.5,
+                    max: 4.5,
+                    stepSize: 0.5,
+                    beginAtZero: false,  // 시작값을 0으로 설정하지 않음
+                    callback: function (value, index, values) {
+                        // 원하는 값만 반환하도록 수정
+                        if (value === 4.0 || value === 3.0 || value === 2.0) {
+                            return value.toString();
+                        }
+                        return "";
+                    },
+                    ticks:{
+                        stepSize: 1,
+                    }
+                }
+            }
+        };
+
+        // 라인 그래프 생성
+        const myChart = new Chart(ctx, {
+            type: "line", // 라인 그래프
+            data: dataset,
+            options: options
+        });
     }
 </script>
 </html>

@@ -17,7 +17,10 @@ public class CalculatorDao {
     public List<CalculatorDto> selectSemester(Map map){
         return session.selectList(namespace+"selectSemester", map);
     }
-    public CalculatorDto selectCell_Place(Map map){
+    public List<CalculatorDto> selectAll(String sid){
+        return session.selectList(namespace+"selectAll", sid);
+    }
+    public Integer selectCell_Place(Map map){
         return session.selectOne(namespace+"selectCell_Place", map);
     }
     public int insertSemester(List<CalculatorDto> list){

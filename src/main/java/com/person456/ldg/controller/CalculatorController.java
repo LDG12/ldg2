@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.person456.ldg.domain.CalculatorDto;
 import com.person456.ldg.service.CalculatorService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -41,12 +42,26 @@ public class CalculatorController {
     }
     @PostMapping("/calculator/insert")
     @ResponseBody
-    public void insertSemester(HttpSession session, String jsonName, String jsonCredit, String jsonGrade, String jsonMajor, String semester,
-                               String jsonCell_place){
+    public ResponseEntity<String> insertSemester(HttpSession session, String jsonName, String jsonCredit, String jsonGrade, String jsonMajor, String semester,
+                                         String jsonCell_place){
         String sid = (String)session.getAttribute("id");
-        calculatorService.insertSemester(jsonName, jsonCredit, jsonGrade, jsonMajor, semester, sid, jsonCell_place);
+        int rowCnt=calculatorService.insertSemester(jsonName, jsonCredit, jsonGrade, jsonMajor, semester, sid, jsonCell_place);
+        if(rowCnt==1){
+            return ResponseEntity.ok("possible");
+        }
+        else{
+            return ResponseEntity.ok("impossible");
+        }
     }
-
+    @GetMapping("/calculator/selectAll")
+    @ResponseBody
+    public String[] selectAll(HttpSession session){
+        String sid = (String)session.getAttribute("id");
+        String[] allGpa = calculatorService.selectAll(sid);
+        String gpa = allGpa[0];
+        String majorGpa = allGpa[1];
+        return allGpa;
+    }
 
 
     private boolean loginCheck(HttpServletRequest request) {

@@ -32,6 +32,15 @@ public class CalculatorDto {
         this.major = major;
         this.cell_place=cell_place;
     }
+    public CalculatorDto(Integer cno, String sid, String semester, String subject_name, Integer credit, String grade, String major) {
+        this.cno = cno;
+        this.sid = sid;
+        this.semester = semester;
+        this.subject_name = subject_name;
+        this.credit = credit;
+        this.grade = grade;
+        this.major = major;
+    }
 
     @Override
     public boolean equals(Object o) {
