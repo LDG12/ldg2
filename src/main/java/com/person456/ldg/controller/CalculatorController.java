@@ -58,11 +58,22 @@ public class CalculatorController {
     public String[] selectAll(HttpSession session){
         String sid = (String)session.getAttribute("id");
         String[] allGpa = calculatorService.selectAll(sid);
-        String gpa = allGpa[0];
-        String majorGpa = allGpa[1];
+        System.out.println("allGpa[3] = " + allGpa[3]);
         return allGpa;
     }
-
+    @GetMapping("/calculator/selectGPA")
+    @ResponseBody
+    public List<String> selectGPA(HttpSession session){
+        String sid = (String)session.getAttribute("id");
+        List<String> list = calculatorService.selectGPA(sid);
+        if(list.isEmpty()){
+            list.add("0");
+            return list;
+        }
+        else{
+            return list;
+        }
+    }
 
     private boolean loginCheck(HttpServletRequest request) {
         HttpSession session = request.getSession();

@@ -20,9 +20,41 @@ import java.util.Map;
 public class CalculatorService {
     @Autowired
     CalculatorDao calculatorDao;
-
     public List<CalculatorDto> selectSemester(Map map){
         return calculatorDao.selectSemester(map);
+    }
+    public List<String> selectGPA(String sid){
+        String[] semester ={"1학년 1학기", "1학년 2학기", "2학년 1학기", "2학년 2학기", "3학년 1학기",
+                "3학년 2학기", "4학년 1학기", "4학년 2학기", "5학년 1학기", "5학년 2학기", "6학년 1학기", "6학년 2학기"};
+        List<String> list2 = new ArrayList<>();
+        for(int i=0; i<semester.length; i++){
+            double sum=0;
+            Integer acquisition=0;
+            String tmp = semester[i];
+            String result="";
+            String[] arr = new String[12];
+            Map<String,String>map = new HashMap<>();
+            map.put("sid", sid);
+            map.put("semester", tmp);
+            List<CalculatorDto>list= calculatorDao.selectGPA(map);
+            for(int j=0; j<list.size(); j++){
+                Integer credit = list.get(j).getCredit();
+                if(credit!=0){
+                    acquisition+=credit;
+                    sum+=cal(credit, list.get(j).getGrade());
+                }
+            }
+            DecimalFormat decimalFormat = new DecimalFormat("#.##");
+            double convi = sum/acquisition;
+            if(Double.isNaN(convi)){
+                convi =0;
+            }
+            if(convi!=0){
+                String tmq = decimalFormat.format(convi);
+                list2.add(tmq);
+            }
+        }
+        return list2;
     }
     public String[] selectAll(String sid){
         List<CalculatorDto> list = calculatorDao.selectAll(sid);
@@ -30,12 +62,14 @@ public class CalculatorService {
         double sum=0;
         Integer majorAcquisition=0;
         double majorSum=0;
+        String gradeAll="";
         for(int i=0; i<list.size(); i++){
             Integer num = list.get(i).getCredit();
             String grade = list.get(i).getGrade();
             if(num!=0){
                 acquisition+=num;
                 sum+=cal(num, grade);
+                gradeAll+=","+grade;
             }
             if(list.get(i).getMajor().equals("yes")){
                 majorAcquisition+=num;
@@ -45,7 +79,7 @@ public class CalculatorService {
         DecimalFormat decimalFormat = new DecimalFormat("#.##");
         String gpa = decimalFormat.format((double)(sum/acquisition));
         String majorgpa = decimalFormat.format((double)(majorSum/majorAcquisition));
-        String[] arr = {gpa, majorgpa, String.valueOf(acquisition)};
+        String[] arr = {gpa, majorgpa, String.valueOf(acquisition),gradeAll};
         return arr;
     }
     public int insertNewRegister(String sid){

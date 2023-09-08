@@ -18,10 +18,39 @@
                 box-sizing: border-box;
                 margin: 0;
                 padding: 0;
-                font-family: "Noto Sans KR", sans-serif;
+                color: #666; font-family: "맑은 고딕", 돋움,  "Apple SD Gothic Neo", tahoma; _font-family: 돋움, tahoma; font-size: 12px; letter-spacing: -0.5px;
             }
-
-
+            body{
+                background-color: #f8f8f8;
+            }
+            #select_Semester{
+                border: 0; width: 100%; height: 40px; line-height: 20px; padding: 10px; box-sizing: border-box; border: 2px solid #d6d6d6;
+                color: #292929; font-size: 14px; background-color: transparent;
+            }
+            .extension{
+                border: 1px solid #ccc;
+                padding-left: 40px; color: #c62917; background-repeat: no-repeat; background-position: 15px center; background-size: 15px 15px;
+            }
+            .extension:hover{
+                cursor: pointer;
+            }
+            #thead{
+                background-color: #f2f2f2;
+            }
+            #thead tr{
+                height: 40px;
+            }
+            #thead tr th, #thead tr td{
+                border-width: 1px;
+                border-style: solid;
+                border-color: #d6d6d6;
+                color: #a6a6a6;
+                font-weight: normal;
+                text-align: center;
+            }
+            tbody{
+                background-color : transparent;
+            }
             input {
                 width: 100%;
                 height: 35px;
@@ -72,16 +101,36 @@
             }
             aside {
                 width: 20%;
-                height: 50%;
-                margin: 5px 0 0 0;
+                height: 100%;
+                display: block;
                 background-color: #f8f8f8;
-                display: flex;
                 flex-direction: column;
+                margin-left : 0.4cm;
+                margin-top:0.4cm;
+                margin-right : 0.4cm;
             }
-            #now_Schedule, #list_Schedule,#credit_view {
+            #now_Schedule{
+                color: #262626; font-size: 18px; font-weight: bold;
+            }
+            #now_Schedule{
+                background-color : #ffffff;
                 flex: 1;
                 border: 1px solid #ccc;
                 padding: 10px;
+                margin-top: 0.5cm;
+                height:15%;
+            }
+            #the_credit_view{
+                background-color : #ffffff;
+                border: 1px solid #ccc;
+                padding: 10px;
+                height:15%;
+            }
+            #list_Schedule{
+                border: 1px solid #ccc;
+                background-color: #ffffff;
+                margin-top : 0.3cm;
+                hegiht:60%;
             }
             #button-container {
                 position: fixed;
@@ -92,7 +141,11 @@
                 text-align: center;
                 z-index: 1; /* 다른 요소 위에 표시 */
             }
-
+            #semesters{
+                width:100%;
+                border:0;
+                background-color:transparent;
+            }
             .shared-btn {
                 background-color: rgb(89, 117, 196);
                 color: white;
@@ -139,6 +192,14 @@
             .LoadSchedule:hover{
                 background-color:lightgray;
                 cursor:pointer;
+            }
+            .LoadSchedule{
+
+                height : 50px;
+                text-align: center;
+                justify-content: center;
+                align-items: center;
+                line-height: 1.1cm;
             }
             #closeSetting_schedule:hover{
                 cursor:pointer;
@@ -217,20 +278,22 @@
             </form>
                 <div id="now_Schedule">
                 </div>
+            <div id="the_credit_view">
                 <oi id="credit_view">
                     <li id="majorSum"></li>
                     <li id="cultureSum"></li>
                 </oi>
+            </div>
+
                 <div id="list_Schedule">
                     <ol id="list_Schedule2">
 
                     </ol>
-                    <button id="scheduleAdd">새 시간표 만들기</button>
                 </div>
         </aside>
         <div id="table-container">
             <table height="600" style="color: #121212">
-                <tr width=19%>
+                <tr width=19% id="thead">
                     <th></th>
                     <th>월</th>
                     <th>화</th>
@@ -238,6 +301,7 @@
                     <th>목</th>
                     <th>금</th>
                 </tr>
+                <tbody>
                 <tr class="BRow">
                     <th>오전 9시</th>
                     <td id="mon-1"></td>
@@ -318,6 +382,7 @@
                     <td id="tur-10"></td>
                     <td id="fri-10"></td>
                 </tr>
+                </tbody>
             </table>
         </div>
     </div>
@@ -979,11 +1044,13 @@
                         var tmp = data[i];
                         $('#list_Schedule2').append(createSchedule(data[i]));
                     }
+                    $('#list_Schedule2').append('<li class="extension"><a class="create" id="scheduleAdd">새 시간표 만들기</a></li>')
                     $('#now_Schedule').append('<button id="option_Schedule">설정</button>')
                     if(typeof callback=='function'){
                         callback();
                     }
                 },
+            // <li class="extension"><button id="scheduleAdd" class="extension">새 시간표 만들기</button></li>
                 error:function(error){
                     alert("오류가 발생하였습니다.");
                 }

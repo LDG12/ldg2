@@ -8,6 +8,10 @@
         select * from calculator
         where sid=#{sid} and semester = #{semester}
     </select>
+    <select id="selectGPA" parameterType="map" resultType="CalculatorDto">
+        select credit, grade, major, semester from calculator
+        where sid=#{sid} and semester=#{semester}
+    </select>
     <select id="selectCell_Place" parameterType="map" resultType="int">
         select cno from calculator
         where sid=#{sid} and semester=#{semester} and cell_place = #{cell_place}

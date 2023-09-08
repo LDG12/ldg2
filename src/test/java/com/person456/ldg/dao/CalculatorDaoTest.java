@@ -92,6 +92,36 @@ public class CalculatorDaoTest {
         System.out.println("gpa = " + gpa);
         System.out.println("majorgpa = " + majorgpa);
     }
+    @Test
+    public void test3(){
+        String sid="ehdrlf0815";
+        String[] semester ={"1학년 1학기", "1학년 2학기", "2학년 1학기", "2학년 2학기", "3학년 1학기",
+                "3학년 2학기", "4학년 1학기", "4학년 2학기", "5학년 1학기", "5학년 2학기", "6학년 1학기", "6학년 2학기"};
+        for(int i=0; i<semester.length; i++){
+            double sum=0;
+            Integer acquisition=0;
+            String tmp = semester[i];
+            String result="";
+            String[] arr = new String[12];
+            Map<String,String>map = new HashMap<>();
+            map.put("sid", sid);
+            map.put("semester", tmp);
+            List<CalculatorDto>list= calculatorDao.selectGPA(map);
+            for(int j=0; j<list.size(); j++){
+                Integer credit = list.get(j).getCredit();
+                if(credit!=0){
+                    acquisition+=credit;
+                    sum+=cal(credit, list.get(j).getGrade());
+                }
+            }
+            DecimalFormat decimalFormat = new DecimalFormat("#.##");
+            double convi = sum/acquisition;
+            if(Double.isNaN(convi)){
+                convi =0;
+            }
+            System.out.println("convi = " + convi);
+        }
+    }
     public double cal(int num, String grade){
         double aver = 0;
         if(grade.equals("A+")){aver = (double)num*4.5;}

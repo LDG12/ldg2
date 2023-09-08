@@ -17,6 +17,9 @@ public class CalculatorDao {
     public List<CalculatorDto> selectSemester(Map map){
         return session.selectList(namespace+"selectSemester", map);
     }
+    public List<CalculatorDto> selectGPA(Map map){
+        return session.selectList(namespace+"selectGPA", map);
+    }
     public List<CalculatorDto> selectAll(String sid){
         return session.selectList(namespace+"selectAll", sid);
     }

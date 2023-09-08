@@ -14,8 +14,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="https://code.jquery.com/jquery-1.11.3.js"></script>
     <style>
+        *{
+            color: #666; font-family: "맑은 고딕", 돋움,  "Apple SD Gothic Neo", tahoma; _font-family: 돋움, tahoma; font-size: 12px; letter-spacing: -0.5px;
+        }
         body{
-            background-color : #fff;
+            background-color: #f8f8f8;
         }
         #container {
             width: calc(100% - 14cm);
@@ -26,11 +29,16 @@
         .section{
             padding: 0 8px;
         }
+        .chart{
+            width:950px;
+            hegiht:150px;
+        }
         .chart, .semester{
             border: 1px solid #ededed;
             border-radius: 12px;
             resize: block;
             overflow:auto;
+            width:950px;
         }
         .overView{
             text-align: center;
@@ -45,11 +53,44 @@
         .graph{
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: stretch;
         }
         .xplot{
-            background-color: #f0f0f0;
-            width:5px;
+            background-color: #ffffff;
+            width:300px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            list-style: none;
+            flex-grow:1;
+            padding-top : 2cm;
+        }
+        .xplot li{
+            width:300px;
+            margin :13px 0;
+            padding-left: 10px;
+            line-height: 1;
+            color : #000;
+            width:300px;
+        }
+        .ratiowrapper{
+            width:300px;
+            display: flex;
+        }
+        .ratiograde{
+            width:50px;
+        }
+        .ratioText{
+            margin-left:0.3cm;
+            font-size:5px;
+        }
+        .ratiobar{
+            width: 100%;
+            height: 15px;
+            padding:0;
+            text-align: center;
+            background-color: #4F98FF;
+            color: #111;
         }
         /*.overView{*/
         /*    display: flex;*/
@@ -144,14 +185,13 @@
             color: #c62917;
         }
         .subject_save{
-            position: absolute;
-            top:7cm;
-            right:8.5cm;
+            position: relative;
+            left:14cm;
             border: 1px solid #ededed;
             border-radius: 12px;
             background-color: #c62917;
             color:#f0f0f0;
-            width:100px;
+            width:130px;
             height:25px;
             text-align: center;
             line-height:23px;
@@ -238,7 +278,6 @@
                     <canvas id="the_chart" style="height:300px; width:500px"></canvas>
                 </div>
                 <ul class="xplot">
-                    <li>test</li>
                 </ul>
             </article>
         </div>
@@ -299,7 +338,6 @@
         selectSemester();
         updateCalculation2();
         selectGpa();
-        tttest();
         $('.new').on('click', function(){
             var body = $('#tableBody');
             body.append(createTr());
@@ -467,6 +505,7 @@
         // })
     })
 
+    // semester 학기별 평점, 전공평점, 취득학점의 총합
     function updateCalculation2(){
         var acquisition = parseInt(0); // 총 취득
         var majorAcquisition = parseInt(0); // 전공 총 취득
@@ -553,27 +592,110 @@
         else if(grade=='NP'){}
         return aver;
     }
+    // 전체 semester (ex)1학년 1학기~4학년2학기까지의 모든 값들의 평점, 전공평점, 취득학점)
     function selectGpa(){
         var gpa="";
         var majorGpa="";
         var acquisition="";
+        var gradeAll = "";
+        var gradeArr;
         $.ajax({
             url:"<c:url value='/calculator/selectAll'/>",
             type:"get",
             success:function(data){
                 var gpaArr = data;
+                var tmpString ="";
                 console.log(gpaArr);
                 gpa=gpaArr[0];
                 majorGpa=gpaArr[1];
                 acquisition=gpaArr[2];
+                tmpString = gpaArr[3];
+                gradeAll = tmpString.substring(1);
+                gradeArr = gradeAll.split(",");
+                if(isNaN(gpa)){
+                    gpa =0;
+                }
+                if(isNaN(majorGpa)){
+                    majorGpa=0;
+                }
                 $('.gradeAll').find('.value').text(gpa);
                 $('.major').find('.value').text(majorGpa);
                 $('.acquisition').find('.value').text(acquisition);
+                createRatio(gradeArr);
+                graphGPA();
             }
             ,error:function(error){
                 alert("오류 발생");
             }
         })
+    }
+    function graphGPA(){
+        var semester =["1학년 1학기", "1학년 2학기", "2학년 1학기", "2학년 2학기", "3학년 1학기", "3학년 2학기",
+        "4학년 1학기", "4학년 2학기", "5학년 1학기", "5학년 2학기", "6학년 1학기", "6학년 2학기"];
+        $.ajax({
+            url:"<c:url value='/calculator/selectGPA'/>",
+            type:"get",
+            success:function(data){
+                var gpaList = data;
+                if(gpaList[0]==0){
+                    tttest(gpaList, semester);
+                }
+                else{
+                    tttest(gpaList, semester);
+                }
+            },
+            error:function(error){
+                alert("에러 발생");
+            }
+        })
+    }
+    function createRatio(gradeArr){
+        var xplot = $('.xplot');
+        xplot.find('li').remove();
+        console.log(gradeArr);
+        var string=[]; var integer=[];
+        var gradeGroup ={
+            AP:[], A:[], BP:[], B:[], CP:[], C:[], DP:[], D:[], F:[], P:[], NP:[]
+        }
+        var length = gradeArr.length;
+        for(var i=0; i<length; i++){
+            if(gradeArr[i] == "A+"){gradeGroup["AP"].push(gradeArr[i]);}
+            else if(gradeArr[i] == "A"){gradeGroup["A"].push(gradeArr[i]);}
+            else if(gradeArr[i] == "B+"){gradeGroup["BP"].push(gradeArr[i]);}
+            else if(gradeArr[i] == "B"){gradeGroup["B"].push(gradeArr[i]);}
+            else if(gradeArr[i] == "C+"){gradeGroup["CP"].push(gradeArr[i]);}
+            else if(gradeArr[i] == "C"){gradeGroup["C"].push(gradeArr[i]);}
+            else if(gradeArr[i] == "D+"){gradeGroup["DP"].push(gradeArr[i]);}
+            else if(gradeArr[i] == "D"){gradeGroup["D"].push(gradeArr[i]);}
+            else if(gradeArr[i] == "F"){gradeGroup["F"].push(gradeArr[i]);}
+            else if(gradeArr[i] == "P"){gradeGroup["P"].push(gradeArr[i]);}
+            else if(gradeArr[i] == "NP"){gradeGroup["NP"].push(gradeArr[i]);}
+        }
+        for(var group in gradeGroup){
+            var groupLength = gradeGroup[group].length;
+            if(groupLength!=0){
+                string.push(group);
+                integer.push(groupLength);
+            }
+        }
+        console.log(string);
+        console.log(integer);
+        for(var i=0; i<string.length; i++){
+            var number = integer[i]/length*100;
+            var tmp=string[i];
+            if(string[i] =="AP"){tmp="A+";}
+            else if(string[i] =="BP"){tmp="B+";}
+            else if(string[i] =="CP"){tmp="C+";}
+            else if(string[i] =="DP"){tmp="D+";}
+            createLi(tmp, number);
+        }
+    }
+    function createLi(string, integer){
+        var percent = integer.toFixed(2)
+        console.log("percent=",percent);
+        var xplot = $('.xplot');
+        var li = '<li><span class="ratiograde">'+string+'</span><div class="ratiowrapper"><div class="ratiobar" style="width:'+percent+'%"></div><span class="ratioText">'+percent+'%</span></div></li>'
+        xplot.append(li);
     }
     function selectSemester(){
         var now_semester = $('.the_semester[data-info="active"]').text();
@@ -654,12 +776,25 @@
             }
         })
     }
-    function tttest(){
-        const grades = ["1학년 1학기", "1학년 2학기", "2학년 1학기", "2학년 2학기", "3학년 1학기", "3학년 2학기"];
-        const data = [4.0, 3.0, 2.0, 3.5, 3.7, 4.2]; // 학점에 따른 데이터 (예시)
+    function tttest(gpaList, semester){
+        console.log(gpaList);
+        console.log(semester);
+        var theArray = [];
+        for(var i=0; i<gpaList.length; i++){
+            theArray.push(semester[i]);
+        }
+        console.log(theArray);
+        const grades = theArray;
+        const data = gpaList;
         const canvas = document.getElementById("the_chart");
         // 그래프를 그릴 캔버스 요소 가져오기
         const ctx = document.getElementById("the_chart").getContext("2d");
+        var previousChart = Chart.getChart(ctx);
+        if (previousChart) {
+            previousChart.destroy();
+        }
+        canvas.height="300px";
+        canvas.width="500px";
         // 데이터셋 생성
         const dataset = {
             labels: grades,
@@ -703,9 +838,11 @@
                         stepSize: 1,
                     }
                 }
+            },
+            animation:{
+                duration:0
             }
         };
-
         // 라인 그래프 생성
         const myChart = new Chart(ctx, {
             type: "line", // 라인 그래프
