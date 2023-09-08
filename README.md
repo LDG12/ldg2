@@ -127,3 +127,9 @@
 1. calculator table, dto, dao, service 생성
 2. view로부터 subject_name, credit, grade, major, cell_place를 controller에 보내고, 이를 통해 service에서 작업중
 3. 만약 해당 cell_place에 이미 등록이 되어있다면 update를 진행, 등록된게 없다면 insert진행으로 구현중중
+
+9/6
+1. update와 insert 구현 완료
+2. 1학년 1학기 -> 2학년 1학기 등, 다른 semester로 넘어가면 자동 update와 insert
+3. 추가로 semester에 대한 gpa, majorGpa, acqisition과 전체 성적에 대한 gpa, majorgpa, acqusition 구현완료
+4. 그래프 생성중이고 전체 학점에 따른 그래프 생성 구현중중
