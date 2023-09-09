@@ -32,10 +32,10 @@
         values(#{sid}, #{semester}, #{subject_name}, #{credit}, #{grade}, #{major}, #{cell_place})
     </insert>
     <insert id="insertNewRegister" parameterType="list">
-        insert into calculator(sid, subject_name, credit, grade, major, cell_place)
+        insert into calculator(sid, semester, subject_name, credit, grade, major, cell_place)
         values
         <foreach collection="list" item="item" separator=",">
-            (#{item.sid}, #{item.subjectName}, #{item.credit}, #{item.grade}, #{item.major}, #{item.cell_place})
+            (#{item.sid}, #{item.semester}, #{item.subject_name}, #{item.credit}, #{item.grade}, #{item.major}, #{item.cell_place})
         </foreach>
     </insert>
     <update id="updateSemester" parameterType="CalculatorDto">

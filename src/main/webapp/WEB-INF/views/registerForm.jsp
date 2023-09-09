@@ -17,8 +17,9 @@
         * { box-sizing:border-box; }
         a { text-decoration: none; }
         form {
+            margin-top : 0.5cm;
             width: 500px;
-            height: 600px;
+            height: 650px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -30,7 +31,33 @@
             border: 1px solid rgb(89, 117, 196);
             border-radius: 10px;
         }
+        .labelContainer{
+            text-align: center;
+            margin-right : 3.5cm;
+        }
+        .info{
+            text-align: center;
+            margin-right:3.5cm;
+        }
+        .title{
+            height : 80px;
+        }
+        .title h3{
+            margin-top : 0.5cm;
+            margin-bottom : 1cm;
+            font-size : 50px;
+        }
+        .btnPrimary{
+            margin-left : 0.5cm;
+        }
+        .inputGroup{
+            margin-left : 2cm;
+            margin-top : 1cm;
+        }
 
+        .container{
+            height : 650px;
+        }
         input[type='text'], input[type='password'] {
             width: 300px;
             height: 40px;
@@ -47,12 +74,11 @@
             font-size: 17px;
             border : none;
             border-radius: 5px;
-            margin : 20px 0 30px 0;
         }
-        #title {
-            font-size : 50px;
-            margin: 40px 0 30px 0;
-        }
+        /*#title {*/
+        /*    font-size : 50px;*/
+        /*    margin: 40px 0 30px 0;*/
+        /*}*/
         #msg {
             height: 30px;
             text-align: center;
@@ -83,31 +109,42 @@
 </div>
 <%--action="/ldg/login/login" method="post" onsubmit="return formCheck(this);--%>
 <form id="formCheck" class="form" action="<c:url value='/register/add'/>" method="post" onsubmit="return formCheck(this)">
-    <h3 id="title">Register</h3>
-    <div class="inputGroup">
-        <input type="text" name="id" class="form-control" placeholder="사용하실 ID를 입력해주세요."><button id="idCheck" type="submit" class="btnPrimary">중복 확인</button>
+    <div class="title">
+        <h3 id="title">Register</h3>
     </div>
-    <input type="password" id="pwd" name="pwd" placeholder="사용하실 PassWord를 입력해주세요.">
-    <input type="password" id="pwdRepeat" name="pwdRepeat" placeholder="비밀번호를 다시 한 번 입력해주세요.">
-    <p id="check" size="2"></p>
-    <div>
-        <input type="text" name="email" placeholder="이메일을 입력해주세요."><button id="emailCheck" type="submit">이메일 인증</button>
+    <div class="container">
+        <div class="inputGroup">
+            <input type="text" name="id" class="form-control" placeholder="사용하실 ID를 입력해주세요."><button id="idCheck" type="submit" class="btnPrimary">중복 확인</button>
+            <input type="password" id="pwd" name="pwd" placeholder="사용하실 PassWord를 입력해주세요.">
+            <input type="password" id="pwdRepeat" name="pwdRepeat" placeholder="비밀번호를 다시 한 번 입력해주세요.">
+            <p id="check" size="2" class="in"></p>
+            <div>
+                <input type="text" name="email" placeholder="이메일을 입력해주세요."><button id="emailCheck" type="submit" class="btnPrimary">이메일 인증</button>
+            </div>
+            <div>
+                <input type="text" name="inputCultiNum" placeholder="인증번호를 입력해주세요."><button id="cultiNumCheck" type="submit" class="btnPrimary">인증 확인</button>
+            </div>
+            <input type="text" name="birth" placeholder="생년월일 8자리를 입력해주세요. ex)yyyy-mm-dd">
+            <input type="text" name="name" placeholder="이름을 입력해주세요.">
+            <br>
+            <div class="labelContainer">
+                <label style="display: inline-block; white-space: nowrap;" class="label">
+                    <input type="radio" name="status" value="professor"> 교수
+                </label>
+                <label style="  display: inline-block; white-space: nowrap;" class="label">
+                    <input type="radio" name="status" value="student"> 학생
+                </label>
+            </div>
+
+            <br>
+            <button id="registerBtn">Register</button>
+            <div class="info">
+                <p>이미 계정이 있으신가요?? <a href="<c:url value="/login/login"/>">로그인</a>.</p>
+            </div>
+        </div>
+
     </div>
-    <div>
-        <input type="text" name="inputCultiNum" placeholder="인증번호를 입력해주세요."><button id="cultiNumCheck" type="submit">인증 확인</button>
-    </div>
-    <input type="text" name="birth" placeholder="생년월일 8자리를 입력해주세요. ex)yyyy-mm-dd">
-    <input type="text" name="name" placeholder="이름을 입력해주세요.">
-    <label style="display: inline-block; white-space: nowrap;">
-        <input type="radio" name="status" value="professor"> 교수
-    </label>
-    <label style="display: inline-block; white-space: nowrap;">
-        <input type="radio" name="status" value="student"> 학생
-    </label>
-    <button id="registerBtn">Register</button>
-    <div>
-        <p>이미 계정이 있으신가요?? <a href="<c:url value="/login/login"/>">로그인</a>.</p>
-    </div>
+
     <script>
         var cultinum = "";
         var cultiEmail = "";

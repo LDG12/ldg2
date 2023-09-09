@@ -43,12 +43,8 @@ public class ScheduleController {
     @GetMapping("/AddNewSchedule")
     public ResponseEntity<String> AddNewSchedule(HttpSession session, String schedule_semester, Model m){
         String sid = (String)session.getAttribute("id");
-        System.out.println("sid = " + sid);
-        System.out.println("schedule_semester = " + schedule_semester);
         String newName = scheduleService.addNewSchedule(sid, schedule_semester);
-        System.out.println("newName = " + newName);
         Integer newScheduleSet = scheduleService.addNewSchedule_set(sid, schedule_semester); // id로만 찾아오던걸 학기로 추가함.
-        System.out.println("newScheduleSet = " + newScheduleSet);
         Schedule_InfoDto schedule_infoDto = new Schedule_InfoDto(newScheduleSet, newName, sid, schedule_semester);
         int rowCnt = schedule_infoService.addNewSchedule(schedule_infoDto);
         if(rowCnt==1){
@@ -67,15 +63,12 @@ public class ScheduleController {
         map.put("sid", sid);
         map.put("schedule_semester", schedule_semester);
         Integer getSchedule_set = schedule_infoService.secondSemester(map);
-        System.out.println("subject_name = " + subject_name);
-        System.out.println("getSchedule_set = " + getSchedule_set);
         return getSchedule_set;
     }
     @GetMapping("/readSchedule_name")
     @ResponseBody
     public List<String>  schedule_nameRead2(HttpSession session, String selectOp){
         String sid = (String)session.getAttribute("id");
-        System.out.println("selectOp = " + selectOp);
         Map<String, String> map = new HashMap<>();
         map.put("sid", sid);
         map.put("schedule_semester", selectOp);
@@ -86,7 +79,7 @@ public class ScheduleController {
 //    @ResponseBody
 //    public List<String>  schedule_nameRead(HttpSession session, String selectOp){
 //        String sid = (String)session.getAttribute("id");
-//        System.out.println("selectOp = " + selectOp);
+
 //        Map<String, String> map = new HashMap<>();
 //        map.put("sid", sid);
 //        map.put("schedule_semester", selectOp);
@@ -97,19 +90,28 @@ public class ScheduleController {
     @ResponseBody
     public Map<String, List> schedule_readMC(String schedule_name, String schedule_semester, HttpSession session){
         String sid = (String)session.getAttribute("id");
+        String methodName = "schedule_readMC";
+//        System.out.println("READMC ++++ sid = " + sid);
         Map<String, String> map2 = new HashMap<>();
         map2.put("sid", sid);
         map2.put("schedule_name", schedule_name);
         map2.put("schedule_semester", schedule_semester); // id와 schedule이름, 어떤학기인지를 받아와서
+        map2.put("method", methodName);
         Integer schedule_set = schedule_infoService.secondSemester(map2); // 해당 schedule_set을 얻어오고
+//        System.out.println("READMC ++ schedule_name = " + schedule_name);
+//        System.out.println("READMC ++ schedule_semester = " + schedule_semester);
+//        System.out.println("READMC ++ schedule_set = " + schedule_set);
         // 문제는 (2023 2학기, ehdrlf0815, 1)(2023 겨울학기, ehdrlf0815, 1) 학기를 안넣으면 겹친다...
         map2.remove("schedule_name");
         map2.put("schedule_set", String.valueOf(schedule_set));
+//        System.out.println("READMC ++ map2 = " + map2);
         List<String> majorList = scheduleService.readMajor(map2);
         List<Integer> creditList = scheduleService.readCredit(map2);
+//        System.out.println("READMC ++ majorList = " + majorList);
+//        System.out.println("READMC ++ creditList = " + creditList);
         Map<String, List> map = new HashMap<>();
-        map.put("major", majorList);
-        map.put("credit", creditList);
+        map.put("READMC ++ major", majorList);
+        map.put("READMC ++ credit", creditList);
         return map;
     }
     @GetMapping("/load")
@@ -119,12 +121,9 @@ public class ScheduleController {
         Map<String, String>map = new HashMap<>();
         map.put("sid", sid);
         map.put("schedule_name", name);
-        System.out.println("Load map = " + map+"\n");
         String loadName = schedule_infoService.initialSecond(map);
-        System.out.println("Load Name = " + loadName+"\n");
         try {
             String encodeLoadName = URLEncoder.encode(loadName, "utf-8");
-            System.out.println("encodeLoadName = " + encodeLoadName+"\n");
             return "redirect:/schedule/read?schedule_name="+encodeLoadName;
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
@@ -203,7 +202,9 @@ public class ScheduleController {
         map.put("sid", sid);
         map.put("schedule_name", schedule_name);
         map.put("schedule_semester", schedule_semester);
+        System.out.println("Controller - DeleteSchedule /// map = " + map);
         int result = scheduleService.selectDeleteSno(map);
+        System.out.println("Controller - DeleteSchedule /// result = " + result);
         if(result == 1 || result==-1){
             return ResponseEntity.ok("possible");
         }
@@ -219,8 +220,6 @@ public class ScheduleController {
         map.put("schedule_name", schedule_name);
         map.put("old_schedule_name", old_schedule_name);
         map.put("schedule_semester", schedule_semester);
-        System.out.println("schedule_name = " + schedule_name);
-        System.out.println("old_schedule_name = " + old_schedule_name);
         int rowCnt = schedule_infoService.update(map);
         if(rowCnt == 1){
             return ResponseEntity.ok("possible");

@@ -47,6 +47,6 @@
     </update>
     <delete id="delete" parameterType="map">
         delete from schedule_info
-        where sid=#{sid} and schedule_name=#{schedule_name}
+        where sid=#{sid} and schedule_name=#{schedule_name} and schedule_semester=#{schedule_semester}
     </delete>
 </mapper>

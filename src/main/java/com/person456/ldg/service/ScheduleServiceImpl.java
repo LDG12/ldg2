@@ -21,7 +21,8 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Override
     @Transactional
     public int selectDeleteSno(Map map){
-        Integer schedule_set = schedule_infoService.second(map); // schedule_set을 가져오는 이유는 시간표의 수업도 지워야해서
+        Integer schedule_set = schedule_infoService.secondSemester(map); // schedule_set을 가져오는 이유는 시간표의 수업도 지워야해서
+        System.out.println("Service - SelectDeleteSno /// schedule_set = " + schedule_set);
         int rowCnt = schedule_infoService.delete(map); // 지우는데 성공 한다면
         if(rowCnt == 1){
             map.remove("schedule_name");

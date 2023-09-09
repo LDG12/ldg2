@@ -21,6 +21,8 @@ public class Schedule_InfoDaoImpl implements Schedule_InfoDao {
     }
     @Override
     public int secondSemester(Map map){
+        System.out.println("Schedule_InfoDao map = " + map);
+        System.out.println("Schedule_InfoDao session.selectOne(namespace+\"secondSemester\", map) = " + session.selectOne(namespace + "secondSemester", map));
         return session.selectOne(namespace+"secondSemester", map);
     }
     public List<String> selectScheduleName(Map map){

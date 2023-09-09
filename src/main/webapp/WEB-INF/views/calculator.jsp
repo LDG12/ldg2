@@ -18,7 +18,7 @@
             color: #666; font-family: "맑은 고딕", 돋움,  "Apple SD Gothic Neo", tahoma; _font-family: 돋움, tahoma; font-size: 12px; letter-spacing: -0.5px;
         }
         body{
-            background-color: #f8f8f8;
+            background-color:#fff;
         }
         #container {
             width: calc(100% - 14cm);
@@ -125,12 +125,14 @@
             margin-top: 8px;
             overflow-x : scroll;
             white-space: nowrap;
+            height : 60px;
+            z-index: 300;
         }
 
         .semester ol {
             display: flex; /* 요소들을 수평으로 정렬 */
             list-style: none; /* 리스트 마커 숨김 */
-            padding: 0;
+            padding-top:8px;
         }
 
         .semester li {
@@ -140,6 +142,7 @@
             padding: 5px; /* 요소 내부 여백 설정 (원하는 여백으로 조정) */
             margin-left:1rem;
             transition: color 0.3s, text-decoration 0.3s;
+            font-size:14px;
         }
         .semester li:hover{
             cursor:pointer;
@@ -149,7 +152,7 @@
             text-decoration: underline;
         }
         .subjects {
-            width: 100%; /* 표의 너비를 100%로 설정합니다. */
+            width:950px; /* 표의 너비를 100%로 설정합니다. */
             border: 1px solid #ededed;
             border-radius: 12px;
         }
@@ -160,6 +163,7 @@
             margin-top : 30px;
             font-size: 18px; /* 원하는 폰트 크기로 조정합니다. */
             margin-bottom: 10px; /* 하단 여백을 조정합니다. */
+            width:950px;
         }
         .subjects caption h3{
             margin-left:15px;
@@ -167,6 +171,7 @@
         .subjects dl {
             display: table-row;
             text-align: left;
+            width:950px;
         }
 
         .subjects dt,
@@ -185,39 +190,57 @@
             color: #c62917;
         }
         .subject_save{
-            position: relative;
+            /*position: relative;*/
+            /*left:14cm;*/
+            /*border: 1px solid #ededed;*/
+            /*border-radius: 12px;*/
+            /*background-color: #c62917;*/
+            /*color:#f0f0f0;*/
+            /*width:130px;*/
+            /*height:25px;*/
+            /*text-align: center;*/
+            /*line-height:23px;*/
+            /*font-family: "맑은 고딕", sans-serif;*/
+            /*font-size:15px;*/
+            cursor: pointer;
             left:14cm;
-            border: 1px solid #ededed;
-            border-radius: 12px;
-            background-color: #c62917;
-            color:#f0f0f0;
             width:130px;
-            height:25px;
-            text-align: center;
-            line-height:23px;
-            font-family: "맑은 고딕", sans-serif;
-            font-size:15px;
+            top: 10px;
+            right: 0;
+            display: block;
+            width: auto;
+            padding: 0 8px;
+            color: #fff;
+            font-size: 12px;
+            font-weight: bold;
+            line-height: 30px;
+            border-radius: 15px;
+            background-color: #c62917;
         }
 
         .subject_save:hover{
             cursor: pointer;
         }
         th.thName{
-            width : 80%;
+            width : 75%;
             text-align: left;
             padding-left: 1cm;
             border-bottom: 1px solid #ededed;
             border-right: 1px solid #ededed;
             border-radius: 12px 0 0 0;
         }
-        th.thCredit, th.thGrade{
-            width : 6.67%;
+        th.thCredit, th.thGrade, th.thInitial{
+            width : 6.25%;
             text-align: center;
             border-bottom: 1px solid #ededed;
             border-right:1px solid #ededed;
         }
         th.thMajor{
-            width : 6.67%;
+            width : 6.25%;
+            text-align: center;
+            border-bottom: 2px solid #ededed;
+        }
+        th.thInitial{
             text-align: center;
             border-bottom: 2px solid #ededed;
         }
@@ -234,7 +257,16 @@
         input:focus{
             outline: none;
         }
+        .new{
+            color : #c62917;
+        }
         .new:hover{
+            cursor:pointer;
+        }
+        .reset{
+            margin-left : 0.5cm;
+        }
+        .reset:hover{
             cursor:pointer;
         }
     </style>
@@ -315,13 +347,14 @@
                 <th class="thCredit">학점</th>
                 <th class="thGrade">성적</th>
                 <th class="thMajor">전공</th>
+                <th class="thInitial">초기화</th>
             </thead>
             <tbody id="tableBody">
 
             </tbody>
             <tfoot>
                 <tr>
-                    <td colspan="4"><a class="new">더 입력하기</a></td>
+                    <td colspan="4"><a class="new">더 입력하기</a><a class="reset">초기화</a></td>
                 </tr>
             </tfoot>
         </table>
@@ -362,6 +395,26 @@
                 select_semester.css('color', '#000');
                 selectSemester();
             })
+        })
+        $(".reset").on("click", function(){
+            $('#tableBody').find('tr').each(function(){
+                $(this).find('.tdName').val("");
+                $(this).find('.tdCredit').val("0");
+                $(this).find('.tdGrade').val("A+");
+                $(this).find('.tdMajor').attr("checked", false);
+                $(this).find('.tdInitial').attr("checked", false);
+            })
+        })
+        $(".tdInitial").on("click", function(){
+            if(confirm("해당 줄의 내용을 초기화 하시겠습니까?")){
+                $(this).closest('tr').find('td').each(function (){
+                    $(this).find('.tdName').val("");
+                    $(this).find('.tdCredit').val("0");
+                    $(this).find('.tdGrade').val("A+");
+                    $(this).find('.tdMajor').attr("checked", false);
+                    $(this).find('.tdInitial').attr("checked", false);
+                })
+            }
         })
         $(".subject_save").on("click", function (){
             var now_semester = $('.the_semester[data-info="active"]').text();
@@ -554,7 +607,8 @@
         var credit = '<td style="background-color:#F9F9F9;border:0.5px solid #999999"><input id="credit'+int+'" value="0" class="tdCredit"type="number" maxlength="4" min="0" style="border:none;background-color:#F9F9F9;padding-left:5px;"></td>'
         var grade = '<td style="background-color:#ffffff;border:0.5px solid #999999"><select id="grade'+int+'" class="tdGrade">'+ createOption() +'</select></td>'
         var major = '<td style="background-color:#ffffff;border:0.5px solid #999999"><label><input id="major'+int+'" type="checkbox" class="tdMajor"></label></td>'
-        return test+credit+grade+major;
+        var initial = '<td style="background-color:#ffffff;border:0.5px solid #999999"><label><input id="initial'+int+'" type="checkbox" class="tdInitial"></label></td>'
+        return test+credit+grade+major+initial;
     }
     function createOption(){
         var repository = ["A+","A","B+","B","C+","C","D+","D","F","P","NP"];

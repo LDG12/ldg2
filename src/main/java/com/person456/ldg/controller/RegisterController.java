@@ -51,7 +51,7 @@ public class RegisterController {
         UserDto user = new UserDto(id, pwd, email, realbirth, name, status, realbirth);
         if(checkRegister(user)){
             String regMsg = URLEncoder.encode("회원가입이 완료되었습니다.", "utf-8");
-            Schedule_InfoDto schedule_infoDto = new Schedule_InfoDto(1, "시간표 1", id);
+            Schedule_InfoDto schedule_infoDto = new Schedule_InfoDto(1, "시간표 1", id, "2023 2학기");
             int rowCnt= schedule_infoService.addNewSchedule(schedule_infoDto);
             int Cnt = calculatorService.insertNewRegister(id);
             return "redirect:/?regMsg="+regMsg;
