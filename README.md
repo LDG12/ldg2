@@ -141,3 +141,11 @@
 2. 전체학점(전체 학기에 대한 성적)에 따라 각 학기별 평점이 그래프에 line으로 표시
 3. 이후 각 grade가 몇%를 차지하는지 ul로 표기
 4. css 손보는중중
+
+9/9
+1. 회원가입을 새로 해서 다시 테스트 해본 결과 오류가 매우 많아 수정작업 진행함
+2. 회원가입 진행시 Schedule_info에 가장 최근 학기("2023 겨울학기")를 기준으로 새롭게 하나 만들어서 생성
+3. readMajor, readCredit에 관한 함수가 Schedule_name을Load하는 과정이 끝나기 전에 계속 실행되어, 해당 내용의 순서 조정
+4. Schedule_delete에 있어, semester에 대한 내용이 빠져있어 추가
+5. Calculator에 전체 셀 초기화, 해당 row 셀 초기화 기능 추가
+6. RegisterForm, Schedule, Calculator css 다듬기 완료료
